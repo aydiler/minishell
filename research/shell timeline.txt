@@ -1,6 +1,6 @@
 MONITOR PROGRAM (1960s, PRE-UNIX):
 
-CopyBuilt into computer ROM:
+Built into computer ROM:
 > LOAD            (Load program)
 > DUMP 1000,1FFF  (View memory)
 > RUN 1000        (Start program)

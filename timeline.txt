@@ -1,0 +1,242 @@
+Coordination:
+Agree on branching and merging strategies.
+Define structures for tokens, commands, arguments, and redirections.
+Create interface specifications for the parser output.
+
+Week 1: Project Setup and Core Functionality
+
+Day 1-2: Project Initialization
+
+Coder A:
+
+Makefile (all, clean, fclean, re)
+Signal Handling Framework:
+Set up initial signal handlers for SIGINT, SIGQUIT, and EOF.
+Implement the global variable for signal handling.
+
+Coder B:
+
+Set Up Shell Infrastructure:
+Create the main program loop.
+Implement basic prompt display using readline().
+Working command history using readline
+
+Check:
+
+Display prompt for commands.
+Working command history using readline
+Signal handling (ctrl-C, ctrl-D, ctrl-)
+Global variable for signals only
+ctrl-C: New prompt on new line
+ctrl-D: Exit shell
+ctrl-: No action
+
+Day 3-5: Basic Command Parsing and Execution
+
+Coder A:
+
+Implement Basic Lexer:
+Tokenize input based on spaces.
+Handle simple commands without quotes or special characters.
+
+Develop Parser Skeleton:
+Begin constructing the parser to interpret the tokenized input.
+
+Coder B:
+
+Execute External Commands:
+Implement command execution using fork() and execve().
+Search for commands in the PATH environment variable.
+
+Handle Absolute and Relative Paths:
+Check for commands with slashes and execute them directly.
+
+Collaboration:
+
+Interface Agreement:
+Coder A and B finalize how parsed commands will be passed to the executor.
+Test basic command execution with simple commands like ls or echo.
+
+Check:
+Execute commands using PATH/relative/absolute paths
+
+Week 2: Enhanced Parsing and Built-in Commands
+
+Day 6-7: Quote Handling and Variable Expansion
+
+Coder A:
+
+Implement Single and Double Quotes Handling:
+Modify the lexer to handle quoted strings.
+Ensure that tokens within quotes are treated as single arguments.
+
+Handle Environment Variables and $?:
+Implement variable expansion using getenv().
+Replace $? with the last exit status.
+
+Coder B:
+
+Implement Built-in Commands Part 1:
+cd command with relative and absolute path handling.
+pwd command to display the current directory.
+exit command to terminate the shell.
+
+Check:
+
+Handle single quotes (')
+Handle double quotes (")
+Handle environment variables ($VAR)
+Handle exit status ($?)
+Skip interpretation of unclosed quotes
+Skip interpretation of \ and ;
+cd (relative/absolute paths)
+pwd (no options)
+exit (no options)
+
+Day 8-10: Redirections and Pipes Parsing
+
+Coder A:
+
+Parse Redirections:
+Identify <, >, <<, and >> in commands.
+Extract filenames for redirection targets.
+
+Parse Pipes:
+Split commands based on |.
+Update the parser to handle command sequences connected by pipes.
+
+Coder B:
+
+Implement Redirections:
+Input redirection (<): Redirect standard input.
+Output redirection (>): Redirect standard output.
+Append output (>>): Open files in append mode.
+
+Implement Pipes:
+Use pipe() to create communication channels between processes.
+Set up multiple child processes connected via pipes.
+
+Collaboration:
+
+Integration Testing:
+Combine parsing and execution for commands with redirections and pipes.
+Debug issues arising from incorrect file descriptor handling.
+
+Check:
+
+Input redirection (<)
+Output redirection (>)
+Pipes (|)
+Append output (>>)
+
+
+Week 3: Advanced Features and Remaining Built-ins
+
+Day 11-12: Here Document and Signal Handling
+
+Coder A:
+
+Implement Here Document Parsing (<<):
+Identify the delimiter.
+Read input until the delimiter is encountered.
+
+Coder B:
+
+Execute Here Document:
+Handle input from the temporary storage or pipe.
+Ensure signal handling works during input (e.g., Ctrl-C aborts input).
+
+Collaboration:
+
+Signal Handling Refinement:
+Ensure that signals are handled correctly during command execution and input.
+
+Check:
+
+Here document (<<)
+Signal handling (ctrl-C, ctrl-D, ctrl-)
+Global variable for signals only
+ctrl-C: New prompt on new line
+ctrl-D: Exit shell
+ctrl-: No action
+
+Day 13-15: Remaining Built-in Commands
+
+Coder A:
+
+Implement Built-in Commands Part 2:
+echo command with -n option.
+Ensure proper handling of special characters and options.
+
+Coder B:
+
+Implement Environment Variable Commands:
+export command to set environment variables.
+unset command to remove environment variables.
+env command to display all environment variables.
+
+Collaboration:
+
+Environment Variable Management:
+Agree on how environment variables are stored and accessed.
+Ensure both parsing and execution components use the same environment data.
+
+Check:
+
+echo (with -n option)
+export (no options)
+unset (no options)
+env (no options/arguments)
+
+Week 4: Testing, Debugging, and Optimization
+
+Day 16-17: Integration Testing
+
+Both Coders:
+
+Comprehensive Testing:
+Create test cases covering all shell features.
+Test command combinations, redirections, pipes, and built-ins.
+
+Bug Fixing:
+Identify and resolve issues found during testing.
+Pay special attention to edge cases and error handling.
+
+Day 18-20: Performance and Usability Enhancements
+
+Coder A:
+
+Optimize Parsing Efficiency:
+Profile the parser for performance bottlenecks.
+Refine algorithms for better speed and lower memory usage.
+
+Improve User Feedback:
+Enhance error messages and prompts.
+Ensure unclosed quotes and syntax errors are reported clearly.
+
+Coder B:
+
+Optimize Execution:
+Ensure processes are spawned efficiently.
+Verify that all file descriptors are properly closed after use.
+
+Signal Handling Finalization:
+Confirm that signals like Ctrl-C and Ctrl-D behave as expected in all scenarios.
+Ensure child processes do not inadvertently inherit signal handlers.
+
+Week 5: Finalization and Documentation
+
+Both Coders:
+
+Peer Code Review:
+Review each other's code for consistency and adherence to coding standards.
+Identify areas for refactoring and improvement.
+
+Refactoring:
+Clean up codebase.
+Remove redundant code and comments.
+Improve function and variable naming for clarity.
+
+Stress Testing:
+Test the shell under heavy loads and with complex commands.
+Ensure stability and robustness.

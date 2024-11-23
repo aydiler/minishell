@@ -1,0 +1,48 @@
+Core Shell Features
+
+	Display prompt for commands -
+	Working command history using readline -
+	Execute commands using PATH/relative/absolute paths -
+	Signal handling (ctrl-C, ctrl-D, ctrl-) -
+
+	Global variable for signals only -
+	ctrl-C: New prompt on new line -
+	ctrl-D: Exit shell -
+	ctrl-: No action -
+
+
+Command Parsing
+
+	Handle single quotes (') -
+	Handle double quotes (") -
+	Handle environment variables ($VAR) -
+	Handle exit status ($?) -
+	Skip interpretation of unclosed quotes -
+	Skip interpretation of \ and ; -
+
+
+Redirections
+
+	Input redirection (<) -
+	Output redirection (>) -
+	Here document (<<) -
+	Append output (>>) -
+	Pipes (|) -
+
+
+Built-in Commands
+
+	echo (with -n option) -
+	cd (relative/absolute paths) -
+	pwd (no options) -
+	export (no options) -
+	unset (no options) -
+	env (no options/arguments) -
+	exit (no options) -
+
+
+Technical Requirements
+
+	Memory management (no leaks except readline)
+	Error handling
+	Makefile (all, clean, fclean, re) -
