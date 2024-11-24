@@ -13,12 +13,26 @@ Implementing a custom shell is a complex task that involves multiple features, e
   - Use basic input methods like `readline` or `fgets` to read user input.
   - **Dependencies:** None significant at this stage.
 
+Check:
+Display prompt for commands
+
 **2. Implement Basic Command Parsing (Simple Tokenization)**
 
 - **Coder B:**
   - Develop a simple parser to split the input line into command and arguments.
   - Handle basic whitespace tokenization without quotes or special characters.
   - **Dependencies:** None significant at this stage.
+
+**4. Implement Command Execution of Simple Commands**
+
+- **Coder A:**
+  - Implement the execution of simple external commands without arguments.
+  - Use `fork` and `execve` to run commands found in the system's `PATH`.
+  - **Dependencies:**
+    - Basic command parsing to obtain the command name.
+
+Check:
+Execute commands using PATH/relative/absolute paths
 
 **3. Implement Basic Signal Handling (Ctrl-C, Ctrl-D, Ctrl-\)**
 
@@ -29,13 +43,7 @@ Implementing a custom shell is a complex task that involves multiple features, e
   - **Dependencies:**
     - Minimal interaction with the input loop.
 
-**4. Implement Command Execution of Simple Commands**
 
-- **Coder A:**
-  - Implement the execution of simple external commands without arguments.
-  - Use `fork` and `execve` to run commands found in the system's `PATH`.
-  - **Dependencies:**
-    - Basic command parsing to obtain the command name.
 
 ---
 

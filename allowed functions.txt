@@ -1,0 +1,70 @@
+1. **Line Reading and History Functions**:
+- `readline`: Reads a line from terminal, with editing capabilities
+- `rl_clear_history`: Clears the readline history list
+- `rl_on_new_line`: Tells readline we moved cursor to a new line
+- `rl_replace_line`: Replaces the contents of current readline line
+- `rl_redisplay`: Redraws the current readline line
+- `add_history`: Adds a line to the readline history
+
+2. **Standard I/O Functions**:
+- `printf`: Formats and prints data
+- `write`: Writes data to a file descriptor
+- `read`: Reads data from a file descriptor
+
+3. **Memory Management**:
+- `malloc`: Allocates dynamic memory
+- `free`: Frees allocated memory
+
+4. **File Operations**:
+- `access`: Checks file permissions
+- `open`: Opens a file or creates it
+- `close`: Closes a file descriptor
+- `unlink`: Deletes a file
+- `stat`, `lstat`, `fstat`: Get file status (lstat for symlinks)
+
+5. **Directory Operations**:
+- `getcwd`: Gets current working directory
+- `chdir`: Changes current directory
+- `opendir`: Opens a directory stream
+- `readdir`: Reads directory entries
+- `closedir`: Closes directory stream
+
+6. **Process Control**:
+- `fork`: Creates a new process
+- `execve`: Executes a program
+- `exit`: Terminates the process
+
+7. **Process Waiting**:
+- `wait`, `waitpid`: Wait for process to change state
+- `wait3`, `wait4`: Wait for process change with options
+
+8. **Signal Handling**:
+- `signal`: Sets signal handling
+- `sigaction`: Examines/changes signal action
+- `sigemptyset`: Initializes empty signal set
+- `sigaddset`: Adds signal to set
+- `kill`: Sends signal to process
+
+9. **File Descriptor Operations**:
+- `dup`, `dup2`: Duplicate file descriptors
+- `pipe`: Creates pipe
+
+10. **Error Handling**:
+- `strerror`: Returns string describing error code
+- `perror`: Prints system error message
+
+11. **Terminal Operations**:
+- `isatty`: Tests if descriptor is terminal
+- `ttyname`: Gets terminal device name
+- `ttyslot`: Finds slot in terminal file
+- `ioctl`: Controls device
+- `tcsetattr`, `tcgetattr`: Set/get terminal attributes
+
+12. **Environment and Terminal Capabilities**:
+- `getenv`: Gets environment variable
+- `tgetent`: Loads terminal capabilities
+- `tgetflag`: Gets terminal capability flag
+- `tgetnum`: Gets numeric terminal capability
+- `tgetstr`: Gets string terminal capability
+- `tgoto`: Creates cursor movement string
+- `tputs`: Outputs terminal capability string
