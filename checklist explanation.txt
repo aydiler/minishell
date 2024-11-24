@@ -1,5 +1,7 @@
 Core Shell Features
+
 1. Display Prompt for Commands
+
 Implementation:
 
 Use readline Function:
@@ -135,7 +137,10 @@ Dependencies:
 
 Signal Handling:
 Must set up the signal handler early in the program.
+
+
 Command Parsing
+
 1. Handle Single Quotes (')
 Implementation:
 
@@ -230,7 +235,10 @@ Dependencies:
 
 Command Parsing:
 Lexer adjustments are necessary.
+
+
 Redirections
+
 1. Input Redirection (<)
 Implementation:
 
@@ -334,7 +342,10 @@ Dependencies:
 
 Command Execution:
 Execution of piped commands requires careful setup of multiple processes.
+
+
 Built-in Commands
+
 1. echo (with -n option)
 Implementation:
 
