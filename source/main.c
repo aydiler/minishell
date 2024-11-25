@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/24 22:01:56 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/25 23:51:17 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		printf("cmd: %s\n", cmd);
+		printf("number of tokens: %d\n", count_tokens(cmd));
 		free(cmd);
 	}
 	exit(EXIT_SUCCESS);
