@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:42:17 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/25 23:59:32 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/26 20:05:54 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "libft/libft.h"
 
 typedef struct s_command 
 {
@@ -28,4 +29,7 @@ typedef struct s_command
 	struct s_command	*next;
 }	t_command;
 
+char	**tokenizer(char *line);
+void	parser(char *line);
+int		count_tokens(char *line);
 #endif
