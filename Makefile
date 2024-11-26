@@ -1,7 +1,7 @@
 NAME = minishell
 SRCS = $(wildcard source/*.c)
 OBJS = $(SRCS:.c=.o)
-LIBFT = Libft/libft.a
+LIBFT = includes/libft/libft.a
 INLCLUDES = includes
 CFLAGS = -Wall -Wextra -Werror
 
