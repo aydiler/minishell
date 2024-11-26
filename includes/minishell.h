@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:42:17 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 21:48:15 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/26 22:37:04 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 typedef struct s_cmd 
 {
-	char				**args;
+	char			**args;
 	struct s_cmd	*next;
 }	t_cmd;
 
