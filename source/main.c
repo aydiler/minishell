@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 21:56:11 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/26 22:16:52 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		parser(input, cmd);
+		execute_command(cmd->args);
 		free(input);
 	}
 	exit(EXIT_SUCCESS);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:42:17 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 21:48:15 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/26 22:17:08 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ typedef struct s_cmd
 int		count_tokens(char *line);
 void	parser(char *line, t_cmd *cmd);
 char	**tokenizer(char *line);
+int		execute_command(char **args);
 
 #endif

@@ -1,242 +1,240 @@
-Coordination:
-Agree on branching and merging strategies.
-Define structures for tokens, commands, arguments, and redirections.
-Create interface specifications for the parser output.
+**Best Order to Implement Functions for a Custom Shell with Two Coders**
 
-Week 1: Project Setup and Core Functionality
+Implementing a custom shell is a complex task that involves multiple features, each with its own dependencies and challenges. To efficiently develop the shell with two coders, it's crucial to plan the implementation order carefully, ensuring that dependencies are satisfied and both coders can work in parallel as much as possible. Below is the recommended order of implementation, along with the division of tasks between the two coders.
 
-Day 1-2: Project Initialization
+---
 
-Coder A:
+### **Phase 1: Core Shell Loop and Basic Command Execution**
 
-Makefile (all, clean, fclean, re)
-Signal Handling Framework:
-Set up initial signal handlers for SIGINT, SIGQUIT, and EOF.
-Implement the global variable for signal handling.
+**1. Implement Basic Shell Loop with Prompt Display**
 
-Coder B:
+- **Coder A:**
+  - Set up the main loop that displays a static prompt (e.g., `minishell$ `).
+  - Use basic input methods like `readline` or `fgets` to read user input.
+  - **Dependencies:** None significant at this stage.
 
-Set Up Shell Infrastructure:
-Create the main program loop.
-Implement basic prompt display using readline().
+Check:
+Display prompt for commands X
+
+**2. Implement Basic Command Parsing (Simple Tokenization)**
+
+- **Coder B:**
+  - Develop a simple parser to split the input line into command and arguments.
+  - Handle basic whitespace tokenization without quotes or special characters.
+  - **Dependencies:** None significant at this stage.
+
+**4. Implement Command Execution of Simple Commands**
+
+- **Coder A:**
+  - Implement the execution of simple external commands without arguments.
+  - Use `fork` and `execve` to run commands found in the system's `PATH`.
+  - **Dependencies:**
+    - Basic command parsing to obtain the command name.
+
+Check:
+Execute commands using absolute paths X
+Execute commands using relative paths
+Execute commands using PATH
+
+**14. Implement Command History Using `readline`**
+
+- **Coder B:**
+  - Integrate `add_history` to store commands entered by the user.
+  - Ensure history is cleared on shell exit using `rl_clear_history`.
+  - **Dependencies:**
+    - Use of `readline` for input.
+
+CHECK
 Working command history using readline
 
-Check:
 
-Display prompt for commands.
-Working command history using readline
-Signal handling (ctrl-C, ctrl-D, ctrl-)
-Global variable for signals only
-ctrl-C: New prompt on new line
-ctrl-D: Exit shell
-ctrl-: No action
+**3. Implement Basic Signal Handling (Ctrl-C, Ctrl-D, Ctrl-\)**
+
+- **Coder A:**
+  - Set up signal handlers for `SIGINT`, `SIGQUIT`, and `EOF` detection.
+  - Ensure that `Ctrl-C` interrupts the current input and displays a new prompt.
+  - Detect `Ctrl-D` (EOF) to exit the shell gracefully.
+  - **Dependencies:**
+    - Minimal interaction with the input loop.
+
+CHECK
+Global variable for signals only -
+ctrl-C: New prompt on new line -
+ctrl-D: Exit shell -
+ctrl-: No action -
+---
+
+### **Phase 2: Enhanced Command Parsing and Environment Management**
+
+**5. Enhance Command Parsing to Handle Single and Double Quotes**
 
-Day 3-5: Basic Command Parsing and Execution
+- **Coder B:**
+  - Modify the parser to handle single (`'`) and double (`"`) quotes.
+  - Ensure that quoted strings are treated as single arguments.
+  - **Dependencies:**
+    - Existing basic command parsing.
 
-Coder A:
+**6. Implement Environment Variable Management**
 
-Implement Basic Lexer:
-Tokenize input based on spaces.
-Handle simple commands without quotes or special characters.
+- **Coder A:**
+  - Create data structures to manage shell environment variables.
+  - Implement functions to get and set environment variables.
+  - **Dependencies:**
+    - Required for variable expansion and built-in commands like `export`.
 
-Develop Parser Skeleton:
-Begin constructing the parser to interpret the tokenized input.
+**7. Implement Variable Expansion (`$VAR`, `$?`) in Command Parsing**
 
-Coder B:
+- **Coder B:**
+  - Modify the parser to detect `$VAR` and replace it with its value.
+  - Implement special handling for `$?` to display the last exit status.
+  - **Dependencies:**
+    - Environment variable management.
+    - Enhanced command parsing with quote handling.
 
-Execute External Commands:
-Implement command execution using fork() and execve().
-Search for commands in the PATH environment variable.
+---
+
+### **Phase 3: Implement Built-in Commands**
+
+**8. Implement Built-in Commands: `echo`, `pwd`, `exit`**
+
+- **Coder A:**
+  - **`echo`:**
+    - Handle the `-n` option to suppress the trailing newline.
+  - **`pwd`:**
+    - Display the current working directory using `getcwd`.
+  - **`exit`:**
+    - Terminate the shell with an optional exit status.
+  - **Dependencies:**
+    - Command parsing to handle arguments.
 
-Handle Absolute and Relative Paths:
-Check for commands with slashes and execute them directly.
+**9. Implement Built-in Commands: `cd`, `export`, `unset`, `env`**
 
-Collaboration:
+- **Coder A:**
+  - **`cd`:**
+    - Change the current directory and update `PWD` and `OLDPWD`.
+  - **`export`:**
+    - Set environment variables from `VAR=VALUE` pairs.
+  - **`unset`:**
+    - Remove variables from the environment.
+  - **`env`:**
+    - Display the current environment variables.
+  - **Dependencies:**
+    - Environment variable management.
+    - Command parsing for argument handling.
 
-Interface Agreement:
-Coder A and B finalize how parsed commands will be passed to the executor.
-Test basic command execution with simple commands like ls or echo.
+---
 
-Check:
-Execute commands using PATH/relative/absolute paths
+### **Phase 4: Redirections and Pipes**
 
-Week 2: Enhanced Parsing and Built-in Commands
+**10. Enhance Command Parsing to Handle Redirections (`<`, `>`, `>>`, `<<`)**
 
-Day 6-7: Quote Handling and Variable Expansion
+- **Coder B:**
+  - Extend the parser to identify redirection operators and their targets.
+  - Store redirection information for use during command execution.
+  - **Dependencies:**
+    - Enhanced command parsing with quote and variable handling.
 
-Coder A:
+**11. Modify Command Execution to Handle Redirections**
 
-Implement Single and Double Quotes Handling:
-Modify the lexer to handle quoted strings.
-Ensure that tokens within quotes are treated as single arguments.
+- **Coder A:**
+  - Implement input (`<`) and output (`>`, `>>`) redirection using `dup2`.
+  - Handle here-documents (`<<`) by reading input until a delimiter is matched.
+  - **Dependencies:**
+    - Parsed redirection information.
+    - Command execution framework.
 
-Handle Environment Variables and $?:
-Implement variable expansion using getenv().
-Replace $? with the last exit status.
+**12. Enhance Command Parsing to Handle Pipes (`|`)**
 
-Coder B:
+- **Coder B:**
+  - Modify the parser to split commands separated by the pipe symbol.
+  - Store each command segment for sequential execution.
+  - **Dependencies:**
+    - Existing command parsing and redirection handling.
 
-Implement Built-in Commands Part 1:
-cd command with relative and absolute path handling.
-pwd command to display the current directory.
-exit command to terminate the shell.
+**13. Modify Command Execution to Handle Pipes**
 
-Check:
+- **Coder A:**
+  - Implement inter-process communication using `pipe`.
+  - Set up multiple processes where the output of one is the input of the next.
+  - Ensure proper file descriptor management to prevent leaks.
+  - **Dependencies:**
+    - Parsed pipe information.
+    - Command execution and redirection mechanisms.
 
-Handle single quotes (')
-Handle double quotes (")
-Handle environment variables ($VAR)
-Handle exit status ($?)
-Skip interpretation of unclosed quotes
-Skip interpretation of \ and ;
-cd (relative/absolute paths)
-pwd (no options)
-exit (no options)
+---
 
-Day 8-10: Redirections and Pipes Parsing
+### **Phase 5: Command History and Final Touches**
 
-Coder A:
 
-Parse Redirections:
-Identify <, >, <<, and >> in commands.
-Extract filenames for redirection targets.
 
-Parse Pipes:
-Split commands based on |.
-Update the parser to handle command sequences connected by pipes.
+**15. Finalize Signal Handling and Integration with `readline`**
 
-Coder B:
+- **Coder A:**
+  - Refine signal handlers to work seamlessly with `readline`.
+  - Ensure that signals like `Ctrl-C` interrupt input appropriately.
+  - **Dependencies:**
+    - Signal handling.
+    - Use of `readline` for command input.
 
-Implement Redirections:
-Input redirection (<): Redirect standard input.
-Output redirection (>): Redirect standard output.
-Append output (>>): Open files in append mode.
+---
 
-Implement Pipes:
-Use pipe() to create communication channels between processes.
-Set up multiple child processes connected via pipes.
+### **Summary of Task Division**
 
-Collaboration:
+- **Coder A (Shell Loop and Execution):**
+  - Basic shell loop and prompt display.
+  - Signal handling.
+  - Command execution of external and built-in commands.
+  - Environment variable management.
+  - Handling of redirections and pipes during execution.
+  - Final signal handling integration.
 
-Integration Testing:
-Combine parsing and execution for commands with redirections and pipes.
-Debug issues arising from incorrect file descriptor handling.
+- **Coder B (Command Parsing and History):**
+  - Basic and advanced command parsing.
+  - Handling of quotes and variable expansion.
+  - Parsing of redirections and pipes.
+  - Implementation of command history.
+  - Final touches on command parsing features.
 
-Check:
+---
 
-Input redirection (<)
-Output redirection (>)
-Pipes (|)
-Append output (>>)
+### **Rationale Behind the Order**
 
+- **Dependencies Are Respected:**
+  - Each feature is implemented after its dependencies are satisfied.
+  - For example, environment variable expansion is added after environment management is in place.
 
-Week 3: Advanced Features and Remaining Built-ins
+- **Parallel Work Is Maximized:**
+  - Coders work on separate but complementary components.
+  - While one works on command parsing, the other focuses on execution and environment management.
 
-Day 11-12: Here Document and Signal Handling
+- **Testing and Integration:**
+  - Implementing features in this order allows for incremental testing.
+  - Basic functionality is verified before adding more complex features.
 
-Coder A:
+- **Complex Features Built on Solid Foundations:**
+  - Advanced features like redirections and pipes are added after basic execution works.
+  - Ensures a stable base to handle more intricate behaviors.
 
-Implement Here Document Parsing (<<):
-Identify the delimiter.
-Read input until the delimiter is encountered.
+---
 
-Coder B:
+### **Additional Considerations**
 
-Execute Here Document:
-Handle input from the temporary storage or pipe.
-Ensure signal handling works during input (e.g., Ctrl-C aborts input).
+- **Communication Between Coders:**
+  - Regular synchronization meetings to integrate parsing and execution components.
+  - Shared understanding of data structures for commands and environment variables.
 
-Collaboration:
+- **Version Control:**
+  - Use a version control system (e.g., Git) to manage code changes.
+  - Feature branches can be used to develop and test features independently before merging.
 
-Signal Handling Refinement:
-Ensure that signals are handled correctly during command execution and input.
+- **Testing Plan:**
+  - Develop a suite of test cases for each feature.
+  - Automated tests can help catch regressions as new features are added.
 
-Check:
+- **Documentation:**
+  - Comment code thoroughly to aid understanding.
+  - Maintain documentation for functions and modules, especially for complex parsing logic.
 
-Here document (<<)
-Signal handling (ctrl-C, ctrl-D, ctrl-)
-Global variable for signals only
-ctrl-C: New prompt on new line
-ctrl-D: Exit shell
-ctrl-: No action
+---
 
-Day 13-15: Remaining Built-in Commands
-
-Coder A:
-
-Implement Built-in Commands Part 2:
-echo command with -n option.
-Ensure proper handling of special characters and options.
-
-Coder B:
-
-Implement Environment Variable Commands:
-export command to set environment variables.
-unset command to remove environment variables.
-env command to display all environment variables.
-
-Collaboration:
-
-Environment Variable Management:
-Agree on how environment variables are stored and accessed.
-Ensure both parsing and execution components use the same environment data.
-
-Check:
-
-echo (with -n option)
-export (no options)
-unset (no options)
-env (no options/arguments)
-
-Week 4: Testing, Debugging, and Optimization
-
-Day 16-17: Integration Testing
-
-Both Coders:
-
-Comprehensive Testing:
-Create test cases covering all shell features.
-Test command combinations, redirections, pipes, and built-ins.
-
-Bug Fixing:
-Identify and resolve issues found during testing.
-Pay special attention to edge cases and error handling.
-
-Day 18-20: Performance and Usability Enhancements
-
-Coder A:
-
-Optimize Parsing Efficiency:
-Profile the parser for performance bottlenecks.
-Refine algorithms for better speed and lower memory usage.
-
-Improve User Feedback:
-Enhance error messages and prompts.
-Ensure unclosed quotes and syntax errors are reported clearly.
-
-Coder B:
-
-Optimize Execution:
-Ensure processes are spawned efficiently.
-Verify that all file descriptors are properly closed after use.
-
-Signal Handling Finalization:
-Confirm that signals like Ctrl-C and Ctrl-D behave as expected in all scenarios.
-Ensure child processes do not inadvertently inherit signal handlers.
-
-Week 5: Finalization and Documentation
-
-Both Coders:
-
-Peer Code Review:
-Review each other's code for consistency and adherence to coding standards.
-Identify areas for refactoring and improvement.
-
-Refactoring:
-Clean up codebase.
-Remove redundant code and comments.
-Improve function and variable naming for clarity.
-
-Stress Testing:
-Test the shell under heavy loads and with complex commands.
-Ensure stability and robustness.
+By following this implementation plan, the two coders can efficiently develop a custom shell that gradually builds up functionality while respecting feature dependencies. This approach ensures a manageable development process and results in a robust and fully functional shell.
