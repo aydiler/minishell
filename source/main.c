@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 19:02:31 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/26 21:56:11 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,27 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*cmd;
+	char	*input;
+	t_cmd	*cmd;
 
+	cmd = malloc(sizeof(t_cmd));
+	if (!cmd)
+		return (1);
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	while (1)
 	{
-		cmd = readline("minishell$ ");
-		if (!cmd)
+		input = readline("minishell$ ");
+		if (!input)
 			break ;
-		if (strcmp(cmd, "exit") == 0)
+		if (strcmp(input, "exit") == 0)
 		{
-			free(cmd);
+			free(input);
 			break ;
 		}
-		parser(cmd);
-		free(cmd);
+		parser(input, cmd);
+		free(input);
 	}
 	exit(EXIT_SUCCESS);
 }
