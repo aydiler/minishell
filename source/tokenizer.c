@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:27:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 17:44:55 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/27 20:59:00 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ char	*fill_token(char *line, int *i, int l)
 		else
 			(*i)++;
 	}
+	printf("i: %d, l:%d, j: %d\n", *i, l, j);
 	token = malloc(sizeof(char) * (*i - l + 1 - j));
 	if (!token)
 		return (0);

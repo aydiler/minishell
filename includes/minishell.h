@@ -17,11 +17,13 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 // Parser funktions:
-void	parser(char *line, t_cmd *cmd);
+void	parser(char *line, t_cmd **cmd);
 char	**tokenizer(char *line);
+char	*quote_2_token(char *line, int *l, char c);
+// Executer funktions
 int		execute_command(char **args, char **envp);
 int		print_envp(char **envp);
-char	*quote_2_token(char *line, int *l, char c);
-int		count_tokens(char *line);
+// utils
+void	free_all(t_cmd **cmd);
 
 #endif

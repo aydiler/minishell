@@ -1,40 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 20:48:53 by maahoff          ###   ########.fr       */
+/*   Created: 2024/11/27 20:33:27 by maahoff           #+#    #+#             */
+/*   Updated: 2024/11/27 20:47:13 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+void	free_args(t_cmd **cmd)
 {
-	char	*input;
-	t_cmd	*cmd;
+	int	i;
 
-	cmd = NULL;
-	(void)argc;
-	(void)argv;
-	while (1)
+	i = 0;
+	if (!(*cmd) || !(*cmd)->args)
+		return ;
+	while ((*cmd)->args[i])
 	{
-		input = readline("minishell$ ");
-		if (!input)
-			break ;
-		if (strcmp(input, "exit") == 0)
-		{
-			free(input);
-			break ;
-		}
-		parser(input, &cmd);
-		if (cmd)
-			execute_command(cmd->args, envp);
-		free(input);
-		free_all(&cmd);
+		free((*cmd)->args[i]);
+		i++;
 	}
-	exit(EXIT_SUCCESS);
+}
+
+void	free_all(t_cmd **cmd)
+{
+	t_cmd	*temp;
+
+	if (!cmd || !(*cmd))
+		return ;
+	while (*cmd)
+	{
+		temp = (*cmd)->next;
+		free_args(cmd);
+		free(*cmd);
+		*cmd = temp;
+	}
+	*cmd = NULL;
 }
