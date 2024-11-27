@@ -6,19 +6,50 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/11/27 16:13:03 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:03:05 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+void ft_free_split(char **str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
+}
+
 static char *find_command_in_path(char *cmd, char **env)
 {
 	(void)env;
+	char *path;
+	char **paths;
+	char *full_path;
     if (cmd[0] == '/' || cmd[0] == '.')
 		return (cmd);
-	else
+	
+	path = getenv("PATH");
+	paths = ft_split(path, ':');
+	if (!paths)
 		return (NULL);
+	for (int i = 0; paths[i]; i++)
+	{
+		full_path = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(full_path, cmd);
+		if (access(full_path, F_OK) == 0)
+		{
+			ft_free_split(paths);
+			return (full_path);
+		}
+	}
+	ft_free_split(paths);
+	return (NULL);
 }
 
 static int handle_child_process(char **args, char **env)

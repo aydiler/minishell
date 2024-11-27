@@ -3,8 +3,8 @@ Core Shell Features
 	Display prompt for commands X
 	Working command history using readline -
 	Execute commands using absolute paths X
-	Execute commands using relative paths -
-	Execute commands using PATH -
+	Execute commands using relative paths X
+	Execute commands using PATH X
 	Global variable for signals only -
 	ctrl-C: New prompt on new line -
 	ctrl-D: Exit shell -

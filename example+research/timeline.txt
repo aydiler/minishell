@@ -33,8 +33,8 @@ Display prompt for commands X
 
 Check:
 Execute commands using absolute paths X
-Execute commands using relative paths
-Execute commands using PATH
+Execute commands using relative paths X
+Execute commands using PATH X
 
 **14. Implement Command History Using `readline`**
 
