@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/24 21:42:17 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 17:34:30 by maahoff          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -31,6 +19,8 @@ typedef struct s_cmd
 // Parser funktions:
 void	parser(char *line, t_cmd *cmd);
 char	**tokenizer(char *line);
+int		execute_command(char **args, char **envp);
+int		print_envp(char **envp);
 char	*quote_2_token(char *line, int *l, char c);
 int		count_tokens(char *line);
 

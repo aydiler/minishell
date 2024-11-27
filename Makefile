@@ -1,5 +1,5 @@
 NAME = minishell
-SRCS = $(wildcard source/*.c)
+SRCS = $(shell find source -type f -name "*.c")
 OBJS = $(SRCS:.c=.o)
 LIBFT = includes/libft/libft.a
 INLCLUDES = includes

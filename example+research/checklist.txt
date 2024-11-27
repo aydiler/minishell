@@ -1,22 +1,10 @@
-Allowed funcs:
-readline, rl_clear_history, rl_on_new_line,
-rl_replace_line, rl_redisplay, add_history,
-printf, malloc, free, write, access, open, read,
-close, fork, wait, waitpid, wait3, wait4, signal,
-sigaction, sigemptyset, sigaddset, kill, exit,
-getcwd, chdir, stat, lstat, fstat, unlink, execve,
-dup, dup2, pipe, opendir, readdir, closedir,
-strerror, perror, isatty, ttyname, ttyslot, ioctl,
-getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
-tgetnum, tgetstr, tgoto, tputs
-
 Core Shell Features
 
-	Display prompt for commands -
+	Display prompt for commands X
 	Working command history using readline -
-	Execute commands using PATH/relative/absolute paths --
-	Signal handling (ctrl-C, ctrl-D, ctrl-) -
-
+	Execute commands using absolute paths X
+	Execute commands using relative paths X
+	Execute commands using PATH X
 	Global variable for signals only -
 	ctrl-C: New prompt on new line -
 	ctrl-D: Exit shell -
@@ -25,36 +13,36 @@ Core Shell Features
 
 Command Parsing
 
-	Handle single quotes (') -
-	Handle double quotes (") -
-	Handle environment variables ($VAR) -
-	Handle exit status ($?) -
-	Skip interpretation of unclosed quotes -
-	Skip interpretation of \ and ; -
+	Handle single quotes (')
+	Handle double quotes (")
+	Handle environment variables ($VAR)
+	Handle exit status ($?)
+	Skip interpretation of unclosed quotes
+	Skip interpretation of \ and ;
 
 
 Redirections
 
-	Input redirection (<) -
-	Output redirection (>) -
-	Here document (<<) -
-	Append output (>>) -
-	Pipes (|) -
+	Input redirection (<)
+	Output redirection (>)
+	Here document (<<)
+	Append output (>>)
+	Pipes (|)
 
 
 Built-in Commands
 
-	echo (with -n option) -
-	cd (relative/absolute paths) -
-	pwd (no options) -
-	export (no options) -
-	unset (no options) -
-	env (no options/arguments) -
-	exit (no options) -
+	echo (with -n option)
+	cd (relative/absolute paths)
+	pwd (no options)
+	export (no options)
+	unset (no options)
+	env (no options/arguments)
+	exit (no options)
 
 
 Technical Requirements
 
 	Memory management (no leaks except readline)
 	Error handling
-	Makefile (all, clean, fclean, re) -
+	Makefile (all, clean, fclean, re)
