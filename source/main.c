@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 20:48:53 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/27 21:38:12 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	main(int argc, char **argv, char **envp)
 	cmd = NULL;
 	(void)argc;
 	(void)argv;
+	load_history();
 	while (1)
 	{
 		input = readline("minishell$ ");
@@ -29,6 +30,11 @@ int	main(int argc, char **argv, char **envp)
 		{
 			free(input);
 			break ;
+		}
+		if(*input)
+		{
+			add_history(input);
+			save_history(input);
 		}
 		parser(input, &cmd);
 		if (cmd)
