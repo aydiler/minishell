@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:27:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 20:14:44 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/26 23:26:34 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	quote_handling(char *line, int *i, int *in_token, char c)
 			(*i)++;
 	}
 	(*i)++;
-	if (*in_token == 2)
-		(*i) = (*i) - 1;
+	if (*in_token != 0 && *in_token != 1)
+		(*in_token) = 0;
 	if (line[*i] && line[(*i) + 1] && line[(*i) + 1] != '|' && (line[(*i) + 1] 
 			== ' ' || (line[(*i) + 1] >= 9 && line[(*i) + 1] <= 13)))
 		*in_token = 1;
@@ -74,18 +74,15 @@ char	*fill_token(char *line, int *i, int l)
 	int		j;
 
 	j = 2;
-	if (line[*i] == '\"' || line[*i] == '\'')
+	while (line[*i] && line[*i] != '|' && (line[*i] != ' ' || (line[*i] >= 9
+				&& line[*i] <= 13)))
 	{
-		quote_handling(line, i, &j, line[*i]);
-		l++;
-	}
-	else
-	{
-		while (line[*i] && line[*i] != '|' && (line[*i] != ' ' || (line[*i] >= 9
-					&& line[*i] <= 13)))
+		if (line[*i] == '\"' || line[*i] == '\'')
+			quote_handling(line, i, &j, line[*i]);
+		else
 			(*i)++;
 	}
-	token = malloc(sizeof(char) * (*i - l + 1));
+	token = malloc(sizeof(char) * (*i - l + 1 - j));
 	if (!token)
 		return (0);
 	j = 0;
