@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 21:32:45 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/27 21:38:12 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	main(int argc, char **argv, char **envp)
 			add_history(input);
 			save_history(input);
 		}
-		parser(input, cmd);
+		parser(input, &cmd);
 		if (cmd)
 			execute_command(cmd->args, envp);
 		free(input);
