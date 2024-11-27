@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 20:49:08 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/27 21:32:45 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*input;
 	t_cmd	*cmd;
 
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return (1);
+	cmd = NULL;
 	(void)argc;
 	(void)argv;
 	load_history();
@@ -39,8 +37,10 @@ int	main(int argc, char **argv, char **envp)
 			save_history(input);
 		}
 		parser(input, cmd);
-		execute_command(cmd->args, envp);
+		if (cmd)
+			execute_command(cmd->args, envp);
 		free(input);
+		free_all(&cmd);
 	}
 	exit(EXIT_SUCCESS);
 }
