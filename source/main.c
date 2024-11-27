@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 22:16:52 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/27 16:17:00 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	(void)argc;
 	(void)argv;
-	(void)envp;
 	while (1)
 	{
 		input = readline("minishell$ ");
@@ -34,7 +33,8 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		parser(input, cmd);
-		execute_command(cmd->args);
+		print_envp(envp);
+		execute_command(cmd->args, envp);
 		free(input);
 	}
 	exit(EXIT_SUCCESS);
