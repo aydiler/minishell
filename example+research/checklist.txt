@@ -1,7 +1,7 @@
 Core Shell Features
 
 	Display prompt for commands X
-	Working command history using readline -
+	Working command history using readline X
 	Execute commands using absolute paths X
 	Execute commands using relative paths X
 	Execute commands using PATH X

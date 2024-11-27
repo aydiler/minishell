@@ -45,7 +45,7 @@ Execute commands using PATH X
     - Use of `readline` for input.
 
 CHECK
-Working command history using readline
+Working command history using readline X
 
 
 **3. Implement Basic Signal Handling (Ctrl-C, Ctrl-D, Ctrl-\)**
