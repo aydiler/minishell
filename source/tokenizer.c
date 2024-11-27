@@ -6,26 +6,20 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:27:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 23:26:34 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/27 17:44:55 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	quote_handling(char *line, int *i, int *in_token, char c)
+void	quote_handling(char *line, int *i, int *j, char c)
 {
-	if (line[*i] == '\"')
-	{
-		(*i)++;
-		while (line[*i] && line[*i] != '|' && line[*i] != c)
-			(*i)++;
-	}
 	(*i)++;
-	if (*in_token != 0 && *in_token != 1)
-		(*in_token) = 0;
-	if (line[*i] && line[(*i) + 1] && line[(*i) + 1] != '|' && (line[(*i) + 1] 
-			== ' ' || (line[(*i) + 1] >= 9 && line[(*i) + 1] <= 13)))
-		*in_token = 1;
+	while (line[*i] && line[*i] != '|' && line[*i] != c)
+		(*i)++;
+	(*i)++;
+	if (*j != -1)
+		(*j) += 2;
 }
 
 int	count_tokens(char *line)
@@ -33,14 +27,16 @@ int	count_tokens(char *line)
 	int	cnt;
 	int	i;
 	int	in_token;
+	int	id;
 
 	cnt = 0;
+	id = -1;
 	i = -1;
 	in_token = 0;
 	while (line[++i] && line[i] != '|')
 	{
 		if (line[i] == '\"' || line[i] == '\'')
-			quote_handling(line, &i, &in_token, line[i]);
+			quote_handling(line, &i, &id, line[i]);
 		if (line[i] == ' ' || (line[i] >= 9 && line[i] <= 13))
 		{
 			if (in_token == 1)
@@ -73,7 +69,7 @@ char	*fill_token(char *line, int *i, int l)
 	char	*token;
 	int		j;
 
-	j = 2;
+	j = 0;
 	while (line[*i] && line[*i] != '|' && (line[*i] != ' ' || (line[*i] >= 9
 				&& line[*i] <= 13)))
 	{
@@ -87,7 +83,12 @@ char	*fill_token(char *line, int *i, int l)
 		return (0);
 	j = 0;
 	while (l < *i)
-		token[j++] = line[l++];
+	{
+		if (line[l] == '\"' || line[l] == '\'')
+			token = token_cat(token, &j, quote_2_token(line, &l, line[l]));
+		else
+			token[j++] = line[l++];
+	}
 	token[j] = '\0';
 	return (token);
 }

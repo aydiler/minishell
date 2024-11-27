@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+         #
+#    By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/14 12:44:41 by adiler            #+#    #+#              #
-#    Updated: 2024/08/19 19:06:14 by ubuntu           ###   ########.fr        #
+#    Updated: 2024/11/27 17:01:16 by maahoff          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,8 @@ SRCS = ft_isalpha.c \
        ft_lstdelone.c \
        ft_lstclear.c \
        ft_lstiter.c \
-       ft_lstmap.c
+       ft_lstmap.c \
+       token_cat.c
 
 OBJS = $(SRCS:.c=.o)
 

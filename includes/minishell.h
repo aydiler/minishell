@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:42:17 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/26 22:37:04 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/27 17:34:30 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ typedef struct s_cmd
 	char			**args;
 	struct s_cmd	*next;
 }	t_cmd;
-
-int		count_tokens(char *line);
+// Parser funktions:
 void	parser(char *line, t_cmd *cmd);
 char	**tokenizer(char *line);
+char	*quote_2_token(char *line, int *l, char c);
+int		count_tokens(char *line);
 
 #endif
