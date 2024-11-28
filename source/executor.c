@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/11/27 17:25:34 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/28 21:04:04 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,11 @@ static int handle_child_process(char **args, char **env)
 {
     char *cmd_path;
     
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
     cmd_path = find_command_in_path(args[0]);
     if (!cmd_path)
-        exit(127);  // Command not found
+        exit(127);
         
     if (execve(cmd_path, args, env) == -1)
     {
@@ -74,11 +76,13 @@ static int handle_child_process(char **args, char **env)
     return (0);
 }
 
-static int handle_parent_process(pid_t pid)
+static int handle_parent_process(pid_t pid, void (*signal_handler)(int))
 {
     int status;
 
+	signal(SIGINT, SIG_IGN);
     waitpid(pid, &status, 0);
+	signal(SIGINT, signal_handler);
     if (WIFEXITED(status))
     {
         status = WEXITSTATUS(status);
@@ -91,7 +95,7 @@ static int handle_parent_process(pid_t pid)
     return (0);
 }
 
-int execute_command(char **args, char **envp)
+int execute_command(char **args, char **envp, void (*signal_handler)(int))
 {
     pid_t pid;
 
@@ -103,5 +107,5 @@ int execute_command(char **args, char **envp)
     if (pid == 0)
         return (handle_child_process(args, envp));
     else
-        return (handle_parent_process(pid));
+        return (handle_parent_process(pid, signal_handler));
 }

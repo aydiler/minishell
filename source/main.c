@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 21:38:12 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/28 21:00:41 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,16 @@ int	main(int argc, char **argv, char **envp)
 	cmd = NULL;
 	(void)argc;
 	(void)argv;
+	setup_signals();
 	load_history();
 	while (1)
 	{
 		input = readline("minishell$ ");
 		if (!input)
+		{
+			ft_putstr_fd("exit\n", 1);
 			break ;
+		}
 		if (strcmp(input, "exit") == 0)
 		{
 			free(input);
@@ -38,7 +42,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		parser(input, &cmd);
 		if (cmd)
-			execute_command(cmd->args, envp);
+			execute_command(cmd->args, envp, signal_handler);
 		free(input);
 		free_all(&cmd);
 	}
