@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/28 21:00:41 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/29 18:49:52 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 			break ;
 		}
-		if(*input)
+		if (*input)
 		{
 			add_history(input);
 			save_history(input);
