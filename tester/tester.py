@@ -200,13 +200,37 @@ def main():
     global PASS, FAIL
 
     # Basic command tests
-    run_test("Echo", "echo hello world")
+    run_test("Simple Echo", "echo hello world")
+    run_test("Echo multiple words", "echo first second third fourth")
+    run_test("Echo with numbers", "echo 123 456 789")
+    # run_test("Echo special characters", "echo hello! @#$%^&*()")
+    run_test("Echo with unicode", "echo ñ å ç ë î ø")
     run_test("PWD", "pwd")
-    run_test("Exit status", "ls nonexistentfile; echo $?")
+    run_test("PWD with arguments", "pwd -L")
+    run_test("PWD with invalid flag", "pwd --invalid")
+    run_test("CD basic", "cd .. && pwd")
+    run_test("CD to home", "cd ~ && pwd")
+    run_test("CD with no args", "cd && pwd")
+    run_test("Exit basic", "exit")
+    run_test("Exit with status", "exit 42")
+    run_test("Exit with invalid status", "exit abc")
+    run_test("Exit status checking", "ls nonexistentfile; echo $?")
+    run_test("Exit status success", "ls /; echo $?")
+    run_test("Multiple commands status", "true; echo $? && false; echo $?")
 
     # Path execution tests
-    run_test("Absolute path", "/bin/ls /")
-    run_test("PATH execution", "ls")
+    run_test("Absolute path basic", "/bin/ls /")
+    run_test("Absolute path home", "/bin/ls $HOME")
+    run_test("Absolute path with args", "/usr/bin/wc -l /etc/passwd")
+    run_test("Absolute path nonexistent", "/nonexistent/program")
+    run_test("PATH basic execution", "ls")
+    run_test("PATH with arguments", "ls -la")
+    run_test("PATH multiple commands", "ls && pwd && whoami")
+    run_test("PATH command not found", "nonexistentcommand")
+    run_test("Relative path basic", "./test_script.sh")
+    run_test("Relative path with dots", "../test_dir/../test_script.sh")
+    run_test("Relative path nonexistent", "./nonexistent.sh")
+    run_test("Current directory command", "test_script.sh")
 
     # Create and test relative path
     with open(TEST_SCRIPT, 'w') as f:
@@ -215,21 +239,47 @@ def main():
     os.chmod(TEST_SCRIPT, 0o755)
     run_test("Relative path", "./test_script.sh")
 
-    # Quote tests
-    run_test("Single quotes", "echo 'Hello    World'")
-    run_test("Single quotes with special chars", "echo '$USER $HOME'")
+    # Quote handling tests
+    run_test("Single quotes basic", "echo 'Hello    World'")
+    run_test("Single quotes empty", "echo ''")
+    run_test("Single quotes special chars", "echo '$USER $HOME'")
     run_test("Single quotes with path", "echo '/bin/ls'")
-    run_test("Nested single quotes in double quotes", 'echo "text \'nested\' text"')
-
-    run_test("Double quotes", 'echo "Hello    World"')
+    run_test("Single quotes preserving spaces", "echo '    lots   of   spaces    '")
+    run_test("Single quotes with numbers", "echo '12 34  56'")
+    run_test("Single quotes with symbols", "echo '!@#$%^&*()'")
+    run_test("Double quotes basic", 'echo "Hello    World"')
+    run_test("Double quotes empty", 'echo ""')
     run_test("Double quotes with expansion", 'echo "Current user: $USER"')
+    run_test("Double quotes multiple vars", 'echo "User: $USER Home: $HOME Shell: $SHELL"')
     run_test("Double quotes with path", 'echo "/bin/ls"')
+    run_test("Double quotes preserving spaces", 'echo "    lots   of   spaces    "')
+    run_test("Mixed quotes", "echo '\"nested quotes\"'")
+    run_test("Mixed quotes complex", "echo \"'single'\" '\"double\"'")
+    run_test("Alternate quotes", "echo 'this' \"that\" 'other' \"another\"")
+    run_test("Empty quotes", "echo '' \"\"")
+    run_test("Quotes with spaces", "echo '   '  \"   \"")
+    run_test("Quotes with tabs", "echo '\t\t'  \"\t\t\"")
+    run_test("Quotes with newlines", "echo '\n\n'  \"\n\n\"")
 
     # Empty and special cases
     run_test("Empty command", "")
-    run_test("Multiple spaces", "echo    hello     world")
-    command = 'echo\thello\tworld'
-    run_test("Tab characters", command)
+    run_test("Single space", " ")
+    run_test("Multiple spaces", "     ")
+    run_test("Multiple tabs", "\t\t\t")
+    run_test("Mixed whitespace", " \t \t \t ")
+    run_test("Semicolon only", ";")
+    run_test("Multiple semicolons", ";;;")
+    run_test("Spaces between semicolons", "; ; ;")
+    run_test("Command with multiple spaces", "echo    hello     world")
+    run_test("Command with multiple tabs", "echo\thello\tworld")
+    run_test("Command with mixed whitespace", "echo \t hello \t world")
+    run_test("Only redirections", "> out")
+    run_test("Only pipe", "|")
+    run_test("Multiple pipes", "|||")
+    run_test("Backslash at end", "echo hello\\")
+    run_test("Backslash with space", "echo hello\\ world")
+    run_test("Multiple backslashes", "echo hello\\\\world")
+    run_test("Special chars sequence", "echo !@#$%^&*()_+-=[]{}\\|;:'\",.<>/?`~")
 
     # History and signal tests - now using imported functions
     PASS, FAIL = test_history(MINISHELL_DIR, PASS, FAIL)
