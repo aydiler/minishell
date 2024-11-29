@@ -44,7 +44,18 @@ signal.signal(signal.SIGTERM, signal_handler)
 
 import pexpect
 
-def clean_minishell_output(command, output):
+def clean_shell_output(command, output, shell_type='bash'):
+    """
+    Clean shell output by removing prompts, color codes, and command echoes.
+    
+    Args:
+        command (str): The original command that was executed
+        output (str): The raw output from the shell
+        shell_type (str): Either 'bash' or 'minishell' to determine prompt pattern
+    
+    Returns:
+        str: Cleaned output with unnecessary lines removed
+    """
     # Remove color codes
     output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
     lines = output.splitlines()
@@ -52,50 +63,38 @@ def clean_minishell_output(command, output):
     # Get both original command and processed version (tabs replaced with spaces)
     processed_command = command.replace('\t', ' ')
     
-    # Remove minishell prompt, exit command, and the input command (both original and processed)
-    prompt_pattern = r'^minishell\$\s*'  # Made \s* to catch any trailing space
+    # Define prompt patterns based on shell type
+    if shell_type == 'bash':
+        prompt_pattern = r'^.*@.*:\s*.*\$\s*'  # Matches bash-style prompts
+        version_pattern = r'^bash-\d+\.\d+'
+        patterns_to_remove = [
+            prompt_pattern,
+            version_pattern,
+            f'^{re.escape(command)}$',
+            f'^{re.escape(processed_command)}$',
+            f'^{prompt_pattern}{re.escape(command)}$',
+            f'^{prompt_pattern}{re.escape(processed_command)}$'
+        ]
+    else:  # minishell
+        prompt_pattern = r'^minishell\$\s*'
+        patterns_to_remove = [
+            prompt_pattern,
+            f'^{re.escape(command)}$',
+            f'^{re.escape(processed_command)}$',
+            f'^{prompt_pattern}{re.escape(command)}$',
+            f'^{prompt_pattern}{re.escape(processed_command)}$'
+        ]
     
-    lines = [line for line in lines if not (
-        re.match(prompt_pattern, line) or
-        line == 'exit' or
-        line == command or
-        line == processed_command or  # Also filter processed command
-        re.match(f'^{re.escape(command)}$', line) or
-        re.match(f'^{re.escape(processed_command)}$', line) or  # Match processed command
-        re.match(f'^{prompt_pattern}{re.escape(command)}$', line) or
-        re.match(f'^{prompt_pattern}{re.escape(processed_command)}$', line)  # Match prompt+processed command
-    )]
-    
-    # Remove empty lines from start and end while preserving middle ones
-    while lines and not lines[0]:
-        lines.pop(0)
-    while lines and not lines[-1]:
-        lines.pop()
-    
-    return '\n'.join(lines)
-
-def clean_bash_output(command, output):
-    # Remove color codes
-    output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
-    lines = output.splitlines()
-    
-    # Get both original command and processed version (tabs replaced with spaces)
-    processed_command = command.replace('\t', ' ')
-    
-    # Remove bash prompt, version, and the input command (both original and processed)
-    prompt_pattern = r'^.*@.*:\s*.*\$\s*'  # Made \s* to catch any trailing space
-    bash_version_pattern = r'^bash-\d+\.\d+'
-    
-    lines = [line for line in lines if not (
-        re.match(prompt_pattern, line) or
-        re.match(bash_version_pattern, line) or
-        line == command or
-        line == processed_command or  # Also filter processed command
-        re.match(f'^{re.escape(command)}$', line) or
-        re.match(f'^{re.escape(processed_command)}$', line) or  # Match processed command
-        any(re.match(f'^{p}{re.escape(command)}$', line) for p in [prompt_pattern]) or
-        any(re.match(f'^{p}{re.escape(processed_command)}$', line) for p in [prompt_pattern])  # Match prompt+processed command
-    )]
+    # Filter out unwanted lines
+    lines = [
+        line for line in lines 
+        if not (
+            line == command or
+            line == processed_command or
+            line == 'exit' or
+            any(re.match(pattern, line) for pattern in patterns_to_remove)
+        )
+    ]
     
     # Remove empty lines from start and end while preserving middle ones
     while lines and not lines[0]:
@@ -180,9 +179,9 @@ def run_test(test_name, command):
 	# Run bash
 	bash_output, bash_exit = run_bash_command(command)
 
-	# Clean both outputs
-	minishell_output_clean = clean_minishell_output(command, minishell_output)
-	bash_output_clean = clean_bash_output(command, bash_output)
+	# In run_test function:
+	minishell_output_clean = clean_shell_output(command, minishell_output, shell_type='minishell')
+	bash_output_clean = clean_shell_output(command, bash_output, shell_type='bash')
 
 	print(f"Command: {command}")
 	print(f"Expected (bash):\n{bash_output_clean}")
@@ -196,41 +195,6 @@ def run_test(test_name, command):
 	else:
 		print(f"{RED}FAIL{NC}")
 		FAIL += 1
-
-def run_minishell_commands(commands):
-	"""Runs multiple commands in minishell and returns the output and exit code."""
-	minishell_path = os.path.join(MINISHELL_DIR, 'minishell')
-	master, slave = pty.openpty()
-	try:
-		proc = subprocess.Popen(
-			minishell_path,
-			stdin=slave,
-			stdout=slave,
-			stderr=slave,
-			preexec_fn=os.setsid,
-			cwd=MINISHELL_DIR
-		)
-		
-		# Read initial prompt
-		os.read(master, 1024)
-		
-		combined_output = ""
-		for cmd in commands:
-			# Send each command
-			processed_command = cmd.replace('\t', ' ')
-			os.write(master, f"{processed_command}\n".encode())
-			time.sleep(0.1)
-			output = os.read(master, 1024).decode('utf-8')
-			combined_output += output
-			
-		# Send exit command
-		os.write(master, b"exit\n")
-		proc.wait()
-		
-		return combined_output.strip(), proc.returncode
-	finally:
-		os.close(master)
-		os.close(slave)
 
 def main():
     global PASS, FAIL
