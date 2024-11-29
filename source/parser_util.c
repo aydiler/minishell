@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 17:44:07 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/29 21:57:22 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,54 @@ char	*quote_2_token(char *line, int *l, char c)
 		str[i++] = line[k++];
 	str[i] = '\0';
 	return (str);
+}
+
+int	check_non_args(char *token)
+{
+	if (!ft_strncmp(">", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp("<", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp(">>", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp(";", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp("\\", token, ft_strlen(token)))
+		return (1);
+	return (0);
+}
+
+char	**remove_token(char **args, int i)
+{
+	if (!args || !args[i])
+		return (args);
+	free(args[i]);
+	while (args[i])
+	{
+		args[i] = args[i + 1];
+		i++;
+	}
+	args[i] = NULL;
+	return (args);
+}
+
+char	**remove_n_token(char **args, int i, int n)
+{
+	int	j;
+
+	if (!args || !args[i] || n <= 0 || !args[i + n - 1])
+		return (args);
+	while (args[i] && n > 0)
+	{
+		free(args[i]);
+		j = i;
+		while (args[j])
+		{
+			args[j] = args[j + 1];
+			j++;
+		}
+		args[j] = NULL;
+		n--;
+	}
+	return (args);
 }
