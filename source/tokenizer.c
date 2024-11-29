@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:27:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/27 21:14:22 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/29 18:06:40 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*fill_token(char *line, int *i, int l)
 	int		j;
 
 	j = 0;
-	while (line[*i] && line[*i] != '|' && (line[*i] != ' ' || (line[*i] >= 9
+	while (line[*i] && line[*i] != '|' && (line[*i] != ' ' && !(line[*i] >= 9
 				&& line[*i] <= 13)))
 	{
 		if (line[*i] == '\"' || line[*i] == '\'')

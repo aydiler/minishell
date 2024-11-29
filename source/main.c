@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/28 21:00:41 by adiler           ###   ########.fr       */
+/*   Updated: 2024/11/29 18:04:48 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	main(int argc, char **argv, char **envp)
 			ft_putstr_fd("exit\n", 1);
 			break ;
 		}
-		if (strcmp(input, "exit") == 0)
+		if (ft_strncmp(input, "exit", ft_strlen("exit")) == 0)
 		{
 			free(input);
 			break ;
