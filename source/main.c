@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/29 18:49:52 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/11/30 18:21:07 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ int	main(int argc, char **argv, char **envp)
 			save_history(input);
 		}
 		parser(input, &cmd);
-		if (cmd)
+		print_struct(cmd);
+		if (0)
 			execute_command(cmd->args, envp, signal_handler);
 		free(input);
-		free_all(&cmd);
+		free_all(cmd);
 	}
 	exit(EXIT_SUCCESS);
 }

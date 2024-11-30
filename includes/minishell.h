@@ -40,9 +40,12 @@ char	**ft_realloc(char **arr, size_t new_size);
 int		execute_command(char **args, char **envp, void (*signal_handler)(int));
 int		print_envp(char **envp);
 // utils
-void	free_all(t_cmd **cmd);
+void	ft_error(t_cmd *cmd, char *error_message);
+void	free_all(t_cmd *cmd);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);
+// tester
+void	print_struct(t_cmd *cmd);
 
 #endif
