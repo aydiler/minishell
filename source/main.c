@@ -31,7 +31,7 @@ int main(int argc, char **argv, char **envp)
             save_history(input);
         }
         parser(input, &cmd);
-        print_struct(cmd);
+        // print_struct(cmd);
         if (cmd)
             exit_status = execute_command(cmd->args, envp, signal_handler);
         free(input);

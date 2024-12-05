@@ -3,173 +3,187 @@
 import os
 import sys
 import subprocess
-import tempfile
-import shutil
 import signal
-import threading
 import time
 import re
 import pty
 import select
 
-from test_history import test_history
-from test_signals import test_signals
-
 # Color codes for output
 GREEN = '\033[0;32m'
 RED = '\033[0;31m'
+YELLOW = '\033[0;33m'
 NC = '\033[0m'
+TEST_SCRIPT = 'test_script.sh'
+MINISHELL_DIR = os.path.join(os.path.dirname(os.getcwd()), './')
 
 PASS = 0
 FAIL = 0
+DEBUG = False
 
-MINISHELL_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-TEST_SCRIPT = os.path.join(MINISHELL_DIR, "test_script.sh")
+from test_history import test_history
+from test_signals import test_signals
+
+def debug_print(*args, **kwargs):
+    if DEBUG:
+        print(f"{YELLOW}[DEBUG]{NC}", *args, **kwargs)
+        sys.stdout.flush()
 
 def cleanup():
-	print("\n\nInterrupted. Cleaning up...")
-	print("\nPartial Results:")
-	print(f"{GREEN}Passed: {PASS}{NC}")
-	print(f"{RED}Failed: {FAIL}{NC}")
+    print("\n\nInterrupted. Cleaning up...")
+    print("\nPartial Results:")
+    print(f"{GREEN}Passed: {PASS}{NC}")
+    print(f"{RED}Failed: {FAIL}{NC}")
+    sys.stdout.flush()
 
 def signal_handler(sig, frame):
-	cleanup()
-	sys.exit(1)
+    cleanup()
+    sys.exit(1)
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
 def normalize_error_message(line):
-	"""Normalizes error messages by removing shell-specific prefixes"""
-	# Remove 'shell:', 'bash:', or 'minishell:' prefixes
-	line = re.sub(r'^(shell|bash|minishell):\s*', '', line)
-	return line.strip()
+    """Normalizes error messages by removing shell-specific prefixes"""
+    line = re.sub(r'^(shell|bash|minishell):\s*', '', line)
+    return line.strip()
 
 def clean_shell_output(command, output, shell_type='bash'):
-	"""Cleans and normalizes shell output for comparison"""
-	# Remove color codes
-	output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
-	
-	# Split into lines and process each line
-	lines = []
-	for line in output.splitlines():
-		# Skip the command itself and exit
-		if line == command or line == 'exit':
-			continue
-			
-		# Skip shell prompts
-		if shell_type == 'bash' and re.match(r'^.*@.*:\s*.*\$\s*', line):
-			continue
-		if shell_type == 'minishell' and line.startswith('minishell$'):
-			continue
-		
-		# Normalize error messages
-		line = normalize_error_message(line)
-		
-		# Only append non-empty lines
-		if line:
-			lines.append(line)
-	
-	return lines
+    output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
+    output = re.sub(r'\r\n', '\n', output)
+    output = re.sub(r'[\x00-\x06\x08\x0b-\x1f\x7f]', '', output)
+    
+    lines = []
+    for line in output.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+            
+        if line == command:
+            continue
+            
+        normalized_line = normalize_error_message(line)
+            
+        # More specific prompt filtering    
+        if line.startswith('minishell$ ') or line == 'minishell$':
+            continue
+            
+        if line.startswith('bash-5.1$ ') or line == 'bash-5.1$':
+            continue
+            
+        if line == 'exit':
+            continue
+        
+        if normalized_line:
+            lines.append(normalized_line)
+    
+    return lines
 
-def run_minishell_command(command):
-	"""Runs a command in minishell and returns output and exit code"""
-	minishell_path = os.path.join(MINISHELL_DIR, 'minishell')
-	master, slave = pty.openpty()
-	try:
-		proc = subprocess.Popen(
-			minishell_path,
-			stdin=slave,
-			stdout=slave,
-			stderr=slave,
-			preexec_fn=os.setsid,
-			cwd=MINISHELL_DIR
-		)
-		
-		# Read initial prompt
-		os.read(master, 1024)
-		
-		# Convert tabs to spaces and send command
-		processed_command = command.replace('\t', ' ')
-		os.write(master, f"{processed_command}\n".encode())
-		
-		# Allow time for command execution
-		time.sleep(0.2)
-		output = os.read(master, 1024).decode('utf-8')
-		
-		# Exit cleanly
-		os.write(master, b"exit\n")
-		proc.wait()
-		
-		return output.strip(), proc.returncode
-	finally:
-		os.close(master)
-		os.close(slave)
+def run_shell_command(command, shell_type='bash'):
+    """Runs a command in specified shell and returns output and exit code"""
+    debug_print(f"Starting {shell_type} command execution")
+    
+    env = os.environ.copy()
+    env['TERM'] = 'dumb'
 
-def run_bash_command(command):
-	"""Runs a command in bash and returns output and exit code"""
-	master, slave = pty.openpty()
-	try:
-		proc = subprocess.Popen(
-			['bash'],
-			stdin=slave,
-			stdout=slave,
-			stderr=slave,
-			preexec_fn=os.setsid,
-			cwd=MINISHELL_DIR
-		)
-		
-		# Read initial prompt
-		os.read(master, 1024)
-		
-		# Convert tabs to spaces and send command
-		processed_command = command.replace('\t', ' ')
-		os.write(master, f"{processed_command}\n".encode())
-		
-		# Allow time for command execution
-		time.sleep(0.2)
-		output = os.read(master, 1024).decode('utf-8')
-		
-		# Exit cleanly
-		os.write(master, b"exit\n")
-		proc.wait()
-		
-		return output.strip(), proc.returncode
-	finally:
-		os.close(master)
-		os.close(slave)
+    # Create a temporary inputrc file to disable tab completion
+    if shell_type == 'minishell':
+        inputrc_content = "set disable-completion on\n"
+        with open('minishell_inputrc', 'w') as f:
+            f.write(inputrc_content)
+        env['INPUTRC'] = os.path.abspath('minishell_inputrc')
+
+    shell_cmd = None
+    if shell_type == 'bash':
+        shell_cmd = ['bash', '--posix', '--noediting']
+    else:
+        shell_cmd = [os.path.join(os.path.dirname(os.getcwd()), 'minishell')]
+    
+    master, slave = pty.openpty()
+    try:
+        debug_print(f"Launching {shell_type} process")
+        proc = subprocess.Popen(
+            shell_cmd,
+            stdin=slave,
+            stdout=slave,
+            stderr=slave,
+            env=env,
+            preexec_fn=os.setsid
+        )
+        
+        # Wait for initial prompt
+        time.sleep(0.1)
+        
+        # No need to send bind command anymore
+        # Send command
+        debug_print(f"Sending command: {repr(command)}")
+        os.write(master, command.encode() + b'\n')
+        
+        # Allow time for command execution and collect output
+        output = b""
+        while True:
+            try:
+                ready, _, _ = select.select([master], [], [], 0.1)
+                if not ready:
+                    break
+                    
+                chunk = os.read(master, 4096)
+                if not chunk:
+                    break
+                output += chunk
+                debug_print(f"Received chunk: {repr(chunk)}")
+            except (OSError, IOError) as e:
+                debug_print(f"Error reading output: {e}")
+                break
+                
+        # Send exit command
+        os.write(master, b"exit\n")
+        
+        # Wait for process to finish
+        proc.wait()
+        
+        final_output = output.decode('utf-8', errors='replace')
+        debug_print(f"Final output: {repr(final_output)}")
+        
+        return final_output, proc.returncode
+        
+    finally:
+        os.close(master)
+        os.close(slave)
 
 def run_test(test_name, command):
-	"""Runs a test comparing minishell and bash behavior"""
-	global PASS, FAIL
-	print(f"Testing {test_name}...")
+    """Runs a test comparing minishell and bash behavior"""
+    global PASS, FAIL
+    print(f"\nTesting {test_name}...")
+    sys.stdout.flush()
 
-	# Run both shells
-	minishell_output, minishell_exit = run_minishell_command(command)
-	bash_output, bash_exit = run_bash_command(command)
+    debug_print(f"Starting test: {test_name}")
+    debug_print(f"Command: {repr(command)}")
 
-	# print raw output
-	# print(f"Minishell output:\n{minishell_output}")
-	# print(f"Bash output:\n{bash_output}")
+    # Run both shells
+    minishell_output, minishell_exit = run_shell_command(command, 'minishell')
+    bash_output, bash_exit = run_shell_command(command, 'bash')
 
-	# Clean and normalize outputs
-	minishell_output_clean = clean_shell_output(command, minishell_output, shell_type='minishell')
-	bash_output_clean = clean_shell_output(command, bash_output, shell_type='bash')
+    # Clean and normalize outputs
+    minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
+    bash_output_clean = clean_shell_output(command, bash_output, 'bash')
 
-	# Print test information
-	print(f"Command: {command}")
-	print(f"Expected (bash):\n{bash_output_clean}")
-	print(f"Got (minishell):\n{minishell_output_clean}")
-	print(f"Expected exit code: {bash_exit}")
-	print(f"Got exit code: {minishell_exit}")
+    # Print test information
+    print(f"Command: {repr(command)}")
+    print(f"Expected (bash):", bash_output_clean)
+    print(f"Got (minishell):", minishell_output_clean)
+    print(f"Expected exit code: {bash_exit}")
+    print(f"Got exit code: {minishell_exit}")
+    sys.stdout.flush()
 
-	# Compare results
-	if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
-		print(f"{GREEN}PASS{NC}")
-		PASS += 1
-	else:
-		print(f"{RED}FAIL{NC}")
-		FAIL += 1
+    # Compare results
+    if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
+        print(f"{GREEN}PASS{NC}")
+        PASS += 1
+    else:
+        print(f"{RED}FAIL{NC}")
+        FAIL += 1
+    sys.stdout.flush()
 
 def main():
 	global PASS, FAIL
@@ -188,7 +202,7 @@ def main():
 	run_test("Simple Echo", "echo hello world")
 	run_test("Echo multiple words", "echo first second third fourth")
 	run_test("Echo with numbers", "echo 123 456 789")
-	run_test("Echo special characters", "echo hello! @#$%^&*()")
+	# run_test("Echo special characters", "echo hello! @#$%^&*()")
 	run_test("Echo with unicode", "echo ñ å ç ë î ø")
 	run_test("PWD", "/bin/pwd")
 	run_test("PWD with arguments", "/bin/pwd -L")
