@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void	quote_handling(char *line, int *i, int *j, char c)
 {
