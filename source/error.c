@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/30 20:13:48 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/05 14:51:48 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	ft_error(t_cmd *cmd, char *error_message)
 		ft_putstr_fd(error_message, 2);
 	else
 		write(1, "some error apparently\n", 22);
-	exit(EXIT_FAILURE);
 }
 /*
 errors to handel:
