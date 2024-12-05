@@ -6,11 +6,11 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/30 20:09:58 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/05 17:53:29 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int	handle_re_output(t_cmd **cmd, char **args, int i)
 {

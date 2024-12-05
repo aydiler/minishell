@@ -6,11 +6,11 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/30 17:06:05 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/05 17:53:46 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void	print_struct(t_cmd *cmd)
 {
