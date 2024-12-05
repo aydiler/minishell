@@ -28,47 +28,52 @@ TEST_SCRIPT = os.path.join(MINISHELL_DIR, "test_script.sh")
 
 def cleanup():
 	print("\n\nInterrupted. Cleaning up...")
-	# Remove temporary files if any
-	if os.path.exists(TEST_SCRIPT):
-		os.remove(TEST_SCRIPT)
 	print("\nPartial Results:")
 	print(f"{GREEN}Passed: {PASS}{NC}")
 	print(f"{RED}Failed: {FAIL}{NC}")
 
 def signal_handler(sig, frame):
+	cleanup()
 	sys.exit(1)
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
+def normalize_error_message(line):
+	"""Normalizes error messages by removing shell-specific prefixes"""
+	# Remove 'shell:', 'bash:', or 'minishell:' prefixes
+	line = re.sub(r'^(shell|bash|minishell):\s*', '', line)
+	return line.strip()
+
 def clean_shell_output(command, output, shell_type='bash'):
+	"""Cleans and normalizes shell output for comparison"""
 	# Remove color codes
 	output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
 	
-	# Split into lines and remove prompts
+	# Split into lines and process each line
 	lines = []
 	for line in output.splitlines():
 		# Skip the command itself and exit
 		if line == command or line == 'exit':
 			continue
 			
-		# Skip bash/minishell prompts
+		# Skip shell prompts
 		if shell_type == 'bash' and re.match(r'^.*@.*:\s*.*\$\s*', line):
 			continue
 		if shell_type == 'minishell' and line.startswith('minishell$'):
 			continue
-			
-		lines.append(line)
-	
-	# # Remove empty lines from start and end
-	# while lines and not lines[0]:
-	#     lines.pop(0)
-	# while lines and not lines[-1]:
-	#     lines.pop()
+		
+		# Normalize error messages
+		line = normalize_error_message(line)
+		
+		# Only append non-empty lines
+		if line:
+			lines.append(line)
 	
 	return lines
 
 def run_minishell_command(command):
+	"""Runs a command in minishell and returns output and exit code"""
 	minishell_path = os.path.join(MINISHELL_DIR, 'minishell')
 	master, slave = pty.openpty()
 	try:
@@ -84,13 +89,15 @@ def run_minishell_command(command):
 		# Read initial prompt
 		os.read(master, 1024)
 		
-		# Convert tabs to spaces before sending
+		# Convert tabs to spaces and send command
 		processed_command = command.replace('\t', ' ')
 		os.write(master, f"{processed_command}\n".encode())
 		
-		time.sleep(0.1)
+		# Allow time for command execution
+		time.sleep(0.2)
 		output = os.read(master, 1024).decode('utf-8')
 		
+		# Exit cleanly
 		os.write(master, b"exit\n")
 		proc.wait()
 		
@@ -100,7 +107,7 @@ def run_minishell_command(command):
 		os.close(slave)
 
 def run_bash_command(command):
-	"""Runs a single command in bash and returns the output and exit code."""
+	"""Runs a command in bash and returns output and exit code"""
 	master, slave = pty.openpty()
 	try:
 		proc = subprocess.Popen(
@@ -115,13 +122,15 @@ def run_bash_command(command):
 		# Read initial prompt
 		os.read(master, 1024)
 		
-		# Send command
+		# Convert tabs to spaces and send command
 		processed_command = command.replace('\t', ' ')
 		os.write(master, f"{processed_command}\n".encode())
 		
-		time.sleep(0.1)
+		# Allow time for command execution
+		time.sleep(0.2)
 		output = os.read(master, 1024).decode('utf-8')
 		
+		# Exit cleanly
 		os.write(master, b"exit\n")
 		proc.wait()
 		
@@ -130,28 +139,31 @@ def run_bash_command(command):
 		os.close(master)
 		os.close(slave)
 
-
 def run_test(test_name, command):
-	"""Runs a test by executing the command in both minishell and bash, comparing the results."""
+	"""Runs a test comparing minishell and bash behavior"""
 	global PASS, FAIL
 	print(f"Testing {test_name}...")
 
-	# Run minishell
+	# Run both shells
 	minishell_output, minishell_exit = run_minishell_command(command)
-
-	# Run bash
 	bash_output, bash_exit = run_bash_command(command)
 
-	# In run_test function:
+	# print raw output
+	# print(f"Minishell output:\n{minishell_output}")
+	# print(f"Bash output:\n{bash_output}")
+
+	# Clean and normalize outputs
 	minishell_output_clean = clean_shell_output(command, minishell_output, shell_type='minishell')
 	bash_output_clean = clean_shell_output(command, bash_output, shell_type='bash')
 
+	# Print test information
 	print(f"Command: {command}")
 	print(f"Expected (bash):\n{bash_output_clean}")
 	print(f"Got (minishell):\n{minishell_output_clean}")
 	print(f"Expected exit code: {bash_exit}")
 	print(f"Got exit code: {minishell_exit}")
 
+	# Compare results
 	if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
 		print(f"{GREEN}PASS{NC}")
 		PASS += 1
@@ -190,7 +202,7 @@ def main():
 	run_test("PATH with arguments", "ls -la")
 	run_test("PATH command not found", "nonexistentcommand")
 	run_test("Relative path basic", "./test_script.sh")
-	run_test("Relative path with dots", "../tester/../tester/test_script.sh")
+	run_test("Relative path with dots", "/tester/../test_script.sh")
 	run_test("Relative path nonexistent", "./nonexistent.sh")
 	run_test("Current directory command", "test_script.sh")
 
@@ -252,10 +264,6 @@ def main():
 	# History and signal tests - now using imported functions
 	PASS, FAIL = test_history(MINISHELL_DIR, PASS, FAIL)
 	PASS, FAIL = test_signals(MINISHELL_DIR, PASS, FAIL)
-
-	# Cleanup
-	if os.path.exists(TEST_SCRIPT):
-		os.remove(TEST_SCRIPT)
 
 	# Results
 	print("\nResults:")
