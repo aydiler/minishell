@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/30 20:10:14 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/05 16:37:09 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ void	process_non_args(t_cmd **cmd, char **args, char *token, int i)
 			!ft_strncmp("\\", token, ft_strlen(token))))
 		(*cmd)->args = remove_token((*cmd)->args, i);
 	if (error_check)
-		ft_error(*cmd, NULL);
-		// error functions!!!
+		ft_error(*cmd, "invalid arguments\n");
 }
 
 void	handle_non_args(t_cmd **cmd)
@@ -43,17 +42,17 @@ void	handle_non_args(t_cmd **cmd)
 	int		i;
 
 	temp = *cmd;
-	while (temp)
+	while (*cmd && temp)
 	{
 		i = 0;
-		while (temp->args[i])
+		while (cmd && *cmd && (*cmd)->args && temp && temp->args[i])
 		{
 			if (check_non_args(temp->args[i]))
 				process_non_args(&temp, temp->args, temp->args[i], i);
 			else
 				i++;
 		}
-		if (!temp->next)
+		if (!*cmd || !temp->next)
 			break ;
 		temp = temp->next;
 	}
@@ -91,8 +90,9 @@ void	parser(char *line, t_cmd **cmd)
 	*cmd = new_pipe(tokenizer(line));
 	if (!(*cmd))
 		ft_error(*cmd, NULL);
-	temp = *cmd;
-	while (line[i])
+	if (*cmd)
+		temp = *cmd;
+	while (*cmd && line[i])
 	{
 		i = next_pipe(line, i);
 		if (!line[i])
