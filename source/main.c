@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/11/29 18:04:48 by adiler           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
 
 int main(int argc, char **argv, char **envp)
@@ -43,10 +31,11 @@ int main(int argc, char **argv, char **envp)
             save_history(input);
         }
         parser(input, &cmd);
+        print_struct(cmd);
         if (cmd)
             exit_status = execute_command(cmd->args, envp, signal_handler);
         free(input);
-        free_all(&cmd);
+        free_all(cmd);
     }
     exit(exit_status);
 }
