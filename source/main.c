@@ -1,55 +1,41 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/24 21:59:47 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 14:59:43 by maahoff          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
-	char	*input;
-	t_cmd	*cmd;
+    char    *input;
+    t_cmd   *cmd;
+    int     exit_status;
 
-	cmd = NULL;
-	(void)argc;
-	(void)argv;
-	setup_signals();
-	load_history();
-	while (1)
-	{
-		input = readline("minishell$ ");
-		if (!input)
-		{
-			ft_putstr_fd("exit\n", 1);
-			break ;
-		}
-		if (strcmp(input, "exit") == 0)
-		{
-			free(input);
-			break ;
-		}
-		if (*input)
-		{
-			add_history(input);
-			save_history(input);
-		}
-		parser(input, &cmd);
-		if (!cmd)
-		{
-			free(input);
-			continue ;
-		}
-		print_struct(cmd);
-		execute_command(cmd->args, envp, signal_handler);
-		free(input);
-		free_all(cmd);
-	}
-	exit(EXIT_SUCCESS);
+    cmd = NULL;
+    exit_status = 0;
+    (void)argc;
+    (void)argv;
+    setup_signals();
+    load_history();
+    while (1)
+    {
+        input = readline("minishell$ ");
+        if (!input)
+        {
+            ft_putstr_fd("exit\n", 1);
+            break;
+        }
+        if (ft_strncmp(input, "exit", ft_strlen("exit")) == 0)
+        {
+            free(input);
+            break;
+        }
+        if(*input)
+        {
+            add_history(input);
+            save_history(input);
+        }
+        parser(input, &cmd);
+        print_struct(cmd);
+        if (cmd)
+            exit_status = execute_command(cmd->args, envp, signal_handler);
+        free(input);
+        free_all(cmd);
+    }
+    exit(exit_status);
 }
