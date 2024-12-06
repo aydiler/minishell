@@ -6,11 +6,11 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 16:37:09 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/05 17:53:41 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void	process_non_args(t_cmd **cmd, char **args, char *token, int i)
 {
