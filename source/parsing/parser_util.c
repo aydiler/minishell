@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 17:53:36 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/06 17:33:27 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ int	check_non_args(char *token)
 		return (1);
 	else if (!ft_strncmp("\\", token, ft_strlen(token)))
 		return (1);
+	else if ('$' == token[0])
+		return (1);
 	return (0);
 }
 
@@ -85,4 +87,11 @@ char	**remove_n_token(char **args, int i, int n)
 		n--;
 	}
 	return (args);
+}
+
+int	next_pipe(char *line, int i)
+{
+	while (line[i] && line[i] != '|')
+		i++;
+	return (i);
 }

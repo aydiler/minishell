@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 19:52:37 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/06 17:32:50 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,16 @@ int	process_non_args(t_cmd **cmd, char **args, char *token, int i)
 
 	error_check = 0;
 	if (!ft_strncmp(">", token, ft_strlen(token)))
-	{
 		error_check = handle_re_output(cmd, args, i);
-	}
 	else if (!ft_strncmp("<", token, ft_strlen(token)))
-	{
 		error_check = handle_re_input(cmd, args, i);
-	}
 	else if (!ft_strncmp(">>", token, ft_strlen(token)))
-	{
 		error_check = handle_ap_output(cmd, args, i);
-	}
 	else if (!ft_strncmp(";", token, ft_strlen(token) || 
 			!ft_strncmp("\\", token, ft_strlen(token))))
 		(*cmd)->args = remove_token((*cmd)->args, i);
+	else if ('$' == token[0])
+		error_check = handle_var(cmd, i);
 	if (error_check)
 		return (error_check);
 	return (0);
@@ -62,13 +58,6 @@ int	handle_non_args(t_cmd **cmd)
 	return (err);
 }
 
-int	next_pipe(char *line, int i)
-{
-	while (line[i] && line[i] != '|')
-		i++;
-	return (i);
-}
-
 t_cmd	*new_pipe(char **args)
 {
 	t_cmd	*pipe;
@@ -85,7 +74,7 @@ t_cmd	*new_pipe(char **args)
 	return (pipe);
 }
 
-int	parser(char *line, t_cmd **cmd)
+int	fill_everything(char *line, t_cmd **cmd)
 {
 	int		i;
 	t_cmd	*temp;
@@ -110,5 +99,15 @@ int	parser(char *line, t_cmd **cmd)
 		}
 		temp = temp->next;
 	}
+	return (0);
+}
+
+int	parser(char *line, t_cmd **cmd)
+{
+	int	error_check;
+
+	error_check = fill_everything(line, cmd);
+	if (error_check || !*cmd)
+		return (error_check);
 	return (handle_non_args(cmd));
 }
