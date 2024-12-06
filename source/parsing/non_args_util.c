@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 17:53:29 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/05 19:33:06 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,16 @@ int	handle_re_output(t_cmd **cmd, char **args, int i)
 			j++;
 		(*cmd)->files_to_create = ft_realloc((*cmd)->files_to_create, (j + 2));
 		if (!(*cmd)->files_to_create)
-			ft_error(*cmd, NULL);
+			return (1);
 		(*cmd)->files_to_create[j] = ft_strdup((*cmd)->output_file);
 		if (!(*cmd)->files_to_create[j])
-			ft_error(*cmd, NULL);
+			return (1);
 		(*cmd)->files_to_create[j + 1] = NULL;
 		free((*cmd)->output_file);
 	}
 	(*cmd)->output_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->output_file)
-		ft_error(*cmd, NULL);
+		return (1);
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }
@@ -45,7 +45,7 @@ int	handle_re_input(t_cmd **cmd, char **args, int i)
 		return (1);
 	(*cmd)->input_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->input_file)
-		ft_error(*cmd, NULL);
+		return (1);
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }
@@ -63,16 +63,16 @@ int	handle_ap_output(t_cmd **cmd, char **args, int i)
 			j++;
 		(*cmd)->files_to_create = ft_realloc((*cmd)->files_to_create, (j + 2));
 		if (!(*cmd)->files_to_create)
-			ft_error(*cmd, NULL);
+			return (1);
 		(*cmd)->files_to_create[j] = ft_strdup((*cmd)->output_file);
 		if (!(*cmd)->files_to_create[j])
-			ft_error(*cmd, NULL);
+			return (1);
 		(*cmd)->files_to_create[j + 1] = NULL;
 		free((*cmd)->output_file);
 	}
 	(*cmd)->output_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->output_file)
-		ft_error(*cmd, NULL);
+		return (1);
 	(*cmd)->append_outfile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);

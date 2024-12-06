@@ -25,7 +25,7 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 // Parser funktions:
-void	parser(char *line, t_cmd **cmd);
+int		parser(char *line, t_cmd **cmd);
 char	**tokenizer(char *line);
 char	*quote_2_token(char *line, int *l, char c);
 	// handle non_args
