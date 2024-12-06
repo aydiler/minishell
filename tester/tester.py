@@ -8,6 +8,7 @@ import time
 import re
 import pty
 import select
+import subprocess
 
 # Color codes for output
 GREEN = '\033[0;32m'
@@ -112,7 +113,7 @@ def run_shell_command(command, shell_type='bash'):
         )
         
         # Wait for initial prompt
-        time.sleep(0.1)
+        time.sleep(0.01)
         
         # No need to send bind command anymore
         # Send command
@@ -123,7 +124,7 @@ def run_shell_command(command, shell_type='bash'):
         output = b""
         while True:
             try:
-                ready, _, _ = select.select([master], [], [], 0.1)
+                ready, _, _ = select.select([master], [], [], 0.01)
                 if not ready:
                     break
                     
@@ -188,6 +189,7 @@ def run_test(test_name, command):
 def main():
 	global PASS, FAIL
 
+	subprocess.run(["make", "."], check=True)
 	# Empty and special cases
 	run_test("Empty command", "")
 	run_test("Single space", " ")

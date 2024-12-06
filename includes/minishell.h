@@ -15,6 +15,10 @@
 # include <signal.h>
 # include <termios.h>
 
+#define ERR_NOT_FOUND 1
+#define ERR_PERMISSION 2
+#define ERR_SYSTEM 3
+
 typedef struct s_cmd 
 {
 	char			**args;
@@ -37,11 +41,13 @@ int		handle_re_input(t_cmd **cmd, char **args, int i);
 int		handle_ap_output(t_cmd **cmd, char **args, int i);
 char	**ft_realloc(char **arr, size_t new_size);
 // Executer funktions
-int		execute_command(char **args, char **envp, void (*signal_handler)(int));
+int execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int));
 int		print_envp(char **envp);
+char *find_command_in_path(char *cmd);
 // utils
 void	ft_error(t_cmd *cmd, char *error_message);
 void	free_all(t_cmd *cmd);
+void	ft_free_split(char **str);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);
