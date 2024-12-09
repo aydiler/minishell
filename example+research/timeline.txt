@@ -58,10 +58,10 @@ Working command history using readline X
     - Minimal interaction with the input loop.
 
 CHECK
-Global variable for signals only -
-ctrl-C: New prompt on new line -
-ctrl-D: Exit shell -
-ctrl-: No action -
+Global variable for signals only X
+ctrl-C: New prompt on new line X
+ctrl-D: Exit shell X
+ctrl-: No action X
 ---
 
 ### **Phase 2: Enhanced Command Parsing and Environment Management**
