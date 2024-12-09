@@ -1,23 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   non_args_util.c                                    :+:      :+:    :+:   */
+/*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 19:33:06 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/09 17:57:49 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+int	handle_re_output(t_cmd **cmd, char **args, int i);
+int	handle_re_input(t_cmd **cmd, char **args, int i);
+int	handle_ap_output(t_cmd **cmd, char **args, int i);
+
+int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
+{
+	int	error_check;
+
+	error_check = 0;
+	if (!ft_strncmp(">", token, ft_strlen(token)))
+		error_check = handle_re_output(cmd, args, i);
+	else if (!ft_strncmp("<", token, ft_strlen(token)))
+		error_check = handle_re_input(cmd, args, i);
+	else if (!ft_strncmp(">>", token, ft_strlen(token)))
+		error_check = handle_ap_output(cmd, args, i);
+	if (error_check)
+		return (error_check);
+	return (0);
+}
+
+int	check_redirections(char *token)
+{
+	if (!ft_strncmp(">", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp("<", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp(">>", token, ft_strlen(token)))
+		return (1);
+	return (0);
+}
 
 int	handle_re_output(t_cmd **cmd, char **args, int i)
 {
 	int	j;
 
 	j = 0;
-	if (!args[i + 1])
+	if (!args[i + 1] || args[i + 1][0] == '|')
 		return (1);
 	if ((*cmd)->output_file)
 	{
@@ -76,29 +107,4 @@ int	handle_ap_output(t_cmd **cmd, char **args, int i)
 	(*cmd)->append_outfile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
-}
-
-char	**ft_realloc(char **arr, size_t new_size)
-{
-	char	**new_arr;
-	size_t	i;
-
-	i = 0;
-	if (!arr)
-		return (malloc(sizeof(char *) * new_size));
-	if (new_size == 0)
-	{
-		free(arr);
-		return (NULL);
-	}
-	new_arr = malloc(sizeof(char *) * new_size);
-	if (!new_arr)
-		return (NULL);
-	while (arr[i] && i < new_size)
-	{
-		new_arr[i] = arr[i];
-		i++;
-	}
-	free(arr);
-	return (new_arr);
 }
