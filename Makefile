@@ -17,11 +17,11 @@ $(LIBFT):
 	cc $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	$(shell find . -type f -name "*.o" -delete)
 	make -C includes/libft clean
 
 fclean: clean
-	rm -f $(NAME)
+	$(shell find . -type f -name "$(NAME)" -delete)
 	make -C includes/libft fclean
 
 re: fclean all

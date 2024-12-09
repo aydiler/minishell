@@ -5,10 +5,10 @@ Core Shell Features
 	Execute commands using absolute paths X
 	Execute commands using relative paths X
 	Execute commands using PATH X
-	Global variable for signals only -
-	ctrl-C: New prompt on new line -
-	ctrl-D: Exit shell -
-	ctrl-: No action -
+	Global variable for signals only X
+	ctrl-C: New prompt on new line X
+	ctrl-D: Exit shell X
+	ctrl-: No action X
 
 
 Command Parsing

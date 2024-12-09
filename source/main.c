@@ -36,8 +36,9 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue ;
 		}
+		//print_struct(cmd);
 		if (cmd)
-			exit_status = execute_command(cmd->args, envp, signal_handler);
+			exit_status = execute_command(*cmd, envp, signal_handler);
 		free(input);
 		free_all(cmd);
 	}
