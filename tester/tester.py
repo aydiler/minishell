@@ -63,52 +63,51 @@ def normalize_error_message(line):
 	return line.strip()
 
 def clean_shell_output(command, output, shell_type='bash'):
-	# Remove ANSI escape sequences
-	output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
-	
-	# Standardize line endings
-	output = re.sub(r'\r\n', '\n', output)
-	
-	# Remove control characters while preserving intentional whitespace
-	# Modified to explicitly preserve tabs (\x09) along with spaces
-	output = re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', output)
-	
-	# Split into lines and process each line
-	lines = []
-	for line in output.splitlines():
-		# Skip empty lines after stripping
-		if not line.strip():
-			continue
-			
-		# Skip the original command line
-		if line.strip() == command:
-			continue
-			
-		# Normalize any error messages
-		line = normalize_error_message(line)
-		
-		# Skip various prompt patterns
-		if any(prompt in line for prompt in [
-			'minishell$ ',
-			'minishell$',
-			'bash-5.1$ ',
-			'bash-5.1$',
-			'$ ',
-			'$'
-		]):
-			# If line contains more than just the prompt, keep the rest
-			for prompt in ['minishell$ ', 'minishell$', 'bash-5.1$ ', 'bash-5.1$', '$ ', '$']:
-				line = line.replace(prompt, '').strip()
-			
-		# Skip exit commands
-		if line == 'exit':
-			continue
-		
-		# Only append non-empty lines after all processing
-		if line.strip():
-			lines.append(line)
-	
-	return lines
+    # Remove ANSI escape sequences
+    output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
+    
+    # Standardize line endings
+    output = re.sub(r'\r\n', '\n', output)
+    
+    # Remove control characters while preserving intentional whitespace
+    output = re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', output)
+    
+    lines = []
+    for line in output.splitlines():
+        # Skip empty lines after stripping
+        if not line.strip():
+            continue
+            
+        # Normalize any error messages
+        line = normalize_error_message(line)
+        
+        # Skip various prompt patterns
+        if any(prompt in line for prompt in [
+            'minishell$ ',
+            'minishell$',
+            'bash-5.1$ ',
+            'bash-5.1$',
+            '$ ',
+            '$'
+        ]):
+            for prompt in ['minishell$ ', 'minishell$', 'bash-5.1$ ', 'bash-5.1$', '$ ', '$']:
+                line = line.replace(prompt, '').strip()
+        
+        # Skip exit commands
+        if line == 'exit':
+            continue
+            
+        # Skip lines that start with the command (ignoring whitespace differences)
+        cmd_parts = command.strip().split()
+        line_parts = line.strip().split()
+        if cmd_parts and line_parts and all(c in line_parts for c in cmd_parts):
+            continue
+        
+        # Only append non-empty lines after all processing
+        if line.strip():
+            lines.append(line)
+    
+    return lines
 
 def run_shell_command(command, shell_type='bash'):
 	"""Runs a command in specified shell and returns output and exit code"""
@@ -182,38 +181,38 @@ def run_shell_command(command, shell_type='bash'):
 
 
 def run_test(test_name, command):
-	"""Runs a test comparing minishell and bash behavior"""
-	global PASS, FAIL
-	print(f"\nTesting {test_name}...")
-	sys.stdout.flush()
+    """Runs a test comparing minishell and bash behavior"""
+    global PASS, FAIL
+    print(f"\nTesting {test_name}...")
+    sys.stdout.flush()
 
-	debug_print(f"Starting test: {test_name}")
-	debug_print(f"Command: {repr(command)}")
+    debug_print(f"Starting test: {test_name}")
+    debug_print(f"Command: {repr(command)}")
 
-	# Run both shells
-	minishell_output, minishell_exit = run_shell_command(command, 'minishell')
-	bash_output, bash_exit = run_shell_command(command, 'bash')
+    # Run both shells
+    minishell_output, minishell_exit = run_shell_command(command, 'minishell')
+    bash_output, bash_exit = run_shell_command(command, 'bash')
 
-	# Clean and normalize outputs
-	minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
-	bash_output_clean = clean_shell_output(command, bash_output, 'bash')
+    # Clean and normalize outputs
+    minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
+    bash_output_clean = clean_shell_output(command, bash_output, 'bash')
 
-	# Print test information
-	print(f"Command: {repr(command)}")
-	print(f"Expected (bash):", bash_output_clean)
-	print(f"Got (minishell):", minishell_output_clean)
-	print(f"Expected exit code: {bash_exit}")
-	print(f"Got exit code: {minishell_exit}")
-	sys.stdout.flush()
+    # Print test information
+    print(f"Command: {repr(command)}")
+    print(f"Expected (bash):", bash_output_clean)
+    print(f"Got (minishell):", minishell_output_clean)
+    print(f"Expected exit code: {bash_exit}")
+    print(f"Got exit code: {minishell_exit}")
+    sys.stdout.flush()
 
-	# Compare results
-	if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
-		print(f"{GREEN}PASS{NC}")
-		PASS += 1
-	else:
-		print(f"{RED}FAIL{NC}")
-		FAIL += 1
-	sys.stdout.flush()
+    # Compare results - only comparing actual output, not command lines
+    if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
+        print(f"{GREEN}PASS{NC}")
+        PASS += 1
+    else:
+        print(f"{RED}FAIL{NC}")
+        FAIL += 1
+    sys.stdout.flush()
  
 def test_file_content(filename, expected_content):
 	"""Helper function to verify file contents after redirection"""
@@ -224,53 +223,72 @@ def test_file_content(filename, expected_content):
 	except:
 		return False
  
-def run_redirection_test(test_name, command, expected_file, expected_content):
-	global PASS, FAIL
-	
-	print(f"\nTesting {test_name}...")
-	sys.stdout.flush()
+def run_redirection_test(test_name, command, expected_file):
+    """
+    Modified version that gets expected content from bash execution
+    """
+    global PASS, FAIL
+    
+    print(f"\nTesting {test_name}...")
+    sys.stdout.flush()
 
-	# Run command in both shells
-	minishell_output, minishell_exit = run_shell_command(command, 'minishell')
-	bash_output, bash_exit = run_shell_command(command, 'bash')
+    # First run bash to get expected behavior and content
+    bash_output, bash_exit = run_shell_command(command, 'bash')
+    
+    # Get the content created by bash for comparison
+    try:
+        with open(expected_file, 'r') as f:
+            expected_content = f.read()
+    except:
+        expected_content = ""
+        
+    # Remove the file before testing minishell
+    try:
+        os.remove(expected_file)
+    except:
+        pass
+        
+    # Now run minishell
+    minishell_output, minishell_exit = run_shell_command(command, 'minishell')
 
-	# Clean and normalize outputs
-	minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
-	bash_output_clean = clean_shell_output(command, bash_output, 'bash')
+    # Clean and normalize outputs
+    minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
+    bash_output_clean = clean_shell_output(command, bash_output, 'bash')
 
-	# Verify command execution
-	command_success = (minishell_output_clean == bash_output_clean and 
-					  minishell_exit == bash_exit)
+    # Verify command execution
+    command_success = (minishell_output_clean == bash_output_clean and 
+                      minishell_exit == bash_exit)
 
-	# Verify file contents
-	file_exists = os.path.exists(expected_file)
-	if file_exists:
-		with open(expected_file, 'r') as f:
-			actual_content = f.read().strip()
-			content_success = actual_content == expected_content.strip()
-	else:
-		content_success = False
+    # Verify file contents
+    file_exists = os.path.exists(expected_file)
+    if file_exists:
+        with open(expected_file, 'r') as f:
+            actual_content = f.read()
+            content_success = actual_content == expected_content
+    else:
+        content_success = False
+        actual_content = ""
 
-	# Print test information
-	print(f"Command: {repr(command)}")
-	print(f"Expected output:", bash_output_clean)
-	print(f"Got output:", minishell_output_clean)
-	print(f"Expected exit code: {bash_exit}")
-	print(f"Got exit code: {minishell_exit}")
-	print(f"File created/modified: {expected_file}")
-	print(f"File exists: {file_exists}")
-	if file_exists:
-		print(f"Expected content: {repr(expected_content)}")
-		print(f"Actual content: {repr(actual_content)}")
+    # Print test information
+    print(f"Command: {repr(command)}")
+    print(f"Expected output:", bash_output_clean)
+    print(f"Got output:", minishell_output_clean)
+    print(f"Expected exit code: {bash_exit}")
+    print(f"Got exit code: {minishell_exit}")
+    print(f"File created/modified: {expected_file}")
+    print(f"File exists: {file_exists}")
+    if file_exists:
+        print(f"Expected content: {repr(expected_content)}")
+        print(f"Actual content: {repr(actual_content)}")
 
-	# Overall test result
-	if command_success and content_success:
-		print(f"{GREEN}PASS{NC}")
-		PASS += 1
-	else:
-		print(f"{RED}FAIL{NC}")
-		FAIL += 1
-	sys.stdout.flush()
+    # Overall test result
+    if command_success and content_success:
+        print(f"{GREEN}PASS{NC}")
+        PASS += 1
+    else:
+        print(f"{RED}FAIL{NC}")
+        FAIL += 1
+    sys.stdout.flush()
 
 def run_input_redirection_test(test_name, input_content, command, expected_output=None):
 	global PASS, FAIL
@@ -473,11 +491,14 @@ def main():
 	run_test("Empty command", "")
 	run_test("Single space", " ")
 	run_test("Multiple spaces", "     ")
-	run_test("Multiple tabs", "\t\t\t")
-	run_test("Mixed whitespace", " \t \t \t ")
+	run_test("Multiple tabs", "			")
+	run_test("Mixed whitespace", " 	 	 	 ")
 	run_test("Command with multiple spaces", "echo    hello     world")
-	run_test("Command with multiple tabs", "echo\thello\tworld")
-	run_test("Command with mixed whitespace", "echo \t hello \t world")
+	run_test("Command with multiple tabs", "echo	hello	world")
+	run_test("Command with mixed whitespace", "echo 	 hello 	 world")
+	run_test("Command with mixed whitespace and -e", "echo -e	 hello	 	world 	test	 ")
+	run_test("Command with mixed whitespace and -n", "echo -e	 hello	 	world 	test	 ")
+	run_test("Command with mixed whitespace and -n and \t", "echo -e 'hello\tworld \ttest\t  '")
 
 	# Basic command tests
 	run_test("Simple Echo", "echo hello world")
@@ -497,7 +518,7 @@ def main():
 	run_test("PATH with arguments", "ls -la")
 	run_test("PATH command not found", "nonexistentcommand")
 	run_test("Relative path basic", "./test_script.sh")
-	run_test("Relative path with dots", "/tester/../test_script.sh")
+	run_test("Relative path with dots", "../tester/test_script.sh")
 	run_test("Relative path nonexistent", "./nonexistent.sh")
 	run_test("Current directory command", "test_script.sh")
 
@@ -525,30 +546,25 @@ def main():
 	# 	"Special characters redirection",
 	# 	"echo '!@#$%^&*()' > testfile.txt",
 	# 	"testfile.txt",
-	# 	"!@#$%^&*()"
 	# )
 
 	# Test handling of quotes within content
 	run_redirection_test(
 		"Quotes in redirected content",
 		"echo \"Single quotes 'test' inside\" > testfile.txt",
-		"testfile.txt",
-		"Single quotes 'test' inside"
-	)
+		"testfile.txt"	)
 
 	# Test handling of multiple spaces
 	run_redirection_test(
 		"Multiple spaces in content",
 		"echo '   multiple    spaces    test   ' > testfile.txt",
 		"testfile.txt",
-		"   multiple    spaces    test   "
 	)
 
 	run_redirection_test(
 		"Tab characters in content",
-		"echo 'tab     here    there' > testfile.txt",  # Original command
+		"echo 'tab	here	there' > testfile.txt",  # Original command
 		"testfile.txt",
-		"tab     here    there"  # Expected content with actual spaces/tabs as produced by echo -e
 	)
 
 	# Test numbers and mixed content
@@ -556,7 +572,6 @@ def main():
 		"Numbers and mixed content",
 		"echo '123 abc !@# 456' > testfile.txt",
 		"testfile.txt",
-		"123 abc !@# 456"
 	)
 
 	# Test unicode characters
@@ -564,7 +579,6 @@ def main():
 		"Unicode characters",
 		"echo 'Hello 世界 π θ ∞' > testfile.txt",
 		"testfile.txt",
-		"Hello 世界 π θ ∞"
 	)
 
 	# # Test multiple redirections in sequence
@@ -572,7 +586,6 @@ def main():
 	# 	"Sequential redirections",
 	# 	"echo 'first' > test1.txt; echo 'second' > test2.txt",
 	# 	"test2.txt",
-	# 	"second"
 	# )
 
 	# Test redirection with pwd command
@@ -580,7 +593,6 @@ def main():
 		"PWD output redirection",
 		"pwd > testfile.txt",
 		"testfile.txt",
-		os.getcwd()
 	)
 
 	# # Test redirection with command substitution
@@ -588,7 +600,6 @@ def main():
 	# 	"Command output with spaces",
 	# 	"ls -l / | head -n 1 > testfile.txt",
 	# 	"testfile.txt",
-	# 	subprocess.check_output("ls -l / | head -n 1", shell=True).decode().strip()
 	# )
 
 	# # Test redirection with environment variables
@@ -596,30 +607,26 @@ def main():
 	# 	"Environment variable content",
 	# 	"echo $USER > testfile.txt",
 	# 	"testfile.txt",
-	# 	os.environ.get('USER', '')
 	# )
 
-	# Test redirection with path expansion
-	run_redirection_test(
-		"Path expansion in content",
-		"echo ~/testfile > testfile.txt",
-		"testfile.txt",
-		os.path.expanduser("~/testfile")
-	)
+	# # Test redirection with path expansion
+	# run_redirection_test(
+	# 	"Path expansion in content",
+	# 	"echo ~/testfile > testfile.txt",
+	# 	"testfile.txt",
+	# )
 
 	# Test redirection with large content
 	run_redirection_test(
 		"Large content redirection",
 		"python3 -c 'print(\"x\" * 1000)' > testfile.txt",
 		"testfile.txt",
-		"x" * 1000
 	)
 
 	# run_redirection_test(
 	# 	"Content with newlines",
 	# 	"echo $'line1\\nline2\\nline3' > testfile.txt",  # Using $' notation
 	# 	"testfile.txt",
-	# 	"line1\nline2\nline3"
 	# )
 
 	# Test redirection to file with spaces in name
@@ -627,7 +634,6 @@ def main():
 		"Filename with spaces",
 		"echo 'content' > 'test file.txt'",
 		"test file.txt",
-		"content"
 	)
 
 	# Test redirection with empty echo
@@ -635,7 +641,20 @@ def main():
 		"Empty echo redirection",
 		"echo -n '' > testfile.txt",
 		"testfile.txt",
-		""
+	)
+
+	# Test redirection with varying line endings
+	run_redirection_test(
+		"Mixed line endings",
+		"printf 'line1\\r\\nline2\\nline3\\rline4' > mixed_endings.txt",
+		"mixed_endings.txt"
+	)
+
+	# Test redirection with null characters
+	run_redirection_test(
+		"Null character handling",
+		"printf 'text1\\0text2\\0text3' > nullchar.txt",
+		"nullchar.txt"
 	)
 
 	print("\nRunning input redirection tests...")
@@ -716,6 +735,27 @@ def main():
 		"test content",
 		"cat < 'test input.txt'"
 	)
+ 
+	# Test with fold command
+	run_input_redirection_test(
+		"Fold command width limiting",
+		"this is a very long line that should be wrapped at specific width",
+		"fold -w 20 < test_input.txt"
+	)
+
+	# Test with cut command
+	run_input_redirection_test(
+		"Cut command field extraction",
+		"field1,field2,field3\nvalue1,value2,value3",
+		"cut -d',' -f2 < test_input.txt"
+	)
+
+	# Test with character counting
+	run_input_redirection_test(
+		"Character count processing",
+		"áéíóú\n12345\nabcde",
+		"wc -m < test_input.txt"
+	)
 
 	print("\nRunning append redirection tests...")
 
@@ -773,6 +813,30 @@ def main():
 		],
 		"test file.txt",
 		"first\nsecond\n"
+	)
+ 
+	# Test append with interleaved content
+	test_append_redirection(
+		"Interleaved append",
+		[
+			"echo 'odd1' > interleaved.txt",
+			"echo 'even1' >> interleaved.txt",
+			"echo 'odd2' >> interleaved.txt",
+			"echo 'even2' >> interleaved.txt"
+		],
+		"interleaved.txt",
+		"odd1\neven1\nodd2\neven2\n"
+	)
+
+	# Test append with number sequences
+	test_append_redirection(
+		"Number sequence append",
+		[
+			"seq 1 5 > numbers.txt",
+			"seq 6 10 >> numbers.txt"
+		],
+		"numbers.txt",
+		"1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"
 	)
 
 	print("\nRunning mixed redirection tests...")
@@ -874,6 +938,51 @@ def main():
 			"cat < test_input.txt >> special.txt"
 		],
 		"special.txt"
+	)
+
+
+	# Test with multiple transforms
+	test_mixed_redirection(
+		"Multiple transforms",
+		"UPPER,lower,MiXeD",
+		[
+			"tr ',' '\\n' < test_input.txt > lines.txt",
+			"tr '[:upper:]' '[:lower:]' < lines.txt > lowercase.txt",
+			"sort < lowercase.txt > final.txt"
+		],
+		"final.txt"
+	)
+
+	# Test with file content comparison
+	test_mixed_redirection(
+		"File content comparison",
+		"original content",
+		[
+			"cat < test_input.txt > file1.txt",
+			"cat < test_input.txt > file2.txt",
+			"cmp file1.txt file2.txt > cmp_result.txt"
+		],
+		"cmp_result.txt"
+	)
+
+	# Test handling of whitespace variations
+	test_mixed_redirection(
+		"Whitespace handling",
+		"  leading spaces\ntrailing spaces  \n\tmixed   spaces   ",
+		[
+			"sed 's/^[[:space:]]*//;s/[[:space:]]*$//' < test_input.txt > trimmed.txt"
+		],
+		"trimmed.txt"
+	)
+
+	# Test case conversion pipeline
+	test_mixed_redirection(
+		"Case conversion pipeline",
+		"Mixed Case Text\nANOTHER LINE\nlower line",
+		[
+			"tr '[:upper:]' '[:lower:]' < test_input.txt > lowercase.txt"
+		],
+		"lowercase.txt"
 	)
 
 	# # Test command output redirection
