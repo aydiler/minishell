@@ -31,6 +31,7 @@ typedef struct s_cmd
 // Parser funktions:
 int		parser(char *line, t_cmd **cmd);
 char	**tokenizer(char *line);
+int		handle_env_vars(t_cmd **cmd);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);
@@ -40,8 +41,6 @@ char	**ft_realloc(char **arr, size_t new_size);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
-	// non args utils
-int		handle_var(t_cmd **cmd, int i);
 // Executer funktions
 int		execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int));
 int		print_envp(char **envp);

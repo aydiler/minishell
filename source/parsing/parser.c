@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/10 14:54:26 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/10 17:44:04 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,9 @@ int	parser(char *line, t_cmd **cmd)
 	int	error_check;
 
 	error_check = fill_everything(line, cmd);
+	if (error_check || !*cmd)
+		return (error_check);
+	error_check = handle_env_vars(cmd);
 	if (error_check || !*cmd)
 		return (error_check);
 	error_check = handle_redirections(cmd);
