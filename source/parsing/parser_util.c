@@ -6,11 +6,12 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/09 17:49:00 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/10 15:55:38 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
 // for tokenizer
 char	*quote_2_token(char *line, int *l, char c)
 {
@@ -96,7 +97,7 @@ t_cmd	*new_pipe(char **args)
 	int		i;
 
 	i = -1;
-	pipe = malloc (sizeof(t_cmd));
+	pipe = malloc(sizeof(t_cmd));
 	if (!pipe)
 		return (NULL);
 	pipe->args = args;

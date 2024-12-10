@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/09 18:07:41 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/10 13:47:38 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_struct(t_cmd *cmd)
 	int	i;
 
 	i = 0;
-	printf("\n-----------------------\nprint_struct:\n");
+	printf("\n-----------------------\n");
 	while (cmd)
 	{
 		i = 0;
@@ -50,4 +50,5 @@ void	print_struct(t_cmd *cmd)
 		printf("\nnext pipe:\n");
 		cmd = cmd->next;
 	}
+	printf("-----------------------\n");
 }

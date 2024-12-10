@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/09 17:57:49 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/10 14:56:57 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 
 int	check_redirections(char *token)
 {
+	if (!token[0])
+		return (0);
 	if (!ft_strncmp(">", token, ft_strlen(token)))
 		return (1);
 	else if (!ft_strncmp("<", token, ft_strlen(token)))
