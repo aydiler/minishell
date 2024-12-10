@@ -13,20 +13,20 @@ Core Shell Features
 
 Command Parsing
 
-	Handle single quotes (')
-	Handle double quotes (")
+	Handle single quotes (') X
+	Handle double quotes (") X
 	Handle environment variables ($VAR)
 	Handle exit status ($?)
-	Skip interpretation of unclosed quotes
+	Skip interpretation of unclosed quotes X
 	Skip interpretation of \ and ;
 
 
 Redirections
 
-	Input redirection (<)
-	Output redirection (>)
+	Input redirection (<) X
+	Output redirection (>) X
 	Here document (<<)
-	Append output (>>)
+	Append output (>>) X
 	Pipes (|)
 
 
