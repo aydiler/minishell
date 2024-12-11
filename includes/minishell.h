@@ -40,7 +40,7 @@ typedef struct s_cmd
 // Parser funktions:
 int		parser(char *line, t_cmd **cmd);
 char	**tokenizer(char *line);
-int		handle_env_vars(t_cmd **cmd);
+int		handle_env_vars(char *line);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);
