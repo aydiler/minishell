@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/09 17:57:49 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/11 14:50:28 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 
 int	check_redirections(char *token)
 {
+	if (!token[0])
+		return (0);
 	if (!ft_strncmp(">", token, ft_strlen(token)))
 		return (1);
 	else if (!ft_strncmp("<", token, ft_strlen(token)))
@@ -49,23 +51,23 @@ int	handle_re_output(t_cmd **cmd, char **args, int i)
 
 	j = 0;
 	if (!args[i + 1] || args[i + 1][0] == '|')
-		return (1);
+		return (ERR_INVAL);
 	if ((*cmd)->output_file)
 	{
 		while ((*cmd)->files_to_create && (*cmd)->files_to_create[j])
 			j++;
 		(*cmd)->files_to_create = ft_realloc((*cmd)->files_to_create, (j + 2));
 		if (!(*cmd)->files_to_create)
-			return (1);
+			return (ERR_NOMEM);
 		(*cmd)->files_to_create[j] = ft_strdup((*cmd)->output_file);
 		if (!(*cmd)->files_to_create[j])
-			return (1);
+			return (ERR_NOMEM);
 		(*cmd)->files_to_create[j + 1] = NULL;
 		free((*cmd)->output_file);
 	}
 	(*cmd)->output_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->output_file)
-		return (1);
+		return (ERR_NOMEM);
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }
@@ -73,10 +75,10 @@ int	handle_re_output(t_cmd **cmd, char **args, int i)
 int	handle_re_input(t_cmd **cmd, char **args, int i)
 {
 	if (!args[i + 1])
-		return (1);
+		return (ERR_INVAL);
 	(*cmd)->input_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->input_file)
-		return (1);
+		return (ERR_NOMEM);
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }
@@ -87,23 +89,23 @@ int	handle_ap_output(t_cmd **cmd, char **args, int i)
 
 	j = 0;
 	if (!args[i + 1])
-		return (1);
+		return (ERR_INVAL);
 	if ((*cmd)->output_file)
 	{
 		while ((*cmd)->files_to_create && (*cmd)->files_to_create[j])
 			j++;
 		(*cmd)->files_to_create = ft_realloc((*cmd)->files_to_create, (j + 2));
 		if (!(*cmd)->files_to_create)
-			return (1);
+			return (ERR_NOMEM);
 		(*cmd)->files_to_create[j] = ft_strdup((*cmd)->output_file);
 		if (!(*cmd)->files_to_create[j])
-			return (1);
+			return (ERR_NOMEM);
 		(*cmd)->files_to_create[j + 1] = NULL;
 		free((*cmd)->output_file);
 	}
 	(*cmd)->output_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->output_file)
-		return (1);
+		return (ERR_NOMEM);
 	(*cmd)->append_outfile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);

@@ -30,9 +30,10 @@ int main(int argc, char **argv, char **envp)
 			add_history(input);
 			save_history(input);
 		}
-		if (parser(input, &cmd) || !cmd)
+		exit_status = parser(input, &cmd);
+		if (exit_status || !cmd)
 		{
-			ft_error(cmd, NULL);
+			ft_error(cmd, exit_status);
 			free(input);
 			continue ;
 		}
