@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/11 14:37:38 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/11 15:32:53 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,17 @@ int	proces_env_var(t_cmd **cmd, int i)
 {
 	char	*tempura;
 
-	if (!cmd || !(*cmd) || !(*cmd)->args || !(*cmd)->args[i]
-		|| !getenv(&((*cmd)->args[i][1])))
+	if (!cmd || !(*cmd) || !(*cmd)->args || !(*cmd)->args[i])
 		return (ERR_NOMEM);
+	if (!getenv(&((*cmd)->args[i][1])))
+		return (ERR_ENV_VAR);
 	tempura = getenv(&((*cmd)->args[i][1]));
 	if (!tempura)
 		return (ERR_NOMEM);
 	free((*cmd)->args[i]);
 	(*cmd)->args[i] = ft_strdup(tempura);
 	if (!(*cmd)->args[i])
-		return(ERR_NOMEM);
+		return (ERR_NOMEM);
 	return (0);
 }
 
@@ -35,6 +36,8 @@ char	*check_env_vars(char *token)
 	{
 		if (getenv(&token[1]))
 			return (getenv(&token[1]));
+		else
+			return (".a.h.h.");
 	}
 	return (NULL);
 }

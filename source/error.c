@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/11 14:59:01 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/11 15:30:47 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	ft_error(t_cmd *cmd, int exit_status)
 		ft_putstr_fd("Memory allocation error\n", 2);
 	else if (exit_status == ERR_PIPE)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
+	else if (exit_status == ERR_ENV_VAR)
+		ft_putstr_fd("\n", 2);
 	else
 		write(1, "some error apparently\n", 2);
 }

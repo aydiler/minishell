@@ -26,6 +26,7 @@
 # define ERR_SIGNAL		132  // Signal error
 # define ERR_NOMEM		12   // Memory allocation error
 # define ERR_PIPE		134  // Pipe or redirection error
+# define ERR_ENV_VAR	5000 // empty line
 
 typedef struct s_cmd 
 {
