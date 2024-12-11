@@ -6,19 +6,23 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/05 14:51:48 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/11 14:59:01 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 // error messege !!!
-void	ft_error(t_cmd *cmd, char *error_message)
+void	ft_error(t_cmd *cmd, int exit_status)
 {
 	free_all(cmd);
-	if (error_message)
-		ft_putstr_fd(error_message, 2);
+	if (exit_status == ERR_INVAL)
+		ft_putstr_fd("invalid arguments\n", 2);
+	else if (exit_status == ERR_NOMEM)
+		ft_putstr_fd("Memory allocation error\n", 2);
+	else if (exit_status == ERR_PIPE)
+		ft_putstr_fd("Pipe or redirection error\n", 2);
 	else
-		write(1, "some error apparently\n", 22);
+		write(1, "some error apparently\n", 2);
 }
 /*
 errors to handel:

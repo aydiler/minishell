@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/10 14:54:26 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/11 14:44:53 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	fill_everything(char *line, t_cmd **cmd)
 	i = 0;
 	*cmd = new_pipe(tokenizer(line));
 	if (!(*cmd))
-		return (1);
+		return (ERR_NOMEM);
 	if (*cmd)
 		temp = *cmd;
 	while (*cmd && line[i])
@@ -60,7 +60,7 @@ int	fill_everything(char *line, t_cmd **cmd)
 		{
 			temp->next = new_pipe(tokenizer(&line[i]));
 			if (!temp->next)
-				return (1);
+				return (ERR_NOMEM);
 		}
 		temp = temp->next;
 	}
@@ -72,6 +72,9 @@ int	parser(char *line, t_cmd **cmd)
 	int	error_check;
 
 	error_check = fill_everything(line, cmd);
+	if (error_check || !*cmd)
+		return (error_check);
+	error_check = handle_env_vars(cmd);
 	if (error_check || !*cmd)
 		return (error_check);
 	error_check = handle_redirections(cmd);
