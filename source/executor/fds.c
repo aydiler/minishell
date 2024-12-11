@@ -1,4 +1,4 @@
-#import "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int create_empty_files(t_cmd cmd)
 {
