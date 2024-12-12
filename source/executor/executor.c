@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/12 19:23:05 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/12 19:29:32 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,6 @@ static void setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count
                 exit(1);
         }
         close(pipes[cmd_index - 1][0]);
-		close(pipes[cmd_index - 1][1]);
     }
     
     if (cmd_index < cmd_count - 1)
@@ -188,6 +187,7 @@ static void setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count
             if (dup2(pipes[cmd_index][1], STDOUT_FILENO) == -1)
                 exit(1);
         }
+		close(pipes[cmd_index][1]);
     }
 }
 
@@ -207,18 +207,29 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 	if (!pipes)
 		return 1;
 	i = 0;
-	while (current)
-	{
-		setup_pipe_fds(current, pipes, i, cmd_count);
-		status = execute_command(*current, envp, signal_handler);
-		if (i < cmd_count - 1)
+    while (current && i < cmd_count)
+    {
+        setup_pipe_fds(current, pipes, i, cmd_count);
+        status = execute_command(*current, envp, signal_handler);
+        
+        // Close complete pipes only after command finishes
+        if (i > 0)
         {
-            close(pipes[i][0]);
-            close(pipes[i][1]);
+            close(pipes[i - 1][0]);
+            close(pipes[i - 1][1]);
         }
-		current = current->next;
-		i++;
-	}
-	free_pipes(pipes, cmd_count - 1);
-	return status;
+        
+        current = current->next;
+        i++;
+    }
+
+    // Close last pipe if it exists
+    if (cmd_count > 1)
+    {
+        close(pipes[cmd_count - 2][0]);
+        close(pipes[cmd_count - 2][1]);
+    }
+
+    free_pipes(pipes, cmd_count - 1);
+    return status;
 }
