@@ -115,13 +115,69 @@ int	count_pipes(t_cmd *cmd)
 	return (count);
 }
 
+void	free_pipes(int **pipes, int cmd_count)
+{
+	int i;
+
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		free(pipes[i]);
+		i++;
+	}
+	free(pipes);
+}
+
+int	create_pipes(int **pipes, int cmd_count)
+{
+	int i;
+
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		pipes[i] = malloc(sizeof(int) * 2);
+		if (!pipes[i])
+		{
+			perror("malloc");
+			free_pipes(pipes, i);
+			return 1;
+		}
+		if (pipe(pipes[i]) == -1)
+		{
+			perror("pipe");
+			free_pipes(pipes, i);
+			return 1;
+		}
+		i++;
+	}
+	return 0;
+}
+
+int	**create_pipe_array(int cmd_count)
+{
+	int **pipes;
+
+	pipes = malloc(sizeof(int *) * (cmd_count - 1));
+	if (!pipes)
+	{
+		perror("malloc");
+		return NULL;
+	}
+	if (create_pipes(pipes, cmd_count))
+		return NULL;
+	return pipes;
+}
+
 int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 {
     int cmd_count;
-    //int **pipes;
+    int **pipes;
 
 	cmd_count = count_pipes(cmd);
 	if (cmd_count == 1)
 		return execute_command(*cmd, envp, signal_handler);
+	pipes = create_pipe_array(cmd_count);
+	if (!pipes)
+		return 1;
 	return 0;
 }

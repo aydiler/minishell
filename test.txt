@@ -1,0 +1,12 @@
+Makefile
+example+research
+includes
+lowercase.txt
+minishell
+source
+tabbed.txt
+test.txt
+test_input.txt
+test_script.sh
+tester
+testfile.txt
