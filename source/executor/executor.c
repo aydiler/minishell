@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/10 19:34:21 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/12 19:23:05 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,16 +168,57 @@ int	**create_pipe_array(int cmd_count)
 	return pipes;
 }
 
+static void setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count)
+{
+    if (cmd_index > 0)
+    {
+        if (!cmd->input_file)
+        {
+            if (dup2(pipes[cmd_index - 1][0], STDIN_FILENO) == -1)
+                exit(1);
+        }
+        close(pipes[cmd_index - 1][0]);
+		close(pipes[cmd_index - 1][1]);
+    }
+    
+    if (cmd_index < cmd_count - 1)
+    {
+        if (!cmd->output_file)
+        {
+            if (dup2(pipes[cmd_index][1], STDOUT_FILENO) == -1)
+                exit(1);
+        }
+    }
+}
+
 int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 {
-    int cmd_count;
-    int **pipes;
+    int		cmd_count;
+    int		**pipes;
+	t_cmd	*current;
+	int		status;
+	int		i;
 
+	current = cmd;
 	cmd_count = count_pipes(cmd);
 	if (cmd_count == 1)
 		return execute_command(*cmd, envp, signal_handler);
 	pipes = create_pipe_array(cmd_count);
 	if (!pipes)
 		return 1;
-	return 0;
+	i = 0;
+	while (current)
+	{
+		setup_pipe_fds(current, pipes, i, cmd_count);
+		status = execute_command(*current, envp, signal_handler);
+		if (i < cmd_count - 1)
+        {
+            close(pipes[i][0]);
+            close(pipes[i][1]);
+        }
+		current = current->next;
+		i++;
+	}
+	free_pipes(pipes, cmd_count - 1);
+	return status;
 }
