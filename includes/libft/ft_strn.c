@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:43:50 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/12 16:50:58 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/13 17:56:56 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strn(char *str, int n)
 
 	if (!str || !n)
 		return (NULL);
-	new_str = malloc(sizeof(char) * n);
+	new_str = malloc(sizeof(char) * (n + 1));
 	if (!new_str)
 		return (NULL);
 	i = 0;

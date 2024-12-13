@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:33:27 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/06 19:13:53 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/13 19:33:40 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void	free_other(t_cmd *cmd)
 {
 	if (cmd->input_file)
 		free(cmd->input_file);
-	else if (cmd->input_file)
-		free(cmd->input_file);
+	else if (cmd->output_file)
+		free(cmd->output_file);
 }
 
 void	free_all(t_cmd *cmd)
@@ -63,14 +63,17 @@ void	free_all(t_cmd *cmd)
 		free_files_to_create(cmd);
 		free_other(cmd);
 		free(cmd);
-		cmd = temp;
+		if (temp)
+			cmd = temp;
+		else
+			break ;
 	}
 	cmd = NULL;
 }
 
-void ft_free_split(char **str)
+void	ft_free_split(char **str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])

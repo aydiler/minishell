@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/11 15:30:47 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:30:55 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,13 @@
 // error messege !!!
 void	ft_error(t_cmd *cmd, int exit_status)
 {
-	free_all(cmd);
+	// if (exit_status == ERR_ENV_VAR)
+	// {
+	// 	ft_putstr_fd("\n", 2);
+	// 	return ;
+	// }
+	if (cmd)
+		free_all(cmd);
 	if (exit_status == ERR_INVAL)
 		ft_putstr_fd("invalid arguments\n", 2);
 	else if (exit_status == ERR_NOMEM)
@@ -24,7 +30,7 @@ void	ft_error(t_cmd *cmd, int exit_status)
 	else if (exit_status == ERR_ENV_VAR)
 		ft_putstr_fd("\n", 2);
 	else
-		write(1, "some error apparently\n", 2);
+		write(1, "some error apparently\n", 22);
 }
 /*
 errors to handel:

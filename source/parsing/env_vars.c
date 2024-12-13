@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/13 15:08:54 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/13 18:42:03 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	exchange_var(char **line, char *env_var, int i, size_t len_var)
 	char	*new_str;
 
 	new_len = (ft_strlen(*line) - (len_var + 1)) + ft_strlen(env_var);
-	new_str = malloc(sizeof(char) * new_len);
+	new_str = malloc(sizeof(char) * new_len + 1);
 	if (!new_str)
 		return (ERR_NOMEM);
 	ft_strncpy(new_str, *line, i);
@@ -81,8 +81,9 @@ int	proces_env_var(char **line)
 
 int	check_env_vars(char *line)
 {
-	int	start;
-	int	end;
+	int		start;
+	int		end;
+	char	*temp;
 
 	if (ft_strchr(line, '$'))
 	{
@@ -93,17 +94,21 @@ int	check_env_vars(char *line)
 		end = start;
 		while (is_env_var(line[end]))
 			end++;
-		if (getenv(line))
-			return (1);
+		temp = ft_strn(&(line[start]), end - start);
+		if (!temp)
+			return (ERR_NOMEM);
+		if (getenv(temp))
+			return (free(temp), 0);
 		else
-			return (ERR_ENV_VAR);
+			return (free(temp), ERR_ENV_VAR);
 	}
-	return (0);
+	return (1);
 }
 
 int	handle_env_vars(char **line)
 {
 	int		error_check;
+	int		var_check;
 
 	error_check = 0;
 	if (!line || !*line)
@@ -112,7 +117,17 @@ int	handle_env_vars(char **line)
 		error_check = handle_tilde(line);
 	if (error_check)
 		return (error_check);
-	while (check_env_vars(*line) && !error_check && line && *line)
+	var_check = check_env_vars(*line);
+	if (var_check && var_check != 1)
+		return (var_check);
+	while (!var_check && !error_check && line && *line)
+	{
 		error_check = proces_env_var(line);
+		if (error_check)
+			return (error_check);
+		var_check = check_env_vars(*line);
+		if (var_check && var_check != 1)
+			return (var_check);
+	}
 	return (error_check);
 }

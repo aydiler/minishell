@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:37:49 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/13 15:04:38 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/13 17:24:59 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,15 @@ int	skip_quote(char *line, int *i)
 
 char	*getenv_range(char *start, size_t *len_var)
 {
-	char	*tempura;
+	char	*env_var;
+	char	*temp;
 
 	while (is_env_var(start[*len_var]))
 		(*len_var)++;
-	tempura = getenv(ft_strn(start, *len_var));
-	if (!tempura)
+	temp = ft_strn(start, *len_var);
+	env_var = getenv(temp);
+	free(temp);
+	if (!env_var)
 		return (NULL);
-	return (tempura);
+	return (env_var);
 }
