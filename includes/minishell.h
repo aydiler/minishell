@@ -39,7 +39,7 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 // Parser funktions:
-int		parser(char *line, t_cmd **cmd);
+int		parser(char **line, t_cmd **cmd);
 char	**tokenizer(char *line);
 int		handle_env_vars(char **line);
 	//parser utils

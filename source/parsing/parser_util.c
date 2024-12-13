@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/10 15:55:38 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/13 13:46:02 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,7 @@ int	next_pipe(char *line, int i)
 t_cmd	*new_pipe(char **args)
 {
 	t_cmd	*pipe;
-	int		i;
 
-	i = -1;
 	pipe = malloc(sizeof(t_cmd));
 	if (!pipe)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:37:49 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/12 17:23:24 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/13 15:04:38 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	is_env_var(char c)
 {
 	if (c == ' ' || (c >= 9 && c <= 13) || c == '|' || c == '\0' || 
-		c == '$' || c == ';' || c == '\\')
+		c == '$' || c == ';' || c == '/' || c == '\"' || c == '\'')
 		return (0);
 	return (1);
 }
@@ -50,11 +50,10 @@ int	exchange_tilde(char **line, int i)
 		ft_strlen(*line + i + 1));
 	new_str[new_len] = '\0';
 	free(*line);
-	*line = new_str;
+	*line = ft_strdup(new_str);
 	free(new_str);
 	return (0);
 }
-
 
 int	skip_quote(char *line, int *i)
 {
@@ -75,7 +74,7 @@ char	*getenv_range(char *start, size_t *len_var)
 	char	*tempura;
 
 	while (is_env_var(start[*len_var]))
-		len_var++;
+		(*len_var)++;
 	tempura = getenv(ft_strn(start, *len_var));
 	if (!tempura)
 		return (NULL);
