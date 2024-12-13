@@ -30,17 +30,16 @@ int main(int argc, char **argv, char **envp)
 			add_history(input);
 			save_history(input);
 		}
-		exit_status = parser(input, &cmd);
+		exit_status = parser(&input, &cmd);
+		free(input);
 		if (exit_status || !cmd)
 		{
 			ft_error(cmd, exit_status);
-			free(input);
 			continue ;
 		}
 		//print_struct(cmd);
 		if (cmd)
 			exit_status = execute_command(*cmd, envp, signal_handler);
-		free(input);
 		free_all(cmd);
 	}
 	exit(exit_status);
