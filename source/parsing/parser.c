@@ -6,11 +6,30 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/14 15:17:45 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/14 17:06:50 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	handle_ignore(char *str, const char *chars_to_remove)
+{
+	char	*read;
+	char	*write;
+
+	read = str;
+	write = str;
+	while (*read)
+	{
+		if (!strchr(chars_to_remove, *read))
+		{
+			*write = *read;
+			write++;
+		}
+		read++;
+	}
+	*write = '\0';
+}
 
 int	handle_redirections(t_cmd **cmd)
 {
@@ -71,6 +90,7 @@ int	parser(char **line, t_cmd **cmd)
 {
 	int	error_check;
 
+	handle_ignore(*line, ";\\");
 	error_check = handle_env_vars(line);
 	if (error_check || !line || !*line)
 		return (error_check);
