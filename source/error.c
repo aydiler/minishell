@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/13 19:30:55 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:59:56 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 // error messege !!!
 void	ft_error(t_cmd *cmd, int exit_status)
 {
-	// if (exit_status == ERR_ENV_VAR)
-	// {
-	// 	ft_putstr_fd("\n", 2);
-	// 	return ;
-	// }
 	if (cmd)
 		free_all(cmd);
 	if (exit_status == ERR_INVAL)
@@ -29,6 +24,8 @@ void	ft_error(t_cmd *cmd, int exit_status)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
 	else if (exit_status == ERR_ENV_VAR)
 		ft_putstr_fd("\n", 2);
+	else if (exit_status == 0)
+		return ;
 	else
 		write(1, "some error apparently\n", 22);
 }

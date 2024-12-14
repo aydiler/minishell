@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:37:49 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/13 17:24:59 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/14 16:03:17 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ int	exchange_tilde(char **line, int i)
 	ft_strncpy(new_str + i + ft_strlen("$HOME"), *line + i + 1, 
 		ft_strlen(*line + i + 1));
 	new_str[new_len] = '\0';
-	free(*line);
+	ft_memdel((void **)&(*line));
 	*line = ft_strdup(new_str);
-	free(new_str);
+	ft_memdel((void **)&(new_str));
 	return (0);
 }
 
@@ -78,7 +78,7 @@ char	*getenv_range(char *start, size_t *len_var)
 		(*len_var)++;
 	temp = ft_strn(start, *len_var);
 	env_var = getenv(temp);
-	free(temp);
+	ft_memdel((void **)&(temp));
 	if (!env_var)
 		return (NULL);
 	return (env_var);

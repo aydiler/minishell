@@ -1,30 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_memdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 14:41:14 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/14 15:43:18 by maahoff          ###   ########.fr       */
+/*   Created: 2024/12/14 15:43:08 by maahoff           #+#    #+#             */
+/*   Updated: 2024/12/14 15:44:38 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	ft_memdel(void **ptr)
 {
-	unsigned char		*d;
-	const unsigned char	*s;
-
-	if (dest == NULL && src == NULL)
-		return (NULL);
-	d = dest;
-	s = src;
-	while (n > 0)
+	if (ptr != NULL)
 	{
-		*(d++) = *(s++);
-		n--;
+		free(*ptr);
+		*ptr = NULL;
 	}
-	return (dest);
 }

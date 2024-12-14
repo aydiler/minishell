@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/13 18:42:03 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/14 16:04:23 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int	exchange_var(char **line, char *env_var, int i, size_t len_var)
 	ft_strncpy(new_str + i + ft_strlen(env_var), (*line) + i + len_var + 1, 
 		ft_strlen((*line) + i + len_var + 1));
 	new_str[new_len] = '\0';
-	free(*line);
+	ft_memdel((void **)&(*line));
 	*line = ft_strdup(new_str);
-	free(new_str);
+	ft_memdel((void **)&(new_str));
 	return (0);
 }
 
@@ -98,9 +98,9 @@ int	check_env_vars(char *line)
 		if (!temp)
 			return (ERR_NOMEM);
 		if (getenv(temp))
-			return (free(temp), 0);
+			return (ft_memdel((void **)&(temp)), 0);
 		else
-			return (free(temp), ERR_ENV_VAR);
+			return (ft_memdel((void **)&(temp)), ERR_ENV_VAR);
 	}
 	return (1);
 }
