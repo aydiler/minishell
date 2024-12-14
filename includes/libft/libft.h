@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 13:18:56 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/12 16:52:23 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:44:54 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,6 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 char	*token_cat(char *token, int *pos, char *str);
 char	*ft_strncpy(char *dest, char *src, int n);
 char	*ft_strn(char *str, int n);
+void	ft_memdel(void **ptr);
 
 #endif

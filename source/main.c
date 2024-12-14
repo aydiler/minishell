@@ -30,8 +30,9 @@ int main(int argc, char **argv, char **envp)
 			add_history(input);
 			save_history(input);
 		}
-		exit_status = parser(&input, &cmd);
-		free(input);
+		if (input[0])
+			exit_status = parser(&input, &cmd);
+		ft_memdel((void **)&(input));
 		if (exit_status || !cmd)
 		{
 			ft_error(cmd, exit_status);
@@ -41,6 +42,7 @@ int main(int argc, char **argv, char **envp)
 		if (cmd)
 			exit_status = execute_command(*cmd, envp, signal_handler);
 		free_all(cmd);
+		cmd = NULL;
 	}
 	exit(exit_status);
 }
