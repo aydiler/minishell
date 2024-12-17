@@ -5,7 +5,8 @@ void	quote_handling(char *line, int *i, int *j, char c)
 	(*i)++;
 	while (line[*i] && line[*i] != '|' && line[*i] != c)
 		(*i)++;
-	(*i)++;
+	if (*j != -1)
+		(*i)++;
 	if (*j != -1)
 		(*j) += 2;
 }
