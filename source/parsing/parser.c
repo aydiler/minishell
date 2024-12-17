@@ -6,11 +6,39 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/11 14:44:53 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/17 14:59:32 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	handle_ignore(char *str, const char *chars_to_remove)
+{
+	char	*read;
+	char	*write;
+	int		in_dquote;
+	int		in_squote;
+
+	in_dquote = -1;
+	in_squote = -1;
+	read = str;
+	write = str;
+	while (*read)
+	{
+		if (*read == '\"' && in_squote == -1)
+			in_dquote *= -1;
+		if (*read == '\'' && in_dquote == -1)
+			in_squote *= -1;
+		if (in_squote != -1 || in_dquote != -1 || 
+			!strchr(chars_to_remove, *read))
+		{
+			*write = *read;
+			write++;
+		}
+		read++;
+	}
+	*write = '\0';
+}
 
 int	handle_redirections(t_cmd **cmd)
 {
@@ -67,14 +95,15 @@ int	fill_everything(char *line, t_cmd **cmd)
 	return (0);
 }
 
-int	parser(char *line, t_cmd **cmd)
+int	parser(char **line, t_cmd **cmd)
 {
 	int	error_check;
 
-	error_check = fill_everything(line, cmd);
-	if (error_check || !*cmd)
+	handle_ignore(*line, ";\\");
+	error_check = handle_env_vars(line);
+	if (error_check || !line || !*line)
 		return (error_check);
-	error_check = handle_env_vars(cmd);
+	error_check = fill_everything(*line, cmd);
 	if (error_check || !*cmd)
 		return (error_check);
 	error_check = handle_redirections(cmd);

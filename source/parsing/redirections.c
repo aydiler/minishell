@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/11 14:50:28 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/14 16:05:41 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	handle_re_output(t_cmd **cmd, char **args, int i)
 		if (!(*cmd)->files_to_create[j])
 			return (ERR_NOMEM);
 		(*cmd)->files_to_create[j + 1] = NULL;
-		free((*cmd)->output_file);
+		ft_memdel((void **)&((*cmd)->output_file));
 	}
 	(*cmd)->output_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->output_file)
@@ -101,7 +101,7 @@ int	handle_ap_output(t_cmd **cmd, char **args, int i)
 		if (!(*cmd)->files_to_create[j])
 			return (ERR_NOMEM);
 		(*cmd)->files_to_create[j + 1] = NULL;
-		free((*cmd)->output_file);
+		ft_memdel((void **)&((*cmd)->output_file));
 	}
 	(*cmd)->output_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->output_file)

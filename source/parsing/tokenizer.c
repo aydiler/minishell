@@ -5,7 +5,8 @@ void	quote_handling(char *line, int *i, int *j, char c)
 	(*i)++;
 	while (line[*i] && line[*i] != '|' && line[*i] != c)
 		(*i)++;
-	(*i)++;
+	if (*j != -1)
+		(*i)++;
 	if (*j != -1)
 		(*j) += 2;
 }
@@ -46,10 +47,10 @@ void	free_tokens(char **args, int j)
 	i = 0;
 	while (i < j)
 	{
-		free(args[i]);
+		ft_memdel((void **)&(args[i]));
 		i++;
 	}
-	free(args);
+	ft_memdel((void **)&(args));
 }
 
 char	*fill_token(char *line, int *i, int l)

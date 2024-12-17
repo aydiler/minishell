@@ -30,18 +30,18 @@ int main(int argc, char **argv, char **envp)
 			add_history(input);
 			save_history(input);
 		}
-		exit_status = parser(input, &cmd);
+		if (input[0])
+			exit_status = parser(&input, &cmd);
+		ft_memdel((void **)&(input));
 		if (exit_status || !cmd)
 		{
-			ft_error(cmd, exit_status);
-			free(input);
+			ft_error(&cmd, exit_status);
 			continue ;
 		}
 		//print_struct(cmd);
 		if (cmd)
 			exit_status = execute_pipeline(cmd, envp, signal_handler);
-		free(input);
-		free_all(cmd);
+		free_all(&cmd);
 	}
 	exit(exit_status);
 }

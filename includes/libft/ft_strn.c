@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_strn.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 14:41:14 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/14 15:43:18 by maahoff          ###   ########.fr       */
+/*   Created: 2024/12/12 16:43:50 by maahoff           #+#    #+#             */
+/*   Updated: 2024/12/13 17:56:56 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+char	*ft_strn(char *str, int n)
 {
-	unsigned char		*d;
-	const unsigned char	*s;
+	char	*new_str;
+	int		i;
 
-	if (dest == NULL && src == NULL)
+	if (!str || !n)
 		return (NULL);
-	d = dest;
-	s = src;
-	while (n > 0)
+	new_str = malloc(sizeof(char) * (n + 1));
+	if (!new_str)
+		return (NULL);
+	i = 0;
+	while (i < n)
 	{
-		*(d++) = *(s++);
-		n--;
+		new_str[i] = str[i];
+		i++;
 	}
-	return (dest);
+	new_str[i] = '\0';
+	return (new_str);
 }
