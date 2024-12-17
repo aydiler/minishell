@@ -53,10 +53,8 @@ int		check_redirections(char *token);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int));
 int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
 // Executer funktions
-int		execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int));
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
 // utils
