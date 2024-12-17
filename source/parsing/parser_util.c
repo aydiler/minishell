@@ -94,7 +94,6 @@ int	next_pipe(char *line, int i)
 t_cmd	*new_pipe(char **args)
 {
 	t_cmd	*pipe;
-
 	pipe = malloc(sizeof(t_cmd));
 	if (!pipe)
 		return (NULL);

@@ -6,108 +6,18 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/06 20:44:29 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/17 18:15:52 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void print_error_message(char *cmd, int error_type)
+int	create_pipes(int **pipes, int cmd_count);
+
+void	handle_redirection_execution(t_cmd cmd)
 {
-	char *error_msg;
-
-	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/') || 
-		(cmd[0] == '.' && cmd[1] == '.' && cmd[2] == '/'))
-	{
-		error_msg = ft_strjoin("minishell: ", cmd);
-		perror(error_msg);
-		free(error_msg);
-		return;
-	}
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(cmd, 2);
-	if (error_type == ERR_NOT_FOUND)
-		ft_putstr_fd(": command not found\n", 2);
-	else if (error_type == ERR_PERMISSION)
-		ft_putstr_fd(": Permission denied\n", 2);
-}
-
-static int create_empty_files(t_cmd cmd)
-{
-	char **files = cmd.files_to_create;
-	int fd;
-
-	if (!files)
-		return 0;
-	while (*files)
-	{
-		fd = open(*files, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-		{
-			print_error_message(*files, ERR_PERMISSION);
-			return 1;
-		}
-		close(fd);
-		files++;
-	}
-	return 0;
-}
-
-static int handle_infile(t_cmd cmd)
-{
-	int fd = open(cmd.input_file, O_RDONLY);
-	if (fd == -1)
-	{
-		if (errno == ENOENT)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd.input_file, 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-		}
-		else
-			print_error_message(cmd.input_file, ERR_PERMISSION);
-		return 1;
-	}
-	if (dup2(fd, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		close(fd);
-		return 1;
-	}
-	close(fd);
-	return 0;
-}
-
-static int handle_outfile(t_cmd cmd)
-{
-	int flags = O_WRONLY | O_CREAT;
-	if (cmd.append_outfile)
-		flags |= O_APPEND;
-	else
-		flags |= O_TRUNC;
-	int fd = open(cmd.output_file, flags, 0644);
-	if (fd == -1) {
-		print_error_message(cmd.output_file, ERR_PERMISSION);
-		return 1;
-	}
-	if (dup2(fd, STDOUT_FILENO) == -1) {
-		close(fd);
-		return 1;
-	}
-	close(fd);
-	return 0;
-}
-
-static int handle_child_process(t_cmd cmd, char **env)
-{
-	char *cmd_path;
-	
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-
 	if (create_empty_files(cmd))
 		exit(1);
-
 	if (cmd.input_file)
 	{
 		if (handle_infile(cmd))
@@ -118,14 +28,20 @@ static int handle_child_process(t_cmd cmd, char **env)
 		if (handle_outfile(cmd))
 			exit(1);
 	}
+}
 
+void	execute_program(t_cmd cmd, char **envp)
+{
+	char *cmd_path;
+	
 	cmd_path = find_command_in_path(cmd.args[0]);
 	if (!cmd_path)
 	{
 		print_error_message(cmd.args[0], ERR_NOT_FOUND);
 		exit(127);
 	}
-	if (execve(cmd_path, cmd.args, env) == -1)
+	
+	if (execve(cmd_path, cmd.args, envp) == -1)
 	{
 		free(cmd_path);
 		if (errno == EACCES)
@@ -136,6 +52,38 @@ static int handle_child_process(t_cmd cmd, char **env)
 		print_error_message(cmd.args[0], 0);
 		exit(127);
 	}
+}
+
+static void setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count)
+{
+    if (cmd_index > 0)
+    {
+        if (!cmd->input_file)
+        {
+            if (dup2(pipes[cmd_index - 1][0], STDIN_FILENO) == -1)
+                exit(1);
+        }
+    }
+
+    if (cmd_index < cmd_count - 1)
+    {
+        if (!cmd->output_file)
+        {
+            if (dup2(pipes[cmd_index][1], STDOUT_FILENO) == -1)
+                exit(1);
+        }
+    }
+}
+
+static int handle_child_process(t_cmd cmd, int **pipes, int cmd_index, int cmd_count, char **env)
+{	
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+
+	handle_redirection_execution(cmd);
+	setup_pipe_fds(&cmd, pipes, cmd_index, cmd_count);
+	execute_program(cmd, env);
+
 	return (0);
 }
 
@@ -153,41 +101,125 @@ static int handle_parent_process(pid_t pid, void (*signal_handler)(int))
 	return 1;
 }
 
-int execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int))
+int execute_command(t_cmd cmd, int **pipes, int cmd_index, int cmd_count, char **envp, void (*signal_handler)(int))
 {
 	pid_t pid;
 	int status;
 	int original_stdout = -1;
 	int original_stdin = -1;
-	
+
 	if (!cmd.args || !cmd.args[0])
 		return 0;
-	if (cmd.output_file)
-		original_stdout = dup(STDOUT_FILENO);
-	if (cmd.input_file)
-		original_stdin = dup(STDIN_FILENO);
-
+	set_original_fds(cmd, &original_stdout, &original_stdin);
 	pid = fork();
 	if (pid == -1) {
 		perror("fork");
 		return 1;
 	}
-
 	if (pid == 0)
-		return (handle_child_process(cmd, envp));
-	else
+		return (handle_child_process(cmd, pipes, cmd_index, cmd_count, envp));
+    else
+    {
+        if (cmd_index > 0)
+            close(pipes[cmd_index - 1][0]);
+        if (cmd_index < cmd_count - 1)
+            close(pipes[cmd_index][1]);
+        status = handle_parent_process(pid, signal_handler);
+        reset_fds(cmd, &original_stdout, &original_stdin);
+        return status;
+    }
+}
+
+int	count_pipes(t_cmd *cmd)
+{
+	int count;
+
+	count = 0;
+	while (cmd)
 	{
-		status = handle_parent_process(pid, signal_handler);
-		if (original_stdin != -1)
-		{
-			dup2(original_stdin, STDIN_FILENO);
-			close(original_stdin);
-		}
-		if (original_stdout != -1)
-		{
-			dup2(original_stdout, STDOUT_FILENO);
-			close(original_stdout);
-		}
-		return status;
+		count++;
+		cmd = cmd->next;
 	}
+	return (count);
+}
+
+void	free_pipes(int **pipes, int cmd_count)
+{
+	int i;
+
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		free(pipes[i]);
+		i++;
+	}
+	free(pipes);
+}
+
+int	**create_pipe_array(int cmd_count)
+{
+	int **pipes;
+
+	pipes = malloc(sizeof(int *) * (cmd_count - 1));
+	if (!pipes)
+	{
+		perror("malloc");
+		return NULL;
+	}
+	if (create_pipes(pipes, cmd_count))
+		return NULL;
+	return pipes;
+}
+
+int	create_pipes(int **pipes, int cmd_count)
+{
+	int i;
+
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		pipes[i] = malloc(sizeof(int) * 2);
+		if (!pipes[i])
+		{
+			perror("malloc");
+			free_pipes(pipes, i);
+			return 1;
+		}
+		if (pipe(pipes[i]) == -1)
+		{
+			perror("pipe");
+			free_pipes(pipes, i);
+			return 1;
+		}
+		i++;
+	}
+	return 0;
+}
+
+
+
+int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
+{
+    int		cmd_count;
+    int		**pipes;
+	t_cmd	*current;
+	int		status;
+	int		i;
+
+	current = cmd;
+	cmd_count = count_pipes(cmd);
+	pipes = create_pipe_array(cmd_count);
+	if (!pipes)
+		return 1;
+	if (cmd_count == 1)
+		return execute_command(*cmd, pipes, 0, 1, envp, signal_handler);
+	i = 0;
+    while (current && i < cmd_count)
+    {
+        status = execute_command(*current, pipes, i, cmd_count, envp, signal_handler);
+        current = current->next;
+        i++;
+    }
+    free_pipes(pipes, cmd_count - 1);
+    return status;
 }

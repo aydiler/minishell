@@ -57,8 +57,11 @@ char	*getenv_range(char *start, size_t *len_var);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
+	// non args utils
+int		handle_var(t_cmd **cmd, int i);
+// Executer functions
+int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
 // Executer funktions
-int		execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int));
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
 // utils
@@ -71,5 +74,14 @@ void	setup_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
+// fds
+int		create_empty_files(t_cmd cmd);
+int		handle_infile(t_cmd cmd);
+int		handle_outfile(t_cmd cmd);
+void	set_original_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
+void	reset_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
+// executor error handling
+void	print_error_message(char *cmd, int error_type);
+
 
 #endif

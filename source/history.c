@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:49:29 by adiler            #+#    #+#             */
-/*   Updated: 2024/11/27 20:49:30 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/10 16:09:32 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,7 @@ void	load_history(void)
 
 	fd = open(".command_history", O_RDONLY);
 	if(fd < 0)
-	{
-		printf("No history file found\n");
-		return ;
-	}
+		return  ;
 	while ((str = get_next_line(fd)))
 	{
 		newline = ft_strchr(str, '\n');

@@ -40,7 +40,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		//print_struct(cmd);
 		if (cmd)
-			exit_status = execute_command(*cmd, envp, signal_handler);
+			exit_status = execute_pipeline(cmd, envp, signal_handler);
 		free_all(&cmd);
 	}
 	exit(exit_status);
