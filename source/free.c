@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:33:27 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/17 15:16:43 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/17 18:44:29 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	free_files_to_create(t_cmd **cmd)
 	int	i;
 
 	i = 0;
-	if (!cmd || !(*cmd)|| !(*cmd)->files_to_create)
+	if (!cmd || !(*cmd) || !(*cmd)->files_to_create)
 		return ;
 	while ((*cmd)->files_to_create[i])
 	{
@@ -44,6 +44,8 @@ void	free_files_to_create(t_cmd **cmd)
 
 void	free_other(t_cmd **cmd)
 {
+	if (!cmd || !(*cmd) || !(*cmd)->input_file || !(*cmd)->output_file)
+		return ;
 	if ((*cmd)->input_file)
 		ft_memdel((void **)&((*cmd)->input_file));
 	if ((*cmd)->output_file)
