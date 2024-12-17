@@ -6,15 +6,15 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/14 15:59:56 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/17 15:11:06 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 // error messege !!!
-void	ft_error(t_cmd *cmd, int exit_status)
+void	ft_error(t_cmd **cmd, int exit_status)
 {
-	if (cmd)
+	if (cmd && *cmd)
 		free_all(cmd);
 	if (exit_status == ERR_INVAL)
 		ft_putstr_fd("invalid arguments\n", 2);

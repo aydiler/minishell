@@ -62,8 +62,8 @@ int		execute_command(t_cmd cmd, char **envp, void (*signal_handler)(int));
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
 // utils
-void	ft_error(t_cmd *cmd, int exit_status);
-void	free_all(t_cmd *cmd);
+void	ft_error(t_cmd **cmd, int exit_status);
+void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
 // signals
 void	signal_handler(int signo);
@@ -71,6 +71,5 @@ void	setup_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
-
 
 #endif

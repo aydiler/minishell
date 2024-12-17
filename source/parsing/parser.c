@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/14 17:06:50 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/17 14:59:32 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,21 @@ void	handle_ignore(char *str, const char *chars_to_remove)
 {
 	char	*read;
 	char	*write;
+	int		in_dquote;
+	int		in_squote;
 
+	in_dquote = -1;
+	in_squote = -1;
 	read = str;
 	write = str;
 	while (*read)
 	{
-		if (!strchr(chars_to_remove, *read))
+		if (*read == '\"' && in_squote == -1)
+			in_dquote *= -1;
+		if (*read == '\'' && in_dquote == -1)
+			in_squote *= -1;
+		if (in_squote != -1 || in_dquote != -1 || 
+			!strchr(chars_to_remove, *read))
 		{
 			*write = *read;
 			write++;

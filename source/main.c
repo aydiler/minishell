@@ -35,14 +35,13 @@ int main(int argc, char **argv, char **envp)
 		ft_memdel((void **)&(input));
 		if (exit_status || !cmd)
 		{
-			ft_error(cmd, exit_status);
+			ft_error(&cmd, exit_status);
 			continue ;
 		}
 		//print_struct(cmd);
 		if (cmd)
 			exit_status = execute_command(*cmd, envp, signal_handler);
-		free_all(cmd);
-		cmd = NULL;
+		free_all(&cmd);
 	}
 	exit(exit_status);
 }
