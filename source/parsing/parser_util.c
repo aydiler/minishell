@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/14 16:05:09 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/19 17:38:32 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	**remove_n_token(char **args, int i, int n)
 	{
 		ft_memdel((void **)&(args[i]));
 		j = i;
-		while (args[j])
+		while (args[j + 1])
 		{
 			args[j] = args[j + 1];
 			j++;
