@@ -32,13 +32,13 @@ Redirections
 
 Built-in Commands
 
-	echo (with -n option)
-	cd (relative/absolute paths)
-	pwd (no options)
-	export (no options)
-	unset (no options)
-	env (no options/arguments)
-	exit (no options)
+	echo (with -n option) 
+	cd (relative/absolute paths) a
+	pwd (no options) m
+	export (no options) m
+	unset (no options) m
+	env (no options/arguments) m
+	exit (no options) 
 
 
 Technical Requirements
