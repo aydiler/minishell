@@ -6,13 +6,13 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 14:56:08 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/20 16:20:43 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/20 16:55:12 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	check_quotes(char *line, int )
+char	check_quotes(char *line)
 {
 	int		in_quote;
 	int		i;
@@ -40,13 +40,31 @@ char	check_quotes(char *line, int )
 	return (0);
 }
 
+int	check_quotes_in_quote(char *str, char id)
+{
+	int	i;
+	int	cnt;
+
+	i = 0;
+	cnt = 0;
+	while (str[i])
+	{
+		if (str[i] == id)
+			cnt++;
+		i++;
+	}
+	if (cnt % 2 == 0)
+		return (0);
+	return (1);
+}
+
 int	handle_unclosed_quotes(char **line)
 {
 	char	*extra_input;
 	char	id;
 	char	*tmp;
 
-	id = check_quotes(*line, 0);
+	id = check_quotes(*line);
 	if (!id)
 		return (0);
 	while (1)
@@ -58,8 +76,7 @@ int	handle_unclosed_quotes(char **line)
 		tmp = *line;
 		*line = ft_strjoin(tmp, extra_input);
 		free(tmp);
-		printf("line: %s\n", *line);
-		if (ft_strchr(extra_input, id))
+		if (check_quotes_in_quote(extra_input, id))
 			break ;
 		free(extra_input);
 	}
