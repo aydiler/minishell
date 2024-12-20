@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/17 18:15:52 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/20 17:36:04 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,8 +195,6 @@ int	create_pipes(int **pipes, int cmd_count)
 	}
 	return 0;
 }
-
-
 
 int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 {
