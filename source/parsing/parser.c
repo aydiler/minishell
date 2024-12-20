@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/19 18:43:13 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/20 15:56:04 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	parser(char **line, t_cmd **cmd)
 	int	error_check;
 
 	handle_ignore(*line, ";\\");
-	error_check = handle_unclosed_quotes(*line);
+	error_check = handle_unclosed_quotes(line);
 	if (error_check)
 		return (error_check);
 	error_check = handle_env_vars(line);
