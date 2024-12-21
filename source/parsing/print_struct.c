@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/10 13:47:38 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/19 17:33:34 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,18 @@ void	print_struct(t_cmd *cmd)
 		cmd = cmd->next;
 	}
 	printf("-----------------------\n");
+}
+
+void	print_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	printf("args:\n");
+	while (args && args[i])
+	{
+		printf("\"%s\" ", args[i]);
+		i++;
+	}
+	printf("\n");
 }
