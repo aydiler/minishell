@@ -5,7 +5,9 @@ int main(int argc, char **argv, char **envp)
 	char	*input;
 	t_cmd	*cmd;
 	int		exit_status;
+	int		error_check;
 
+	error_check = 0;
 	cmd = NULL;
 	exit_status = 0;
 	(void)argc;
@@ -31,11 +33,11 @@ int main(int argc, char **argv, char **envp)
 			save_history(input);
 		}
 		if (input[0])
-			exit_status = parser(&input, &cmd);
+			error_check = parser(&input, &cmd);
 		ft_memdel((void **)&(input));
-		if (exit_status || !cmd)
+		if (error_check || !cmd)
 		{
-			ft_error(&cmd, exit_status);
+			ft_error(&cmd, error_check);
 			continue ;
 		}
 		//print_struct(cmd);
@@ -43,5 +45,6 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, envp, signal_handler);
 		free_all(&cmd);
 	}
+	printf("exit status: %d\n", exit_status);
 	exit(exit_status);
 }
