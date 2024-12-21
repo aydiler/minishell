@@ -18,12 +18,12 @@ int main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			ft_putstr_fd("exit\n", 1);
-			break ;
+			exit(exit_status);
 		}
 		if (ft_strncmp(input, "exit", ft_strlen("exit")) == 0)
 		{
 			free(input);
-			break ;
+			exit(exit_status);
 		}
 		if (*input)
 		{

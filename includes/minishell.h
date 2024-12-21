@@ -28,6 +28,8 @@
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
 # define ERR_ENV_VAR	5000	// empty line
+# define READ_END		0
+# define WRITE_END		1
 
 typedef struct s_cmd 
 {
@@ -82,6 +84,10 @@ void	set_original_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
 void	reset_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
-
+// pipes
+int		count_pipes(t_cmd *cmd);
+void	free_pipes(int **pipes, int cmd_count);
+int		**create_pipe_array(int cmd_count);
+int		create_pipes(int **pipes, int cmd_count);
 
 #endif
