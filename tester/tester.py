@@ -78,20 +78,13 @@ def clean_shell_output(command, output, shell_type='bash'):
         if not line.strip():
             continue
             
-        # Normalize any error messages
-        line = normalize_error_message(line)
+        # First remove prompts
+        for prompt in ['minishell$ ', 'minishell$', 'bash-5.1$ ', 'bash-5.1$', '$ ', '$']:
+            line = line.replace(prompt, '')
+        line = line.strip()
         
-        # Skip various prompt patterns
-        if any(prompt in line for prompt in [
-            'minishell$ ',
-            'minishell$',
-            'bash-5.1$ ',
-            'bash-5.1$',
-            '$ ',
-            '$'
-        ]):
-            for prompt in ['minishell$ ', 'minishell$', 'bash-5.1$ ', 'bash-5.1$', '$ ', '$']:
-                line = line.replace(prompt, '').strip()
+        # Then normalize error messages
+        line = normalize_error_message(line)
         
         # Skip exit commands
         if line == 'exit':
@@ -132,6 +125,7 @@ def run_shell_command(command, shell_type='bash'):
 	master, slave = pty.openpty()
 	try:
 		debug_print(f"Launching {shell_type} process")
+		subprocess.run(['stty', '-echo'], stdin=master)
 		proc = subprocess.Popen(
 			shell_cmd,
 			stdin=slave,
@@ -152,7 +146,7 @@ def run_shell_command(command, shell_type='bash'):
 		output = b""
 		while True:
 			try:
-				ready, _, _ = select.select([master], [], [], 0.01)
+				ready, _, _ = select.select([master], [], [], 0.03)
 				if not ready:
 					break
 
@@ -181,38 +175,38 @@ def run_shell_command(command, shell_type='bash'):
 
 
 def run_test(test_name, command):
-    """Runs a test comparing minishell and bash behavior"""
-    global PASS, FAIL
-    print(f"\nTesting {test_name}...")
-    sys.stdout.flush()
+	"""Runs a test comparing minishell and bash behavior"""
+	global PASS, FAIL
+	print(f"\nTesting {test_name}...")
+	sys.stdout.flush()
 
-    debug_print(f"Starting test: {test_name}")
-    debug_print(f"Command: {repr(command)}")
+	debug_print(f"Starting test: {test_name}")
+	debug_print(f"Command: {repr(command)}")
 
-    # Run both shells
-    minishell_output, minishell_exit = run_shell_command(command, 'minishell')
-    bash_output, bash_exit = run_shell_command(command, 'bash')
+	# Run both shells
+	minishell_output, minishell_exit = run_shell_command(command, 'minishell')
+	bash_output, bash_exit = run_shell_command(command, 'bash')
 
-    # Clean and normalize outputs
-    minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
-    bash_output_clean = clean_shell_output(command, bash_output, 'bash')
+	# Clean and normalize outputs
+	minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
+	bash_output_clean = clean_shell_output(command, bash_output, 'bash')
 
-    # Print test information
-    print(f"Command: {repr(command)}")
-    print(f"Expected (bash):", bash_output_clean)
-    print(f"Got (minishell):", minishell_output_clean)
-    print(f"Expected exit code: {bash_exit}")
-    print(f"Got exit code: {minishell_exit}")
-    sys.stdout.flush()
+	# Print test information
+	print(f"Command: {repr(command)}")
+	print(f"Expected (bash):", bash_output_clean)
+	print(f"Got (minishell):", minishell_output_clean)
+	print(f"Expected exit code: {bash_exit}")
+	print(f"Got exit code: {minishell_exit}")
+	sys.stdout.flush()
 
-    # Compare results - only comparing actual output, not command lines
-    if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
-        print(f"{GREEN}PASS{NC}")
-        PASS += 1
-    else:
-        print(f"{RED}FAIL{NC}")
-        FAIL += 1
-    sys.stdout.flush()
+	# Compare results - only comparing actual output, not command lines
+	if minishell_output_clean == bash_output_clean and minishell_exit == bash_exit:
+		print(f"{GREEN}PASS{NC}")
+		PASS += 1
+	else:
+		print(f"{RED}FAIL{NC}")
+		FAIL += 1
+	sys.stdout.flush()
  
 def test_file_content(filename, expected_content):
 	"""Helper function to verify file contents after redirection"""
@@ -224,71 +218,71 @@ def test_file_content(filename, expected_content):
 		return False
  
 def run_redirection_test(test_name, command, expected_file):
-    """
-    Modified version that gets expected content from bash execution
-    """
-    global PASS, FAIL
-    
-    print(f"\nTesting {test_name}...")
-    sys.stdout.flush()
+	"""
+	Modified version that gets expected content from bash execution
+	"""
+	global PASS, FAIL
+	
+	print(f"\nTesting {test_name}...")
+	sys.stdout.flush()
 
-    # First run bash to get expected behavior and content
-    bash_output, bash_exit = run_shell_command(command, 'bash')
-    
-    # Get the content created by bash for comparison
-    try:
-        with open(expected_file, 'r') as f:
-            expected_content = f.read()
-    except:
-        expected_content = ""
-        
-    # Remove the file before testing minishell
-    try:
-        os.remove(expected_file)
-    except:
-        pass
-        
-    # Now run minishell
-    minishell_output, minishell_exit = run_shell_command(command, 'minishell')
+	# First run bash to get expected behavior and content
+	bash_output, bash_exit = run_shell_command(command, 'bash')
+	
+	# Get the content created by bash for comparison
+	try:
+		with open(expected_file, 'r') as f:
+			expected_content = f.read()
+	except:
+		expected_content = ""
+		
+	# Remove the file before testing minishell
+	try:
+		os.remove(expected_file)
+	except:
+		pass
+		
+	# Now run minishell
+	minishell_output, minishell_exit = run_shell_command(command, 'minishell')
 
-    # Clean and normalize outputs
-    minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
-    bash_output_clean = clean_shell_output(command, bash_output, 'bash')
+	# Clean and normalize outputs
+	minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
+	bash_output_clean = clean_shell_output(command, bash_output, 'bash')
 
-    # Verify command execution
-    command_success = (minishell_output_clean == bash_output_clean and 
-                      minishell_exit == bash_exit)
+	# Verify command execution
+	command_success = (minishell_output_clean == bash_output_clean and 
+					  minishell_exit == bash_exit)
 
-    # Verify file contents
-    file_exists = os.path.exists(expected_file)
-    if file_exists:
-        with open(expected_file, 'r') as f:
-            actual_content = f.read()
-            content_success = actual_content == expected_content
-    else:
-        content_success = False
-        actual_content = ""
+	# Verify file contents
+	file_exists = os.path.exists(expected_file)
+	if file_exists:
+		with open(expected_file, 'r') as f:
+			actual_content = f.read()
+			content_success = actual_content == expected_content
+	else:
+		content_success = False
+		actual_content = ""
 
-    # Print test information
-    print(f"Command: {repr(command)}")
-    print(f"Expected output:", bash_output_clean)
-    print(f"Got output:", minishell_output_clean)
-    print(f"Expected exit code: {bash_exit}")
-    print(f"Got exit code: {minishell_exit}")
-    print(f"File created/modified: {expected_file}")
-    print(f"File exists: {file_exists}")
-    if file_exists:
-        print(f"Expected content: {repr(expected_content)}")
-        print(f"Actual content: {repr(actual_content)}")
+	# Print test information
+	print(f"Command: {repr(command)}")
+	print(f"Expected output:", bash_output_clean)
+	print(f"Got output:", minishell_output_clean)
+	print(f"Expected exit code: {bash_exit}")
+	print(f"Got exit code: {minishell_exit}")
+	print(f"File created/modified: {expected_file}")
+	print(f"File exists: {file_exists}")
+	if file_exists:
+		print(f"Expected content: {repr(expected_content)}")
+		print(f"Actual content: {repr(actual_content)}")
 
-    # Overall test result
-    if command_success and content_success:
-        print(f"{GREEN}PASS{NC}")
-        PASS += 1
-    else:
-        print(f"{RED}FAIL{NC}")
-        FAIL += 1
-    sys.stdout.flush()
+	# Overall test result
+	if command_success and content_success:
+		print(f"{GREEN}PASS{NC}")
+		PASS += 1
+	else:
+		print(f"{RED}FAIL{NC}")
+		FAIL += 1
+	sys.stdout.flush()
 
 def run_input_redirection_test(test_name, input_content, command, expected_output=None):
 	global PASS, FAIL
@@ -983,6 +977,234 @@ def main():
 			"tr '[:upper:]' '[:lower:]' < test_input.txt > lowercase.txt"
 		],
 		"lowercase.txt"
+	)
+ 
+	print("\nRunning pipe tests...")
+	
+	# Basic pipe test
+	run_test(
+		"Basic pipe",
+		"echo hello world | wc -w"
+	)
+	
+	# Multiple pipes test
+	run_test(
+		"Multiple pipes",
+		"echo hello world | tr 'a-z' 'A-Z' | tr ' ' '_'"
+	)
+	
+	# Pipe with spaces
+	run_test(
+		"Pipe with spaces",
+		"echo    hello    world    |    wc    -w"
+	)
+	
+	# Empty pipe
+	run_test(
+		"Empty pipe input",
+		"echo -n '' | wc -c"
+	)
+	
+	# Large content through pipe
+	run_test(
+		"Large content pipe",
+		"python3 -c 'print(\"x\" * 1000)' | wc -c"
+	)
+	
+	# # Multiple lines through pipe
+	# run_test(
+	# 	"Multiple lines pipe",
+	# 	"printf 'line1\\nline2\\nline3' | wc -l"
+	# )
+	
+	# Sort and unique
+	run_test(
+		"Sort and unique",
+		"echo -e 'apple\\nbanana\\napple\\ncherry' | sort | uniq"
+	)
+	
+	# Character transformation
+	run_test(
+		"Character transformation",
+		"echo 'hello world' | tr 'a-z' 'A-Z'"
+	)
+	
+	# Word count pipeline
+	run_test(
+		"Word count pipeline",
+		"echo 'hello world hello' | tr ' ' '\\n' | sort | uniq -c"
+	)
+	
+	# Cut and sort pipeline
+	run_test(
+		"Cut and sort pipeline",
+		"echo -e 'field1,val1\\nfield2,val2' | cut -d',' -f2 | sort"
+	)
+	
+	# Multiple commands with pipes
+	run_test(
+		"Multiple commands pipe",
+		"echo 'hello world' | tr 'a-z' 'A-Z' | tr ' ' '_' | rev"
+	)
+	
+	# Pipeline with grep
+	run_test(
+		"Pipeline with grep",
+		"echo -e 'apple\\nbanana\\napricot' | grep 'ap'"
+	)
+	
+	# Pipeline with special characters
+	run_test(
+		"Pipeline with special chars",
+		"echo '!@#$%^&*()' | tr '!@#' 'ABC'"
+	)
+	
+	# Pipeline with sed
+	run_test(
+		"Pipeline with sed",
+		"echo 'hello world' | sed 's/hello/hi/'"
+	)
+	
+	# Long pipeline
+	run_test(
+		"Long pipeline",
+		"echo 'hello world' | tr 'a-z' 'A-Z' | tr ' ' '_' | rev | tr '_' ' ' | tr 'A-Z' 'a-z'"
+	)
+	
+	# Pipeline with quotes
+	run_test(
+		"Pipeline with quotes",
+		"echo 'hello\"world' | tr '\"' '_'"
+	)
+	
+	# Pipeline with head/tail
+	run_test(
+		"Pipeline with head/tail",
+		"seq 1 10 | head -n 5 | tail -n 2"
+	)
+
+	# Test error propagation
+	run_test(
+		"Error propagation in pipe",
+		"ls /nonexistent | wc -l"
+	)
+
+	# Test with non-existent commands
+	run_test(
+		"Non-existent command in pipe",
+		"echo hello | nonexistentcmd"
+	)
+
+	# Test with failed middle command
+	run_test(
+		"Failed middle command",
+		"echo hello | ls /nonexistent | wc -l"
+	)
+
+	print("\nRunning pipe with redirection tests...")
+	
+	# Test pipe with input redirection
+	test_mixed_redirection(
+		"Pipe with input redirection",
+		"hello world\ntest data",
+		["cat < test_input.txt | tr 'a-z' 'A-Z' > output.txt"],
+		"output.txt"
+	)
+	
+	# Test pipe with multiple redirections
+	test_mixed_redirection(
+		"Multiple redirections with pipe",
+		"first line\nsecond line",
+		[
+			"cat < test_input.txt | tr 'a-z' 'A-Z' > output.txt",
+			"echo '---' >> output.txt",
+			"cat < test_input.txt | tr 'A-Z' 'a-z' >> output.txt"
+		],
+		"output.txt"
+	)
+	
+	# Test complex pipeline with redirections
+	test_mixed_redirection(
+		"Complex pipeline with redirections",
+		"apple\nbanana\ncherry\napple",
+		[
+			"cat < test_input.txt | sort | uniq | tr 'a-z' 'A-Z' > sorted.txt",
+			"cat sorted.txt | grep 'A' >> final.txt"
+		],
+		"final.txt"
+	)
+	
+	# Test pipeline with multiple input files
+	test_mixed_redirection(
+		"Pipeline with multiple inputs",
+		"content1\ncontent2",
+		[
+			"echo 'content3\ncontent4' > input2.txt",
+			"cat < test_input.txt input2.txt | sort | uniq > combined.txt"
+		],
+		"combined.txt"
+	)
+	
+	# Test long pipeline with redirections
+	test_mixed_redirection(
+		"Long pipeline with redirections",
+		"hello\nworld\nhello\ntest",
+		[
+			"cat < test_input.txt | sort | uniq | tr 'a-z' 'A-Z' | grep 'H' > step1.txt",
+			"cat step1.txt | tr ' ' '_' | sort -r >> final.txt"
+		],
+		"final.txt"
+	)
+	
+	# Test pipeline with word counting and redirections
+	test_mixed_redirection(
+		"Word count pipeline with redirections",
+		"apple banana apple\ncherry banana",
+		[
+			"cat < test_input.txt | tr ' ' '\\n' | sort | uniq -c | sort -nr > counts.txt"
+		],
+		"counts.txt"
+	)
+	
+	# Test pipeline with sed and redirections
+	test_mixed_redirection(
+		"Sed pipeline with redirections",
+		"hello world\ngoodbye world",
+		[
+			"cat < test_input.txt | sed 's/world/earth/' | tr 'a-z' 'A-Z' > output.txt"
+		],
+		"output.txt"
+	)
+	
+	# Test pipeline with head/tail and redirections
+	test_mixed_redirection(
+		"Head/tail pipeline with redirections",
+		"line1\nline2\nline3\nline4\nline5",
+		[
+			"cat < test_input.txt | head -n 4 | tail -n 2 > middle.txt"
+		],
+		"middle.txt"
+	)
+	
+	# Test pipeline with file transformations
+	test_mixed_redirection(
+		"File transformation pipeline",
+		"Field1,Value1\nField2,Value2\nField3,Value3",
+		[
+			"cat < test_input.txt | cut -d',' -f2 | sort > values.txt",
+			"cat values.txt | tr 'a-z' 'A-Z' >> final.txt"
+		],
+		"final.txt"
+	)
+	
+	# Test pipeline with filtering and redirections
+	test_mixed_redirection(
+		"Filter pipeline with redirections",
+		"apple 123\nbanana 456\ncherry 789",
+		[
+			"cat < test_input.txt | grep '[0-9]' | cut -d' ' -f2 > numbers.txt"
+		],
+		"numbers.txt"
 	)
 
 	# # Test command output redirection

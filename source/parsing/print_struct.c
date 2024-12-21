@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/19 17:33:34 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/21 19:50:30 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	print_struct(t_cmd *cmd)
 	while (cmd)
 	{
 		i = 0;
-		printf("args:\n");
+		if (cmd->args && cmd->args[i])
+			printf("args:\n");
 		while (cmd->args && cmd->args[i])
 		{
 			printf("\"%s\" ", cmd->args[i]);

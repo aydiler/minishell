@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/21 19:07:38 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/21 21:41:46 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void	execute_program(t_cmd cmd, char **envp)
 {
 	char *cmd_path;
 	
+	if(!cmd.args[0])
+		exit(0);
 	cmd_path = find_command_in_path(cmd.args[0]);
 	if (!cmd_path)
 	{
@@ -96,7 +98,6 @@ static int handle_child_process(t_cmd cmd, int **pipes, int cmd_index, int cmd_c
 	exit(1);
 }
 
-
 int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 {
 	int     cmd_count;
@@ -152,7 +153,6 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 		if (WIFEXITED(status))
 		{
 			last_status = WEXITSTATUS(status);
-			//printf("Debug: Child process %d exited with status %d\n", pids[i], last_status);
 		}
 		else if (WIFSIGNALED(status))
 			last_status = 128 + WTERMSIG(status);
@@ -160,6 +160,5 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 	}
 	free_pipes(pipes, cmd_count);
 	free(pids);
-	//printf("Debug: Pipeline executed with status %d\n", last_status);
 	return last_status;
 }
