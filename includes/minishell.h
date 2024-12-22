@@ -28,6 +28,7 @@
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
 # define ERR_ENV_VAR	5000	// empty line
+# define PWD_MAX		40
 
 typedef struct s_cmd 
 {
@@ -83,6 +84,10 @@ void	set_original_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
 void	reset_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
+// build-ins
+int		ft_pwd(void);
+int		ft_env(char **envp);
+int		ft_export(char **envp, char **args);
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/14 16:04:23 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/22 18:28:19 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,11 @@ int	check_env_vars(char *line)
 	{
 		start = 0;
 		while (line[start] != '$')
+		{
+		// 	if (line[start] == '\'')
+		// 		start == jump_s_quote(line, start);
 			start++;
+		}
 		start++;
 		end = start;
 		while (is_env_var(line[end]))

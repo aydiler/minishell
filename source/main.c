@@ -32,6 +32,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		if (input[0])
 			exit_status = parser(&input, &cmd);
+		exit_status = ft_export(envp, cmd->args);
 		ft_memdel((void **)&(input));
 		if (exit_status || !cmd)
 		{
@@ -43,5 +44,6 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, envp, signal_handler);
 		free_all(&cmd);
 	}
+	rl_clear_history();
 	exit(exit_status);
 }
