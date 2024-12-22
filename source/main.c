@@ -45,6 +45,5 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, envp, signal_handler);
 		free_all(&cmd);
 	}
-	printf("exit status: %d\n", exit_status);
 	exit(exit_status);
 }
