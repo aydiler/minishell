@@ -12,7 +12,7 @@ void print_error_message(char *cmd, int error_type)
 		free(error_msg);
 		return;
 	}
-	ft_putstr_fd("minishell: ", 2);
+	//ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
 	if (error_type == ERR_NOT_FOUND)
 		ft_putstr_fd(": command not found\n", 2);

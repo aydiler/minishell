@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:14:26 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/22 19:39:25 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/23 16:02:47 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ int	builtin_cd(char **args)
 	char	*oldpwd;
 	char	*pwd;
 
-	printf("cd is called\n");
+	//printf("cd is called\n");
 	oldpwd = getcwd(NULL, 0);
 	// If no argument is provided, change to HOME directory
 	if (!args[1])
 	{
-		printf("no args\n");
+		//printf("no args\n");
 		path = getenv("HOME");
 		if (!path)
 		{
@@ -47,9 +47,10 @@ int	builtin_cd(char **args)
 	else
 		path = args[1];
 	// Change directory
-	printf("path: %s\n", path);
+	//printf("path: %s\n", path);
 	if (chdir(path) == -1)
 	{
+		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd("cd: ", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": ", 2);
@@ -59,11 +60,11 @@ int	builtin_cd(char **args)
 	}
 	// Update PWD and OLDPWD environment variables
 	pwd = getcwd(NULL, 0);
-	printf("Current directory according to getcwd: %s\n", pwd);
+	//printf("Current directory according to getcwd: %s\n", pwd);
 	setenv("OLDPWD", oldpwd, 1);
     setenv("PWD", pwd, 1);
-    printf("After setenv - PWD=%s\n", getenv("PWD"));
-    printf("After setenv - OLDPWD=%s\n", getenv("OLDPWD"));
+    //printf("After setenv - PWD=%s\n", getenv("PWD"));
+    //printf("After setenv - OLDPWD=%s\n", getenv("OLDPWD"));
 	free(oldpwd);
 	free(pwd);
 	return (0);

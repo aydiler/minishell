@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/17 15:11:06 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/23 16:24:53 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_error(t_cmd **cmd, int exit_status)
 	else if (exit_status == ERR_PIPE)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
 	else if (exit_status == ERR_ENV_VAR)
-		ft_putstr_fd("\n", 2);
+		return ;
 	else if (exit_status == 0)
 		return ;
 	else
