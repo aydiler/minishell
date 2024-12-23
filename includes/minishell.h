@@ -59,6 +59,7 @@ char	*getenv_range(char *start, size_t *len_var);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
+void	handle_redirection_execution(t_cmd cmd);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
@@ -80,8 +81,6 @@ void	print_args(char **args);
 int		create_empty_files(t_cmd cmd);
 int		handle_infile(t_cmd cmd);
 int		handle_outfile(t_cmd cmd);
-void	set_original_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
-void	reset_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
 // pipes
@@ -89,5 +88,11 @@ int		count_pipes(t_cmd *cmd);
 void	free_pipes(int **pipes, int cmd_count);
 int		**create_pipe_array(int cmd_count);
 int		create_pipes(int **pipes, int cmd_count);
+// builtins
+int		is_child_builtin(char **args);
+int		is_parent_builtin(char **args);
+void	handle_child_builtin(char **args);
+int		execute_parent_builtin(t_cmd *cmd);
+int		builtin_cd(char **args);
 
 #endif

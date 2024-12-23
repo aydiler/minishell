@@ -35,7 +35,7 @@ int main(int argc, char **argv, char **envp)
 		if (input[0])
 			error_check = parser(&input, &cmd);
 		ft_memdel((void **)&(input));
-		if (error_check || !cmd)
+		if (error_check != ERR_ENV_VAR && (error_check || !cmd))
 		{
 			ft_error(&cmd, error_check);
 			continue ;
@@ -45,6 +45,5 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, envp, signal_handler);
 		free_all(&cmd);
 	}
-	printf("exit status: %d\n", exit_status);
 	exit(exit_status);
 }
