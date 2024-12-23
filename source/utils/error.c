@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/23 16:24:53 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/23 20:12:58 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 // error messege !!!
 void	ft_error(t_cmd **cmd, int exit_status)
 {
