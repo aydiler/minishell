@@ -14,6 +14,7 @@
 # include "../source/helpers/get_next_line/get_next_line.h"
 # include <signal.h>
 # include <termios.h>
+# include <limits.h>
 
 # define ERR_NOT_FOUND	1
 # define ERR_PERMISSION	2
@@ -28,7 +29,7 @@
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
 # define ERR_ENV_VAR	5000	// empty line
-# define PWD_MAX		40
+# define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
 
@@ -98,8 +99,8 @@ int		create_pipes(int **pipes, int cmd_count);
 // builtins
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
-void	handle_child_builtin(char **args);
-int		execute_parent_builtin(t_cmd *cmd);
-int		builtin_cd(char **args);
+void	handle_child_builtin(char **args, char **envp);
+int		execute_parent_builtin(t_cmd *cmd, char **envp);
+int		ft_cd(char **args);
 
 #endif
