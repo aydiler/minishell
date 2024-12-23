@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/23 17:16:04 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/23 20:51:49 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	add_env(char ***envp, char *new_env_var)
 		return (free_new_envp(new_envp, i));
 	new_envp[i + 1] = NULL;
 	*envp = new_envp;
-	free_new_envp(new_envp, (i + 1))
+	free_new_envp(new_envp, (i + 1));
 	return (0);
 }
 

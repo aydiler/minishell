@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/22 21:34:00 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/23 21:02:23 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void execute_program(t_cmd cmd, char **envp)
 	if (!cmd.args || !cmd.args[0])
         exit(0); 
 	if (is_child_builtin(cmd.args))
-		handle_child_builtin(cmd.args);
+		handle_child_builtin(cmd.args, envp);
 	cmd_path = find_command_in_path(cmd.args[0]);
 	if (!cmd_path)
 	{
@@ -156,7 +156,7 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 	if(!cmd || !cmd->args || !cmd->args[0])
 		return 0;
 	if (!cmd->next && is_parent_builtin(cmd->args))
-		return execute_parent_builtin(cmd);
+		return execute_parent_builtin(cmd, envp);
 	cmd_count = initialize_pipeline(cmd, &pipes, &pids);
 	if (cmd_count == -1)
 		return 1;
