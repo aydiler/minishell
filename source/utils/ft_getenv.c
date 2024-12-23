@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_getenv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 20:09:54 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/23 20:27:34 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/23 20:52:18 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 char	*ft_getenv(char *name, char **envp)
 {
 	int		i;
-	char	*value;
 
 	i = 0;
 	if (!name || !*name || !envp)
