@@ -62,7 +62,7 @@ int		check_redirections(char *token);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
+int		execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
 // Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
@@ -85,9 +85,10 @@ void	reset_fds(t_cmd cmd, int *original_stdout, int *original_stdin);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
 // build-ins
+int		free_new_envp(char **new_envp, int j);
 int		ft_pwd(void);
 int		ft_env(char **envp);
-int		ft_export(char **envp, char **args);
+int		ft_export(char ***envp, char **args);
 
 
 #endif

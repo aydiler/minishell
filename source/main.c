@@ -32,7 +32,8 @@ int main(int argc, char **argv, char **envp)
 		}
 		if (input[0])
 			exit_status = parser(&input, &cmd);
-		exit_status = ft_export(envp, cmd->args);
+		if (cmd && cmd->args && !ft_strcmp(cmd->args[0], "export"))
+			exit_status = ft_export(&envp, cmd->args);
 		ft_memdel((void **)&(input));
 		if (exit_status || !cmd)
 		{
