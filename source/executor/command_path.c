@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_path.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/21 21:41:26 by adiler            #+#    #+#             */
+/*   Updated: 2024/12/21 21:41:27 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static char **get_paths()
@@ -30,7 +42,7 @@ char *find_command_in_path(char *cmd)
 	int		i;
 
 	i = 0;
-	if (cmd[0] == '/' || cmd[0] == '.')
+	if (cmd[0] && (cmd[0] == '/' || cmd[0] == '.'))
 		return (ft_strdup(cmd));
 	paths = get_paths();
 	if (!paths)

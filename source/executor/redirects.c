@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirects.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/21 18:11:41 by adiler            #+#    #+#             */
+/*   Updated: 2024/12/22 21:07:40 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int create_empty_files(t_cmd cmd)
@@ -66,24 +78,18 @@ int handle_outfile(t_cmd cmd)
 	return 0;
 }
 
-void	set_original_fds(t_cmd cmd, int *original_stdout, int *original_stdin)
+void	handle_redirection_execution(t_cmd cmd)
 {
-	if (cmd.output_file)
-		*original_stdout = dup(STDOUT_FILENO);
+	if (create_empty_files(cmd))
+		exit(1);
 	if (cmd.input_file)
-		*original_stdin = dup(STDIN_FILENO);
-}
-
-void reset_fds(t_cmd cmd, int *original_stdout, int *original_stdin)
-{
-	if (cmd.output_file)
 	{
-		dup2(*original_stdout, STDOUT_FILENO);
-		close(*original_stdout);
+		if (handle_infile(cmd))
+			exit(1);
 	}
-	if (cmd.input_file)
+	if (cmd.output_file)
 	{
-		dup2(*original_stdin, STDIN_FILENO);
-		close(*original_stdin);
+		if (handle_outfile(cmd))
+			exit(1);
 	}
 }
