@@ -28,6 +28,7 @@
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
 # define ERR_ENV_VAR	5000	// empty line
+# define PWD_MAX		40
 # define READ_END		0
 # define WRITE_END		1
 
@@ -44,6 +45,7 @@ typedef struct s_cmd
 int		parser(char **line, t_cmd **cmd);
 char	**tokenizer(char *line);
 int		handle_env_vars(char **line);
+int		handle_unclosed_quotes(char **line);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);
@@ -63,7 +65,7 @@ void	handle_redirection_execution(t_cmd cmd);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
+int		execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
 // Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
@@ -83,6 +85,11 @@ int		handle_infile(t_cmd cmd);
 int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
+// build-ins
+int		free_new_envp(char **new_envp, int j);
+int		ft_pwd(void);
+int		ft_env(char **envp);
+int		ft_export(char ***envp, char **args);
 // pipes
 int		count_pipes(t_cmd *cmd);
 void	free_pipes(int **pipes, int cmd_count);

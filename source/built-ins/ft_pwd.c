@@ -1,40 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/24 13:21:19 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/20 15:49:07 by maahoff          ###   ########.fr       */
+/*   Created: 2024/12/20 17:36:33 by maahoff           #+#    #+#             */
+/*   Updated: 2024/12/21 20:58:45 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+int	ft_pwd(void)
 {
-	int		i;
-	char	*str;
+	char	buf[_PC_PATH_MAX];
 
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
-	i = 0;
-	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!str)
-		return (NULL);
-	while (*s1)
+	printf("%d\n", _PC_PATH_MAX);
+	if (getcwd(buf, sizeof(buf)))
 	{
-		str[i] = *s1;
-		s1++;
-		i++;
+		ft_putstr_fd(buf, 2);
+		write(1, "\n", 1);
+		return (0);
 	}
-	while (*s2)
-	{
-		str[i] = *s2;
-		s2++;
-		i++;
-	}
-	str[i] = 0;
-	return (str);
+	else
+		return (1);
 }
+

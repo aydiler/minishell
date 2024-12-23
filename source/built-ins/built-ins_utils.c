@@ -1,40 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   built-ins_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/24 13:21:19 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/20 15:49:07 by maahoff          ###   ########.fr       */
+/*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
+/*   Updated: 2024/12/23 16:46:12 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+int	free_new_envp(char **new_envp, int j)
 {
-	int		i;
-	char	*str;
-
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
-	i = 0;
-	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!str)
-		return (NULL);
-	while (*s1)
-	{
-		str[i] = *s1;
-		s1++;
-		i++;
-	}
-	while (*s2)
-	{
-		str[i] = *s2;
-		s2++;
-		i++;
-	}
-	str[i] = 0;
-	return (str);
+	while (--j >= 0)
+		free(new_envp[j]);
+	free(new_envp);
+	return (ERR_NOMEM);
 }
