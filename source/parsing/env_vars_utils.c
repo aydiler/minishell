@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:37:49 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/23 21:13:42 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/27 23:49:22 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ char	*getenv_range(char *start, size_t *len_var, char **envp)
 		(*len_var)++;
 	temp = ft_strn(start, *len_var);
 	env_var = ft_getenv(temp, envp);
+	if (!env_var)
+		return (NULL);
 	ft_memdel((void **)&(temp));
 	if (!env_var)
 		return (NULL);

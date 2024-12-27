@@ -53,6 +53,7 @@ t_cmd	*new_pipe(char **args);
 int		next_pipe(char *line, int i);
 char	**remove_n_token(char **args, int i, int n);
 char	**ft_realloc(char **arr, size_t new_size);
+int		jump_s_quote(char *line, int start);
 	// env_vars utils
 int		is_env_var(char c);
 int		is_tilde(char *line, int i);
