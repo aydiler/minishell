@@ -36,7 +36,7 @@ int main(int argc, char **argv, char **envp)
 			save_history(input);
 		}
 		if (input[0])
-			error_check = parser(&input, &cmd);
+			error_check = parser(&input, &cmd, envp);
 		ft_memdel((void **)&(input));
 		if (error_check != ERR_ENV_VAR && (error_check || !cmd))
 		{

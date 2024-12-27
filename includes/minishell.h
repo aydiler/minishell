@@ -43,9 +43,9 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 // Parser funktions:
-int		parser(char **line, t_cmd **cmd);
+int		parser(char **line, t_cmd **cmd, char **envp);
 char	**tokenizer(char *line);
-int		handle_env_vars(char **line);
+int		handle_env_vars(char **line, char **envp);
 int		handle_unclosed_quotes(char **line);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
@@ -58,7 +58,7 @@ int		is_env_var(char c);
 int		is_tilde(char *line, int i);
 int		exchange_tilde(char **line, int i);
 int		skip_quote(char *line, int *i);
-char	*getenv_range(char *start, size_t *len_var);
+char	*getenv_range(char *start, size_t *len_var, char **envp);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
@@ -75,6 +75,7 @@ void	ft_error(t_cmd **cmd, int exit_status);
 void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
 char 	**ft_2Ddup(char **arr);
+char	*ft_getenv(char *name, char **envp);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);

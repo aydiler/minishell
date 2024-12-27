@@ -36,19 +36,17 @@ int	print_env(char **envp)
 	return (0);
 }
 
-void	replace_env(char **envp, char *new_env_var, char *name)
+void	replace_env(char ***envp, char *new_env_var, char *name)
 {
 	int	i;
 
 	i = 0;
-	while (envp[i])
+	while ((*envp)[i])
 	{
-		printf("envp[%d]: %s\n", i, envp[i]);
-		if (!strncmp(envp[i], name, ft_strlen(name)) && 
-			envp[i][ft_strlen(name)] == '=')
+		if (!strncmp((*envp)[i], name, ft_strlen(name)) && 
+			(*envp)[i][ft_strlen(name)] == '=')
 		{
-			printf("a%s\n", new_env_var);
-			envp[i] = new_env_var;
+			(*envp)[i] = new_env_var;
 			return ;
 		}
 		i++;
@@ -96,8 +94,8 @@ int	add_replace_env(char ***envp, char **args)
 	if (!name)
 		return (ERR_NOMEM);
 	name = ft_strncpy(name, args[1], ft_strlen(equal) - 1);
-	if (getenv(name))
-		replace_env(*envp, args[1], name);
+	if (ft_getenv(name, *envp))
+		replace_env(envp, args[1], name);
 	else
 		error_check = add_env(envp, args[1]);
 	return (error_check);

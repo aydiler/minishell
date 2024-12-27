@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/26 13:18:30 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/23 21:13:17 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	handle_tilde(char **line)
 	return (0);
 }
 
-int	proces_env_var(char **line)
+int	proces_env_var(char **line, char **envp)
 {
 	char	*env_var;
 	int		i;
@@ -70,16 +70,16 @@ int	proces_env_var(char **line)
 	len_var = 0;
 	while ((*line)[i] && (*line)[i] != '$')
 		i++;
-	if (!getenv_range(&((*line)[i + 1]), &len_var))
+	if (!getenv_range(&((*line)[i + 1]), &len_var, envp))
 		return (ERR_ENV_VAR);
-	env_var = getenv_range(&((*line)[i + 1]), &len_var);
+	env_var = getenv_range(&((*line)[i + 1]), &len_var, envp);
 	if (!env_var)
 		return (ERR_NOMEM);
 	error_check = exchange_var(line, env_var, i, len_var);
 	return (error_check);
 }
 
-int	check_env_vars(char *line)
+int	check_env_vars(char *line, char **envp)
 {
 	int		start;
 	int		end;
@@ -101,7 +101,7 @@ int	check_env_vars(char *line)
 		temp = ft_strn(&(line[start]), end - start);
 		if (!temp)
 			return (ERR_NOMEM);
-		if (getenv(temp))
+		if (ft_getenv(temp, envp))
 			return (ft_memdel((void **)&(temp)), 0);
 		else
 			return (ft_memdel((void **)&(temp)), ERR_ENV_VAR);
@@ -109,7 +109,7 @@ int	check_env_vars(char *line)
 	return (1);
 }
 
-int	handle_env_vars(char **line)
+int	handle_env_vars(char **line, char **envp)
 {
 	int		error_check;
 	int		var_check;
@@ -121,15 +121,15 @@ int	handle_env_vars(char **line)
 		error_check = handle_tilde(line);
 	if (error_check)
 		return (error_check);
-	var_check = check_env_vars(*line);
+	var_check = check_env_vars(*line, envp);
 	if (var_check && var_check != 1)
 		return (var_check);
 	while (!var_check && !error_check && line && *line)
 	{
-		error_check = proces_env_var(line);
+		error_check = proces_env_var(line, envp);
 		if (error_check)
 			return (error_check);
-		var_check = check_env_vars(*line);
+		var_check = check_env_vars(*line, envp);
 		if (var_check && var_check != 1)
 			return (var_check);
 	}
