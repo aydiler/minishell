@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/23 20:51:49 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/27 18:17:21 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,24 @@
 
 int	print_env(char **envp)
 {
-	char	*temp;
 	char	**start;
 	int		i;
+	char	*equal;
+	char	*name;
 
-	i = 0;
 	start = envp;
-	while (envp[i] && envp[i + 1])
-	{
-		if (ft_strcmp(envp[i], envp[i + 1]) > 0)
-		{
-			temp = envp[i];
-			envp[i] = envp[i + 1];
-			envp[i + 1] = temp;
-			i = 0;
-		}
-		else
-			i++;
-	}
+	envp = ft_sort_envp(&envp);
 	i = -1;
 	while (envp[++i])
-		printf("declare -x %s\n", envp[i]);
+	{
+		equal = ft_strdup(ft_strchr(envp[i], '='));
+		if (!equal)
+			return (0);
+		name = ft_strn(envp[i], (int)(ft_strlen(envp[i]) - ft_strlen(equal)));
+		printf("declare -x %s=\"%s\"\n", name, equal + 1);
+		free(equal);
+		free(name);
+	}
 	envp = start;
 	return (0);
 }
@@ -75,14 +72,14 @@ int	add_env(char ***envp, char *new_env_var)
 	{
 		new_envp[j] = ft_strdup((*envp)[j]);
 		if (!new_envp[j])
-			return (free_new_envp(new_envp, j));
+			return (ft_free_arr(new_envp, j));
 	}
 	new_envp[i] = ft_strdup(new_env_var);
 	if (!new_envp[i])
-		return (free_new_envp(new_envp, i));
+		return (ft_free_arr(new_envp, i));
 	new_envp[i + 1] = NULL;
 	*envp = new_envp;
-	free_new_envp(new_envp, (i + 1));
+	ft_free_arr(new_envp, (i + 1));
 	return (0);
 }
 

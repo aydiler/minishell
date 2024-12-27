@@ -6,8 +6,11 @@ int main(int argc, char **argv, char **envp)
 	t_cmd	*cmd;
 	int		exit_status;
 	int		error_check;
+	char	**dup_envp;
+	int		i;
 
 	error_check = 0;
+	dup_envp = ft_2Ddup(envp);
 	cmd = NULL;
 	exit_status = 0;
 	(void)argc;
@@ -42,9 +45,13 @@ int main(int argc, char **argv, char **envp)
 		}
 		//print_struct(cmd);
 		if (cmd)
-			exit_status = execute_pipeline(cmd, envp, signal_handler);
+			exit_status = execute_pipeline(cmd, dup_envp, signal_handler);
 		free_all(&cmd);
 	}
+	i = 0;
+	while(dup_envp[i])
+		i++;
+	ft_free_arr(dup_envp, i);
 	rl_clear_history();
 	exit(exit_status);
 }

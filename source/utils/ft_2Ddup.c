@@ -1,42 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built-ins_utils.c                                  :+:      :+:    :+:   */
+/*   ft_2Ddup.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/27 18:13:17 by maahoff          ###   ########.fr       */
+/*   Created: 2024/12/27 18:04:37 by maahoff           #+#    #+#             */
+/*   Updated: 2024/12/27 23:22:23 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	**ft_sort_envp(char ***envp)
+char **ft_2Ddup(char **arr)
 {
-	int	i;
-	char *temp;
+	char **dup;
+	int		i;
 
 	i = 0;
-	while ((*envp)[i] && (*envp)[i + 1])
+	if (!arr || !*arr)
+		return (NULL);
+	while (arr[i])
+		i++;
+	dup = malloc(sizeof(char *) * (i + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (arr[i])
 	{
-		if (ft_strcmp((*envp)[i], (*envp)[i + 1]) > 0)
-		{
-			temp = (*envp)[i];
-			(*envp)[i] = (*envp)[i + 1];
-			(*envp)[i + 1] = temp;
-			i = 0;
-		}
-		else
-			i++;
+		dup[i] = ft_strn(arr[i], ft_strlen(arr[i]));
+		if (!dup[i])
+			return (ft_free_arr(dup, i), NULL);
+		i++;
 	}
-	return (*envp);
-}
-
-int	ft_free_arr(char **new_envp, int j)
-{
-	while (--j >= 0)
-		free(new_envp[j]);
-	free(new_envp);
-	return (ERR_NOMEM);
+	dup[i] = NULL;
+	return (dup);
 }

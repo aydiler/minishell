@@ -74,6 +74,7 @@ char	*find_command_in_path(char *cmd);
 void	ft_error(t_cmd **cmd, int exit_status);
 void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
+char 	**ft_2Ddup(char **arr);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);
@@ -87,7 +88,8 @@ int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
 // build-ins
-int		free_new_envp(char **new_envp, int j);
+char	**ft_sort_envp(char ***envp);
+int		ft_free_arr(char **new_envp, int j);
 int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
