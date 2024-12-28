@@ -7,7 +7,6 @@ int main(int argc, char **argv, char **envp)
 	int		exit_status;
 	int		error_check;
 	char	**dup_envp;
-	int		i;
 
 	error_check = 0;
 	dup_envp = ft_2Ddup(envp);
@@ -48,10 +47,7 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, &dup_envp, signal_handler);
 		free_all(&cmd);
 	}
-	i = 0;
-	while(dup_envp[i])
-		i++;
-	ft_free_arr(dup_envp, i);
+	ft_free_arr(dup_envp);
 	rl_clear_history();
 	exit(exit_status);
 }

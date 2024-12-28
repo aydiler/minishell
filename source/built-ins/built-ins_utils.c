@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/28 11:33:47 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/28 18:54:54 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,19 @@ char	**ft_sort_envp(char **envp)
 	return (envp);
 }
 
-int	ft_free_arr(char **new_envp, int j)
+int	ft_free_arr(char **arr)
 {
-	while (--j >= 0)
-		free(new_envp[j]);
-	free(new_envp);
+	int	i;
+
+	i = 0;
+	if (!arr)
+		return (ERR_NOMEM);
+	while (arr[i])
+	{
+		free(arr[i]);
+		arr[i] = NULL;
+		i++;
+	}
+	free(arr);
 	return (ERR_NOMEM);
 }
