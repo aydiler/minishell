@@ -67,7 +67,7 @@ void	handle_redirection_execution(t_cmd cmd);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int		execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
+int		execute_pipeline(t_cmd *cmd, char ***envp, void (*signal_handler)(int));
 // Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
@@ -90,7 +90,7 @@ int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
 // build-ins
-char	**ft_sort_envp(char ***envp);
+char	**ft_sort_envp(char **envp);
 int		ft_free_arr(char **new_envp, int j);
 int		ft_pwd(void);
 int		ft_env(char **envp);
@@ -104,7 +104,7 @@ int		create_pipes(int **pipes, int cmd_count);
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
 void	handle_child_builtin(char **args, char **envp);
-int		execute_parent_builtin(t_cmd *cmd, char **envp);
+int		execute_parent_builtin(t_cmd *cmd, char ***envp);
 int		ft_cd(char **args);
 
 #endif

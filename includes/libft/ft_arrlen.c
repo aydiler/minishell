@@ -1,42 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built-ins_utils.c                                  :+:      :+:    :+:   */
+/*   ft_arrlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/28 11:33:47 by maahoff          ###   ########.fr       */
+/*   Created: 2024/12/28 11:27:12 by maahoff           #+#    #+#             */
+/*   Updated: 2024/12/28 11:28:57 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "libft.h"
 
-char	**ft_sort_envp(char **envp)
+int	ft_arrlen(char **arr)
 {
 	int	i;
-	char *temp;
 
 	i = 0;
-	while ((envp)[i] && (envp)[i + 1])
-	{
-		if (ft_strcmp(envp[i], (envp)[i + 1]) > 0)
-		{
-			temp = (envp)[i];
-			(envp)[i] = (envp)[i + 1];
-			(envp)[i + 1] = temp;
-			i = 0;
-		}
-		else
-			i++;
-	}
-	return (envp);
-}
-
-int	ft_free_arr(char **new_envp, int j)
-{
-	while (--j >= 0)
-		free(new_envp[j]);
-	free(new_envp);
-	return (ERR_NOMEM);
+	if (!arr)
+		return (0);
+	while (arr[i])
+		i++;
+	return (i);
 }

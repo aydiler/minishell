@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/23 21:02:23 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/28 11:04:57 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ static int wait_for_children(int *pids, int cmd_count)
 	return last_status;
 }
 
-int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
+int execute_pipeline(t_cmd *cmd, char ***envp, void (*signal_handler)(int))
 {
 	int **pipes;
 	int *pids;
@@ -160,7 +160,7 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 	cmd_count = initialize_pipeline(cmd, &pipes, &pids);
 	if (cmd_count == -1)
 		return 1;
-	if (!spawn_processes(cmd, pipes, pids, cmd_count, envp))
+	if (!spawn_processes(cmd, pipes, pids, cmd_count, *envp))
 	{
 		free_pipes(pipes, cmd_count);
 		free(pids);

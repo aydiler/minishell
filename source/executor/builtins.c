@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 21:05:20 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/23 21:01:19 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/28 11:05:58 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	is_parent_builtin(char **args)
 	return (0);
 }
 
-int execute_parent_builtin(t_cmd *cmd, char **envp)
+int execute_parent_builtin(t_cmd *cmd, char ***envp)
 {
 	int exit_status;
 	int stdin_backup = dup(STDIN_FILENO);
@@ -64,7 +64,7 @@ int execute_parent_builtin(t_cmd *cmd, char **envp)
 	if (!ft_strncmp(cmd->args[0], "cd", 3))
 		exit_status = ft_cd(cmd->args);
 	if (!ft_strncmp(cmd->args[0], "export", 7))
-		exit_status = ft_export(&envp, cmd->args);
+		exit_status = ft_export(envp, cmd->args);
 	// if (!ft_strncmp(cmd->args[0], "unset", 6))
 	// 	exit_status = builtin_unset(cmd->args);
 	// if (!ft_strncmp(cmd->args[0], "exit", 5))

@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 13:18:56 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/22 18:34:06 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/28 11:29:13 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,6 @@ char	*ft_strncpy(char *dest, char *src, int n);
 char	*ft_strn(char *str, int n);
 void	ft_memdel(void **ptr);
 int		ft_strcmp(const char *s1, const char *s2);
+int		ft_arrlen(char **arr);
 
 #endif
