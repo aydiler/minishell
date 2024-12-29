@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/28 18:52:18 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/29 10:30:26 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@ int	print_env(char **envp)
 
 	temp = ft_2Ddup(envp);
 	temp = ft_sort_envp(envp);
+	print_envp(temp);
 	i = -1;
 	while (temp[++i])
 	{
 		equal = ft_strdup(ft_strchr(envp[i], '='));
 		if (!equal)
 			return (ERR_NOMEM);
-		name = ft_strn(temp[i], (int)(ft_strlen(temp[i]) - ft_strlen(equal)));
+		name = ft_strndup(temp[i], (int)(ft_strlen(temp[i]) - ft_strlen(equal)));
 		if (!name)
 			return (ERR_NOMEM);
 		printf("declare -x %s=\"%s\"\n", name, equal + 1);
@@ -95,7 +96,7 @@ int	add_replace_env(char ***envp, char **args)
 	equal = ft_strdup(ft_strchr(args[1], '='));
 	if (!equal)
 		return (0);
-	name = ft_strn(args[1], (ft_strlen(args[1]) - ft_strlen(equal)));
+	name = ft_strndup(args[1], (ft_strlen(args[1]) - ft_strlen(equal)));
 	if (!name)
 		return (ERR_NOMEM);
 	temp = ft_getenv(name, *envp);

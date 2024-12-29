@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:37:49 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/27 23:49:22 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/29 10:30:26 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	*getenv_range(char *start, size_t *len_var, char **envp)
 
 	while (is_env_var(start[*len_var]))
 		(*len_var)++;
-	temp = ft_strn(start, *len_var);
+	temp = ft_strndup(start, *len_var);
 	env_var = ft_getenv(temp, envp);
 	if (!env_var)
 		return (NULL);

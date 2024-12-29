@@ -83,6 +83,7 @@ void	setup_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
+int		print_env(char **envp);
 // fds
 int		create_empty_files(t_cmd cmd);
 int		handle_infile(t_cmd cmd);

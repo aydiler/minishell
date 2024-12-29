@@ -47,6 +47,7 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, &dup_envp, signal_handler);
 		free_all(&cmd);
 	}
+	print_env(dup_envp);
 	ft_free_arr(dup_envp);
 	rl_clear_history();
 	exit(exit_status);

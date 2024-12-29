@@ -6,13 +6,13 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:43:50 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/13 17:56:56 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/29 10:30:26 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strn(char *str, int n)
+char	*ft_strndup(char *str, int n)
 {
 	char	*new_str;
 	int		i;

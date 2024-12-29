@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/28 18:54:54 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/29 10:04:54 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	ft_free_arr(char **arr)
 	i = 0;
 	if (!arr)
 		return (ERR_NOMEM);
-	while (arr[i])
+	while (arr[i] && arr[i][0])
 	{
 		free(arr[i]);
 		arr[i] = NULL;

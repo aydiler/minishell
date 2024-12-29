@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/28 00:04:53 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/29 10:30:26 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int	check_env_vars(char *line, char **envp)
 		end = start;
 		while (is_env_var(line[end]))
 			end++;
-		temp = ft_strn(&(line[start]), end - start);
+		temp = ft_strndup(&(line[start]), end - start);
 		if (!temp)
 			return (ERR_NOMEM);
 		temp2 = ft_getenv(temp, envp);
