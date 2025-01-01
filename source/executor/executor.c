@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/23 21:02:23 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/24 17:42:46 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,21 +44,15 @@ static void setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count
 	int	i;
 
 	i = 0;
-	if (cmd_index > 0)
+	if (cmd_index > 0 && !cmd->input_file)
 	{
-		if (!cmd->input_file)
-		{
 			if (dup2(pipes[cmd_index - 1][READ_END], STDIN_FILENO) == -1)
 				exit(1);
-		}
 	}
-	if (cmd_index < cmd_count - 1)
+	if (cmd_index < cmd_count - 1 && !cmd->output_file)
 	{
-		if (!cmd->output_file)
-		{
 			if (dup2(pipes[cmd_index][WRITE_END], STDOUT_FILENO) == -1)
 				exit(1);
-		}
 	}
 	while (i < cmd_count - 1)
 	{

@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:14:26 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/23 20:54:02 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/24 23:18:15 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,27 +52,38 @@ void chdir_error(char *path)
 	ft_putstr_fd("\n", 2);
 }
 
-int	ft_cd(char **args)
+int set_path(char **path, char **args)
 {
-	char	*path;
-	char	*oldpwd;
-	char	*pwd;
+	if (!args[1])
+		return cd_no_arg(path, args);
+	else if (args[1][0] == '-' && !args[1][1])
+		return cd_old_pwd(path, args);
+	else if (args[1])
+	{
+		*path = args[1];
+		return 0;
+	}
+	return 1;
+}
 
+int ft_cd(char **args)
+{
+	char *path;
+	char *oldpwd;
+	char *pwd;
+
+	if(set_path(&path, args))
+		return (1);
 	oldpwd = getcwd(NULL, 0);
-	if (cd_no_arg(&path, args))
-		return (1);
-	if (cd_old_pwd(&path, args))
-		return (1);
-	else
-		path = args[1];
 	if (chdir(path) == -1)
 	{
 		chdir_error(path);
-		return (1);		
+		free(oldpwd);
+		return (1);
 	}
 	pwd = getcwd(NULL, 0);
 	setenv("OLDPWD", oldpwd, 1);
-    setenv("PWD", pwd, 1);
+	setenv("PWD", pwd, 1);
 	free(oldpwd);
 	free(pwd);
 	return (0);

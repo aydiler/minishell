@@ -8,6 +8,7 @@ Core Shell Features
 	Global variable for signals only X
 	ctrl-C: New prompt on new line X
 	ctrl-D: Exit shell X
+	ctrl-/: 
 	ctrl-: No action X
 
 
@@ -18,7 +19,7 @@ Command Parsing
 	Handle environment variables ($VAR)
 	Handle exit status ($?)
 	Skip interpretation of unclosed quotes X
-	Skip interpretation of \ and ;
+	Skip interpretation of \ and ; X
 
 
 Redirections
@@ -27,18 +28,18 @@ Redirections
 	Output redirection (>) X
 	Here document (<<)
 	Append output (>>) X
-	Pipes (|)
+	Pipes (|) X
 
 
 Built-in Commands
 
-	echo (with -n option) 
+	echo (with -n option) a
 	cd (relative/absolute paths) a
 	pwd (no options) m
 	export (no options) m
 	unset (no options) m
 	env (no options/arguments) m
-	exit (no options) 
+	exit (no options) a
 
 
 Technical Requirements
