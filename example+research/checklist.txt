@@ -33,7 +33,7 @@ Redirections
 
 Built-in Commands
 
-	echo (with -n option) a
+	echo (with -n option) a X
 	cd (relative/absolute paths) a X
 	pwd (no options) m X
 	export (no options) m X
@@ -47,3 +47,37 @@ Technical Requirements
 	Memory management (no leaks except readline)
 	Error handling
 	Makefile (all, clean, fclean, re)
+
+
+Todo
+
+Testing CD with undefined variable...
+ Command: 'cd $NONEXISTENT; pwd'                                                                                         
+ Expected pwd (bash): /home/ubuntu                                                                                       
+ Got pwd (minishell): /home/ubuntu/42/minishell/tester
+ -> pass env var to cd builin
+
+minishell$ cd /
+minishell$ ls
+Error opening history file
+bin   dev  home  lib    lib64   lost+found  mnt  proc  run   snap  sys  usr
+boot  etc  init  lib32  libx32  media       opt  root  sbin  srv   tmp  var 
+-> error opening history file when working dir outside of home
+
+minishell$ echo "cat testfile.txt | cat > lol.c"
+cat: ''$'\021\003': No such file or directory
+-> not handling pipe in double quotes
+
+minishell$ echo '$USER'
+ubuntu  
+-> not handling env var in single quotes
+
+export var -> segfault
+export not creating env vars
+env var -> showing all
+
+ctrl-\ after running one command is buggin out the cursor
+
+minishell$ cat^C
+minishell$ minishell$  
+-> double prompt

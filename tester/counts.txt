@@ -1,3 +1,2 @@
-      2 banana
-      2 apple
-      1 cherry
+      1 cherry banana
+      1 apple banana apple
