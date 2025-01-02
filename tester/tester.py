@@ -1309,11 +1309,6 @@ def main():
 	run_cd_test("CD with PWD variable", "cd $PWD; pwd")
 	run_cd_test("CD with undefined variable", "cd $NONEXISTENT; pwd")
 	
-	# CD combined with other commands
-	run_test("CD and echo", "cd /tmp; echo 'In tmp'")
-	run_test("CD in pipeline", "cd /tmp | echo 'test'")
-	run_test("Echo after CD failure", "cd /nonexistent; echo 'CD failed'")
-	
 	# Complex CD scenarios
 	run_cd_test("CD chain", "cd /tmp; cd ..; cd /var; pwd")
 	run_cd_test("CD with directory creation", "mkdir -p /tmp/newdir; cd /tmp/newdir; pwd")

@@ -19,7 +19,7 @@ void execute_program(t_cmd cmd, char **envp)
 	if (!cmd.args || !cmd.args[0])
         exit(0); 
 	if (is_child_builtin(cmd.args))
-		handle_child_builtin(cmd.args, envp);
+		execute_child_builtin(cmd.args, envp);
 	cmd_path = find_command_in_path(cmd.args[0]);
 	if (!cmd_path)
 	{
