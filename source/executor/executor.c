@@ -149,6 +149,7 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 
 	if(!cmd || !cmd->args || !cmd->args[0])
 		return 0;
+	g_child_running = 1;
 	if (!cmd->next && is_parent_builtin(cmd->args))
 		return execute_parent_builtin(cmd, envp);
 	cmd_count = initialize_pipeline(cmd, &pipes, &pids);
@@ -164,6 +165,7 @@ int execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int))
 	signal(SIGQUIT, signal_handler);
 	close_pipes(pipes, cmd_count);
 	last_status = wait_for_children(pids, cmd_count);
+	g_child_running = 0;
 	free_pipes(pipes, cmd_count);
 	free(pids);
 	return last_status;

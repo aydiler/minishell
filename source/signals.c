@@ -14,6 +14,11 @@
 
 void	signal_handler(int signo)
 {
+    if(g_child_running)
+    {
+        write(1, "\n", 1);
+        return ;
+    }
 	if (signo == SIGINT)
 	{
 		write(1, "\n", 1);

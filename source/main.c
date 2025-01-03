@@ -1,5 +1,7 @@
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_child_running;
+
 int main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -7,6 +9,7 @@ int main(int argc, char **argv, char **envp)
 	int		exit_status;
 	int		error_check;
 
+	g_child_running = 0;
 	error_check = 0;
 	cmd = NULL;
 	exit_status = 0;

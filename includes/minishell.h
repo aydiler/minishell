@@ -33,6 +33,8 @@
 # define READ_END		0
 # define WRITE_END		1
 
+extern volatile sig_atomic_t g_child_running; 
+
 typedef struct s_cmd 
 {
 	char			**args;
