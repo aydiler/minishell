@@ -91,6 +91,7 @@ int		free_new_envp(char **new_envp, int j);
 int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
+int		ft_echo(char **args);
 // pipes
 int		count_pipes(t_cmd *cmd);
 void	free_pipes(int **pipes, int cmd_count);
@@ -99,7 +100,7 @@ int		create_pipes(int **pipes, int cmd_count);
 // builtins
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
-void	handle_child_builtin(char **args, char **envp);
+void	execute_child_builtin(char **args, char **envp);
 int		execute_parent_builtin(t_cmd *cmd, char **envp);
 int		ft_cd(char **args);
 

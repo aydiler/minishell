@@ -15,27 +15,43 @@
 int		is_child_builtin(char **args)
 {
 	(void)args;
-	// if (!ft_strncmp(args[0], "echo", 5))
-	// 	return (1);
+	if (!ft_strncmp(args[0], "echo", 5))
+		return (1);
 	if (!ft_strncmp(args[0], "pwd", 4))
 		return (1);
 	if (!ft_strncmp(args[0], "env", 4))
 		return (1);
+	if (!ft_strncmp(args[0], "cd", 3))
+		return (1);
+	if (!ft_strncmp(args[0], "export", 7))
+		return (1);
+	// if (!ft_strncmp(args[0], "unset", 6))
+	// 	return (1);
+	// if (!ft_strncmp(args[0], "exit", 5))
+	// 	return (1);
 	return (0);
 }
 
-void	handle_child_builtin(char **args, char **envp)
+void	execute_child_builtin(char **args, char **envp)
 {
 	int		exit_status;
 
 	(void)args;
 	exit_status = 0;
-	// if (!ft_strncmp(args[0], "echo", 5))
-	// 	exit_status = builtin_echo(args);
+	if (!ft_strncmp(args[0], "echo", 5))
+		exit_status = ft_echo(args);
 	if (!ft_strncmp(args[0], "pwd", 4))
 		exit_status = ft_pwd();
 	if (!ft_strncmp(args[0], "env", 4))
 		exit_status = ft_env(envp);
+	if (!ft_strncmp(args[0], "cd", 3))
+		exit_status = ft_cd(args);
+	if (!ft_strncmp(args[0], "export", 7))
+		exit_status = ft_export(&envp, args);
+	// if (!ft_strncmp(args[0], "unset", 6))
+	// 	exit_status = builtin_unset(args);
+	// if (!ft_strncmp(args[0], "exit", 5))
+	// 	exit_status = builtin_exit(args);
 	exit(exit_status);
 }
 
@@ -68,7 +84,7 @@ int execute_parent_builtin(t_cmd *cmd, char **envp)
 	// if (!ft_strncmp(cmd->args[0], "unset", 6))
 	// 	exit_status = builtin_unset(cmd->args);
 	// if (!ft_strncmp(cmd->args[0], "exit", 5))
-	// 	exit_status = builtin_exit(cmd->args);
+	// 	exit_status = ft_exit(cmd->args);
 	
 	dup2(stdin_backup, STDIN_FILENO);
 	dup2(stdout_backup, STDOUT_FILENO);
