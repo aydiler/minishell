@@ -32,11 +32,17 @@ void	load_history(void)
 	close(fd);
 }
 
-void	save_history(char *line)
+void save_history(char *line)
 {
-	int		fd;
+	int fd;
+	static char history_location[PWD_MAX] = {0};
 
-	fd = open(".command_history", O_WRONLY | O_APPEND | O_CREAT, 0644);
+	if (!history_location[0])
+	{
+		getcwd(history_location, PWD_MAX);
+		ft_strlcat(history_location, "/.command_history", PWD_MAX);
+	}
+	fd = open(history_location, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd < 0)
 	{
 		printf("Error opening history file\n");
