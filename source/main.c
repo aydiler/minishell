@@ -15,7 +15,7 @@ int main(int argc, char **argv, char **envp)
 	exit_status = 0;
 	(void)argc;
 	(void)argv;
-	setup_signals();
+	setup_parent_signals();
 	load_history();
 	while (1)
 	{
@@ -45,7 +45,9 @@ int main(int argc, char **argv, char **envp)
 		}
 		//print_struct(cmd);
 		if (cmd)
-			exit_status = execute_pipeline(cmd, envp, signal_handler);
+		{
+			exit_status = execute_pipeline(cmd, envp);
+		}
 		free_all(&cmd);
 	}
 	rl_clear_history();

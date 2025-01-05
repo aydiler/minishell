@@ -15,6 +15,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <limits.h>
+#include <sys/ioctl.h>
 
 # define ERR_NOT_FOUND	1
 # define ERR_PERMISSION	2
@@ -68,7 +69,7 @@ void	handle_redirection_execution(t_cmd cmd);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int		execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
+int		execute_pipeline(t_cmd *cmd, char **envp);
 // Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
@@ -79,6 +80,12 @@ void	ft_free_split(char **str);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);
+void	setup_signal(int signo, void (*handler)(int));
+void	handle_signal_std(int signo);
+void handle_signal_std(int signo);
+void setup_signal(int signo, void (*handler)(int));
+void setup_parent_signals(void);
+void setup_child_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
