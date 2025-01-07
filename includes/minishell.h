@@ -101,6 +101,8 @@ int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
 int		ft_echo(char **args);
+int		ft_cd(char **args);
+int		ft_exit(char **args);
 // pipes
 int		count_pipes(t_cmd *cmd);
 void	free_pipes(int **pipes, int cmd_count);

@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 21:05:20 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/24 23:34:47 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/07 16:27:27 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int		is_child_builtin(char **args)
 		return (1);
 	// if (!ft_strncmp(args[0], "unset", 6))
 	// 	return (1);
-	// if (!ft_strncmp(args[0], "exit", 5))
-	// 	return (1);
+	if (!ft_strncmp(args[0], "exit", 5))
+		return (1);
 	return (0);
 }
 
@@ -50,8 +50,8 @@ void	execute_child_builtin(char **args, char **envp)
 		exit_status = ft_export(&envp, args);
 	// if (!ft_strncmp(args[0], "unset", 6))
 	// 	exit_status = builtin_unset(args);
-	// if (!ft_strncmp(args[0], "exit", 5))
-	// 	exit_status = builtin_exit(args);
+	if (!ft_strncmp(args[0], "exit", 5))
+		exit_status = ft_exit(args);
 	exit(exit_status);
 }
 
@@ -64,8 +64,8 @@ int	is_parent_builtin(char **args)
 		return (1);
 	// if (!ft_strncmp(args[0], "unset", 6))
 	// 	return (1);
-	// if (!ft_strncmp(args[0], "exit", 5))
-	// 	return (1);
+	if (!ft_strncmp(args[0], "exit", 5))
+		return (1);
 	return (0);
 }
 
@@ -83,8 +83,8 @@ int execute_parent_builtin(t_cmd *cmd, char **envp)
 		exit_status = ft_export(&envp, cmd->args);
 	// if (!ft_strncmp(cmd->args[0], "unset", 6))
 	// 	exit_status = builtin_unset(cmd->args);
-	// if (!ft_strncmp(cmd->args[0], "exit", 5))
-	// 	exit_status = ft_exit(cmd->args);
+	if (!ft_strncmp(cmd->args[0], "exit", 5))
+		exit_status = ft_exit(cmd->args);
 	
 	dup2(stdin_backup, STDIN_FILENO);
 	dup2(stdout_backup, STDOUT_FILENO);

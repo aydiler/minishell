@@ -25,11 +25,6 @@ int main(int argc, char **argv, char **envp)
 			ft_putstr_fd("exit\n", 1);
 			break ;
 		}
-		if (ft_strncmp(input, "exit", ft_strlen("exit")) == 0)
-		{
-			free(input);
-			break ;
-		}
 		if (*input)
 		{
 			add_history(input);
