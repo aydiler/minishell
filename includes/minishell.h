@@ -54,6 +54,7 @@ int		next_pipe(char *line, int i);
 char	**remove_n_token(char **args, int i, int n);
 char	**ft_realloc(char **arr, size_t new_size);
 int		jump_s_quote(char *line, int start);
+void	quote_handling(char *line, int *i, int *j, char c);
 	// env_vars utils
 int		is_env_var(char c);
 int		is_tilde(char *line, int i);

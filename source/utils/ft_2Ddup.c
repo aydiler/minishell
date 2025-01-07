@@ -6,15 +6,15 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 18:04:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/29 11:05:49 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/07 17:52:52 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char **ft_2Ddup(char **arr)
+char	**ft_2Ddup(char **arr)
 {
-	char **dup;
+	char	**dup;
 	int		i;
 
 	i = 0;

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/29 11:05:31 by maahoff          ###   ########.fr       */
+/*   Created: 2025/01/07 17:24:15 by maahoff           #+#    #+#             */
+/*   Updated: 2025/01/07 17:38:02 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	print_env(char **envp)
 		name = ft_strndup(temp[i], (int)(ft_strlen(temp[i]) - ft_strlen(equal)));
 		if (!name)
 			return (ERR_NOMEM);
-		printf("%ddeclare -x %s=\"%s\"\n", i, name, equal + 1);
+		printf("declare -x %s=\"%s\"\n", name, equal + 1);
 		free(equal);
 		free(name);
 	}
@@ -94,6 +94,7 @@ int	add_replace_env(char ***envp, char **args)
 	char	*name;
 	char	*temp;
 
+	error_check = 0;
 	equal = ft_strdup(ft_strchr(args[1], '='));
 	if (!equal)
 		return (0);
