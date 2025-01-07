@@ -6,7 +6,7 @@
 #    By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/14 12:44:41 by adiler            #+#    #+#              #
-#    Updated: 2024/12/22 18:36:01 by maahoff          ###   ########.fr        #
+#    Updated: 2024/12/29 10:30:57 by maahoff          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,9 +57,10 @@ SRCS = ft_isalpha.c \
        ft_lstmap.c \
        token_cat.c \
        ft_strncpy.c \
-       ft_strn.c \
+       ft_strndup.c \
        ft_memdel.c \
-       ft_strcmp.c
+       ft_strcmp.c \
+       ft_arrlen.c
 
 OBJS = $(SRCS:.c=.o)
 

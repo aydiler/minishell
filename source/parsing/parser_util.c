@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/19 19:37:57 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/07 20:58:21 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*quote_2_token(char *line, int *l, char c)
 	i = 0;
 	(*l)++;
 	k = *l;
-	while (line[*l] && line[*l] != '|' && line[*l] != c)
+	while (line[*l] && line[*l] != c)
 	{
 		i++;
 		(*l)++;
@@ -32,7 +32,7 @@ char	*quote_2_token(char *line, int *l, char c)
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (line[k] && line[k] != '|' && line[k] != c)
+	while (line[k] && line[k] != c)
 		str[i++] = line[k++];
 	str[i] = '\0';
 	return (str);
@@ -86,8 +86,16 @@ char	**remove_n_token(char **args, int i, int n)
 
 int	next_pipe(char *line, int i)
 {
+	int	id;
+
+	id = 0;
 	while (line[i] && line[i] != '|')
-		i++;
+	{
+		if (line[i] == '\"' || line[i] == '\'')
+			quote_handling(line, &i, &id, line[i]);
+		else
+			i++;
+	}
 	return (i);
 }
 

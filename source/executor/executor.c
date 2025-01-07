@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   executor.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/26 16:58:25 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/24 17:42:46 by adiler           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 void execute_program(t_cmd cmd, char **envp)
@@ -163,7 +151,7 @@ static int wait_for_children(int *pids, int cmd_count)
     return last_status;
 }
 
-int execute_pipeline(t_cmd *cmd, char **envp)
+int execute_pipeline(t_cmd *cmd, char ***envp)
 {
     int **pipes;
     int *pids;
