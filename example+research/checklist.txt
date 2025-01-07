@@ -16,7 +16,7 @@ Command Parsing
 
 	Handle single quotes (') X
 	Handle double quotes (") X
-	Handle environment variables ($VAR)
+	Handle environment variables ($VAR) 
 	Handle exit status ($?)
 	Skip interpretation of unclosed quotes X
 	Skip interpretation of \ and ; X
@@ -34,12 +34,12 @@ Redirections
 Built-in Commands
 
 	echo (with -n option) a X
-	cd (relative/absolute paths) a X
+	cd (relative/absolute paths) a
 	pwd (no options) m X
-	export (no options) m X
+	export (no options) m
 	unset (no options) m
 	env (no options/arguments) m X
-	exit (no options) a
+	exit (no options) X
 
 
 Technical Requirements
@@ -56,14 +56,6 @@ Testing CD with undefined variable...
  Expected pwd (bash): /home/ubuntu                                                                                       
  Got pwd (minishell): /home/ubuntu/42/minishell/tester
  -> pass env var to cd builin
-
-minishell$ echo "cat testfile.txt | cat > lol.c"
-cat: ''$'\021\003': No such file or directory
--> not handling pipe in double quotes
-
-minishell$ echo '$USER'
-ubuntu  
--> not handling env var in single quotes
 
 minishell$ echo $
 Memory allocation error 
