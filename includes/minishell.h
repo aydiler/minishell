@@ -117,7 +117,7 @@ int		create_pipes(int **pipes, int cmd_count);
 // builtins
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
-void	execute_child_builtin(char **args, char **envp);
+void	execute_child_builtin(char **args, char ***envp);
 int		execute_parent_builtin(t_cmd *cmd, char ***envp);
 int		ft_cd(char **args);
 

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   command_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 21:41:26 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/21 21:41:27 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/07 21:40:47 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char **get_paths()
+static char	**get_paths(void)
 {
 	char	*path;
 	char	**paths;
@@ -24,10 +24,10 @@ static char **get_paths()
 	return (paths);
 }
 
-static char *construct_path(char *path, char *cmd)
+static char	*construct_path(char *path, char *cmd)
 {
-	char *full_path;
-	char *temp;
+	char	*full_path;
+	char	*temp;
 
 	temp = ft_strjoin(path, "/");
 	full_path = ft_strjoin(temp, cmd);
@@ -35,7 +35,7 @@ static char *construct_path(char *path, char *cmd)
 	return (full_path);
 }
 
-char *find_command_in_path(char *cmd)
+char	*find_command_in_path(char *cmd)
 {
 	char	**paths;
 	char	*full_path;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:08:36 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/21 18:08:42 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/07 21:42:14 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	count_pipes(t_cmd *cmd)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	while (cmd)
@@ -27,7 +27,7 @@ int	count_pipes(t_cmd *cmd)
 
 void	free_pipes(int **pipes, int cmd_count)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < cmd_count - 1)
@@ -40,17 +40,17 @@ void	free_pipes(int **pipes, int cmd_count)
 
 int	**create_pipe_array(int cmd_count)
 {
-	int **pipes;
+	int	**pipes;
 
 	pipes = malloc(sizeof(int *) * (cmd_count - 1));
 	if (!pipes)
 	{
 		perror("malloc");
-		return NULL;
+		return (NULL);
 	}
 	if (create_pipes(pipes, cmd_count))
-		return NULL;
-	return pipes;
+		return (NULL);
+	return (pipes);
 }
 
 int	create_pipes(int **pipes, int cmd_count)
@@ -65,15 +65,15 @@ int	create_pipes(int **pipes, int cmd_count)
 		{
 			perror("malloc");
 			free_pipes(pipes, i);
-			return 1;
+			return (1);
 		}
 		if (pipe(pipes[i]) == -1)
 		{
 			perror("pipe");
 			free_pipes(pipes, i);
-			return 1;
+			return (1);
 		}
 		i++;
 	}
-	return 0;
+	return (0);
 }
