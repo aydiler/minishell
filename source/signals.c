@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 20:41:37 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/10 17:56:48 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/07 16:39:17 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,3 @@ void setup_child_signals(void)
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
 }
-
