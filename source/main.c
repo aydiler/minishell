@@ -1,5 +1,7 @@
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_child_running;
+
 int main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -8,13 +10,14 @@ int main(int argc, char **argv, char **envp)
 	int		error_check;
 	char	**dup_envp;
 
+	g_child_running = 0;
 	error_check = 0;
 	dup_envp = ft_2Ddup(envp);
 	cmd = NULL;
 	exit_status = 0;
 	(void)argc;
 	(void)argv;
-	setup_signals();
+	setup_parent_signals();
 	load_history();
 	while (1)
 	{
@@ -22,11 +25,6 @@ int main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			ft_putstr_fd("exit\n", 1);
-			break ;
-		}
-		if (ft_strncmp(input, "exit", ft_strlen("exit")) == 0)
-		{
-			free(input);
 			break ;
 		}
 		if (*input)
@@ -44,7 +42,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		//print_struct(cmd);
 		if (cmd)
-			exit_status = execute_pipeline(cmd, &dup_envp, signal_handler);
+			exit_status = execute_pipeline(cmd, &dup_envp);
 		free_all(&cmd);
 	}
 	//printf("len of dup envp: %d\n", ft_arrlen(dup_envp));
