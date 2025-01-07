@@ -12,34 +12,34 @@
 
 #include "../includes/minishell.h"
 
-void	signal_handler(int signo)
+void handle_signal_std(int signo)
 {
-	if (signo == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-}
-
-void    setup_signals(void)
-{
-    struct sigaction    sa;
-
-    sa.sa_handler = signal_handler;
-    sa.sa_flags = SA_RESTART;
-    sigemptyset(&sa.sa_mask);
-
-    if (sigaction(SIGINT, &sa, NULL) == -1)
+    if (!g_child_running)
     {
-        perror("sigaction");
-        exit(EXIT_FAILURE);
+        if (signo == SIGINT)
+        {
+            write(STDOUT_FILENO, "\n", 1);
+            rl_on_new_line();
+            rl_replace_line("", 0);
+            rl_redisplay();
+        }
     }
-    sa.sa_handler = SIG_IGN;
-    if (sigaction(SIGQUIT, &sa, NULL) == -1)
+    else
     {
-        perror("sigaction");
-        exit(EXIT_FAILURE);
+        if (signo == SIGINT)
+            write(1, "\n", 1);
     }
 }
+
+void setup_parent_signals(void)
+{
+    signal(SIGINT, handle_signal_std);
+    signal(SIGQUIT, SIG_IGN);
+}
+
+void setup_child_signals(void)
+{
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+}
+

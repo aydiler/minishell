@@ -8,7 +8,7 @@ Core Shell Features
 	Global variable for signals only X
 	ctrl-C: New prompt on new line X
 	ctrl-D: Exit shell X
-	ctrl-/: 
+	ctrl-/: nothing X
 	ctrl-: No action X
 
 
@@ -33,12 +33,12 @@ Redirections
 
 Built-in Commands
 
-	echo (with -n option) a
-	cd (relative/absolute paths) a
-	pwd (no options) m
-	export (no options) m
+	echo (with -n option) a X
+	cd (relative/absolute paths) a X
+	pwd (no options) m X
+	export (no options) m X
 	unset (no options) m
-	env (no options/arguments) m
+	env (no options/arguments) m X
 	exit (no options) a
 
 
@@ -47,3 +47,30 @@ Technical Requirements
 	Memory management (no leaks except readline)
 	Error handling
 	Makefile (all, clean, fclean, re)
+
+
+Todo
+
+Testing CD with undefined variable...
+ Command: 'cd $NONEXISTENT; pwd'                                                                                         
+ Expected pwd (bash): /home/ubuntu                                                                                       
+ Got pwd (minishell): /home/ubuntu/42/minishell/tester
+ -> pass env var to cd builin
+
+minishell$ echo "cat testfile.txt | cat > lol.c"
+cat: ''$'\021\003': No such file or directory
+-> not handling pipe in double quotes
+
+minishell$ echo '$USER'
+ubuntu  
+-> not handling env var in single quotes
+
+minishell$ echo $
+Memory allocation error 
+
+export var -> segfault
+export not creating env vars
+
+SIGNALS
+
+ctrl-\ after running one command is buggin out the cursor

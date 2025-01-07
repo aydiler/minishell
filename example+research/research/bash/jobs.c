@@ -1978,7 +1978,7 @@ print_pipeline (PROCESS *p, int job_index, int format, FILE *stream)
 	      fprintf (stream, "%*s", name_padding, "");
 
 	      if ((WIFSTOPPED (show->status) == 0) &&
-		  (WIFCONTINUED (show->status) == 0) &&
+		  (WIFCONTINUED (show->status) == 0) &&                   
 		  WIFCORED (show->status))
 		fprintf (stream, _("(core dumped) "));
 	    }

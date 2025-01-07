@@ -15,6 +15,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <limits.h>
+#include <sys/ioctl.h>
 
 # define ERR_NOT_FOUND	1
 # define ERR_PERMISSION	2
@@ -32,6 +33,8 @@
 # define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
+
+extern volatile sig_atomic_t g_child_running; 
 
 typedef struct s_cmd 
 {
@@ -66,7 +69,7 @@ void	handle_redirection_execution(t_cmd cmd);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int		execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
+int		execute_pipeline(t_cmd *cmd, char **envp);
 // Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
@@ -77,6 +80,12 @@ void	ft_free_split(char **str);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);
+void	setup_signal(int signo, void (*handler)(int));
+void	handle_signal_std(int signo);
+void handle_signal_std(int signo);
+void setup_signal(int signo, void (*handler)(int));
+void setup_parent_signals(void);
+void setup_child_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
@@ -91,6 +100,7 @@ int		free_new_envp(char **new_envp, int j);
 int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
+int		ft_echo(char **args);
 // pipes
 int		count_pipes(t_cmd *cmd);
 void	free_pipes(int **pipes, int cmd_count);
@@ -99,7 +109,7 @@ int		create_pipes(int **pipes, int cmd_count);
 // builtins
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
-void	handle_child_builtin(char **args, char **envp);
+void	execute_child_builtin(char **args, char **envp);
 int		execute_parent_builtin(t_cmd *cmd, char **envp);
 int		ft_cd(char **args);
 
