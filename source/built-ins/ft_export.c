@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/29 10:30:26 by maahoff          ###   ########.fr       */
+/*   Updated: 2024/12/29 11:05:31 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ int	print_env(char **envp)
 	char	*name;
 
 	temp = ft_2Ddup(envp);
+	if (!temp)
+		return (ERR_NOMEM);
 	temp = ft_sort_envp(envp);
-	print_envp(temp);
 	i = -1;
 	while (temp[++i])
 	{
@@ -31,11 +32,11 @@ int	print_env(char **envp)
 		name = ft_strndup(temp[i], (int)(ft_strlen(temp[i]) - ft_strlen(equal)));
 		if (!name)
 			return (ERR_NOMEM);
-		printf("declare -x %s=\"%s\"\n", name, equal + 1);
+		printf("%ddeclare -x %s=\"%s\"\n", i, name, equal + 1);
 		free(equal);
 		free(name);
 	}
-	ft_free_arr(temp);
+	ft_free_arr(&temp);
 	return (0);
 }
 
@@ -74,15 +75,15 @@ int	add_env(char ***envp, char *new_env_var)
 	{
 		new_envp[j] = ft_strdup((*envp)[j]);
 		if (!new_envp[j])
-			return (ft_free_arr(new_envp));
+			return (ft_free_arr(&new_envp));
 	}
 	new_envp[i] = ft_strdup(new_env_var);
 	if (!new_envp[i])
-		return (ft_free_arr(new_envp));
+		return (ft_free_arr(&new_envp));
 	new_envp[i + 1] = NULL;
-	ft_free_arr(*envp);
+	ft_free_arr(envp);
 	*envp = ft_2Ddup(new_envp);
-	ft_free_arr(new_envp);
+	ft_free_arr(&new_envp);
 	return (0);
 }
 

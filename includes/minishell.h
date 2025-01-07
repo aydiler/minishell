@@ -92,7 +92,7 @@ int		handle_outfile(t_cmd cmd);
 void	print_error_message(char *cmd, int error_type);
 // build-ins
 char	**ft_sort_envp(char **envp);
-int		ft_free_arr(char **arr);
+int		ft_free_arr(char ***arr);
 int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
