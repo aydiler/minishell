@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/23 20:51:49 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/07 16:46:26 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ int	add_replace_env(char ***envp, char **args)
 	char	*equal;
 	char	*name;
 
+	error_check = 0;
 	equal = ft_strdup(ft_strchr(args[1], '='));
 	if (!equal)
 		return (0);

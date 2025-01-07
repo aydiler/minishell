@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 21:05:20 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/07 16:27:27 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/07 18:09:51 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	execute_child_builtin(char **args, char **envp)
 		exit_status = ft_exit(args);
 	exit(exit_status);
 }
-
 
 int	is_parent_builtin(char **args)
 {

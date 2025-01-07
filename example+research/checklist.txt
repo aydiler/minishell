@@ -70,7 +70,3 @@ Memory allocation error
 
 export var -> segfault
 export not creating env vars
-
-SIGNALS
-
-ctrl-\ after running one command is buggin out the cursor
