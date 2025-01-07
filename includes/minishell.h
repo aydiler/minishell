@@ -53,6 +53,8 @@ t_cmd	*new_pipe(char **args);
 int		next_pipe(char *line, int i);
 char	**remove_n_token(char **args, int i, int n);
 char	**ft_realloc(char **arr, size_t new_size);
+int		jump_s_quote(char *line, int start);
+void	quote_handling(char *line, int *i, int *j, char c);
 	// env_vars utils
 int		is_env_var(char c);
 int		is_tilde(char *line, int i);
@@ -66,7 +68,7 @@ void	handle_redirection_execution(t_cmd cmd);
 	// non args utils
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
-int		execute_pipeline(t_cmd *cmd, char **envp, void (*signal_handler)(int));
+int		execute_pipeline(t_cmd *cmd, char ***envp, void (*signal_handler)(int));
 // Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
@@ -74,6 +76,7 @@ char	*find_command_in_path(char *cmd);
 void	ft_error(t_cmd **cmd, int exit_status);
 void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
+char 	**ft_2Ddup(char **arr);
 char	*ft_getenv(char *name, char **envp);
 // signals
 void	signal_handler(int signo);
@@ -81,6 +84,7 @@ void	setup_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
+int		print_env(char **envp);
 // fds
 int		create_empty_files(t_cmd cmd);
 int		handle_infile(t_cmd cmd);
@@ -88,7 +92,8 @@ int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
 // build-ins
-int		free_new_envp(char **new_envp, int j);
+char	**ft_sort_envp(char **envp);
+int		ft_free_arr(char ***arr);
 int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
@@ -101,7 +106,7 @@ int		create_pipes(int **pipes, int cmd_count);
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
 void	handle_child_builtin(char **args, char **envp);
-int		execute_parent_builtin(t_cmd *cmd, char **envp);
+int		execute_parent_builtin(t_cmd *cmd, char ***envp);
 int		ft_cd(char **args);
 
 #endif

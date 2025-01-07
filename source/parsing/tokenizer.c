@@ -3,7 +3,7 @@
 void	quote_handling(char *line, int *i, int *j, char c)
 {
 	(*i)++;
-	while (line[*i] && line[*i] != '|' && line[*i] != c)
+	while (line[*i] && line[*i] != c)
 		(*i)++;
 	if (*j != -1)
 		(*i)++;
