@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 21:05:20 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/24 17:39:43 by adiler           ###   ########.fr       */
+/*   Updated: 2024/12/24 23:34:47 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int execute_parent_builtin(t_cmd *cmd, char **envp)
 	// if (!ft_strncmp(cmd->args[0], "unset", 6))
 	// 	exit_status = builtin_unset(cmd->args);
 	// if (!ft_strncmp(cmd->args[0], "exit", 5))
-	// 	exit_status = builtin_exit(cmd->args);
+	// 	exit_status = ft_exit(cmd->args);
 	
 	dup2(stdin_backup, STDIN_FILENO);
 	dup2(stdout_backup, STDOUT_FILENO);
