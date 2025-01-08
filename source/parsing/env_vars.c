@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/07 17:58:08 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/08 15:57:37 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,9 @@ int	check_env_vars(char *line, char **envp)
 	char	*temp;
 	char	*temp2;
 
-	if (ft_strchr(line, '$'))
+	if (ft_strchr(line, '$') && *(ft_strchr(line, '$') + 1) && 
+		*(ft_strchr(line, '$') + 1) != ' ' && !(*(ft_strchr(line, '$') + 1) 
+			>= 9 && *(ft_strchr(line, '$') + 1) <= 13))
 	{
 		start = 0;
 		while (line[start] && line[start] != '$')
@@ -108,7 +110,7 @@ int	check_env_vars(char *line, char **envp)
 		if (temp2)
 			return (ft_memdel((void **)&(temp)), ft_memdel((void **)&(temp2)), 0);
 		else
-			return (ft_memdel((void **)&(temp)), ft_memdel((void **)&(temp2)), ERR_ENV_VAR);
+			return (ft_memdel((void **)&(temp)), ft_memdel((void **)&(temp2)), NOT_ENV_VAR);
 	}
 	return (1);
 }
