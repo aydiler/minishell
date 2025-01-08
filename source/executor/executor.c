@@ -1,4 +1,62 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
+/*   Updated: 2025/01/08 21:57:50 by ubuntu           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
+
+static int	process_child_status(int status, int *all_signaled,
+		int *last_signal, int *first)
+{
+	int	last_status;
+	int	termsig;
+
+	last_status = 0;
+	if (WIFEXITED(status))
+	{
+		*all_signaled = 0;
+		last_status = WEXITSTATUS(status);
+	}
+	else if (WIFSIGNALED(status))
+	{
+		termsig = WTERMSIG(status);
+		last_status = 128 + termsig;
+		if (*first)
+		{
+			*last_signal = termsig;
+			*first = 0;
+		}
+		else if (termsig != *last_signal)
+			*all_signaled = 0;
+	}
+	return (last_status);
+}
+
+static int	wait_for_children(int *pids, int cmd_count)
+{
+	int	status;
+	int	all_signaled;
+	int	last_signal;
+
+	all_signaled = 1;
+	last_signal = 0;
+	while (cmd_count--)
+	{
+		waitpid(pids[cmd_count], &status, 0);
+		status = process_child_status(status, &all_signaled, &last_signal,
+				&(int){1});
+	}
+	if (all_signaled && last_signal == SIGQUIT)
+		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+	return (status);
+}
 
 void	execute_program(t_cmd cmd, char ***envp)
 {
@@ -27,58 +85,14 @@ void	execute_program(t_cmd cmd, char ***envp)
 	}
 }
 
-static void	setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index,
-		int cmd_count)
+static int	spawn_processes(t_cmd *cmd, int **pipes, int *pids, char ***envp)
 {
 	int	i;
-
-	i = 0;
-	if (cmd_index > 0 && !cmd->input_file)
-	{
-		if (dup2(pipes[cmd_index - 1][READ_END], STDIN_FILENO) == -1)
-			exit(1);
-	}
-	if (cmd_index < cmd_count - 1 && !cmd->output_file)
-	{
-		if (dup2(pipes[cmd_index][WRITE_END], STDOUT_FILENO) == -1)
-			exit(1);
-	}
-	while (i < cmd_count - 1)
-	{
-		if (i != cmd_index - 1)
-			close(pipes[i][READ_END]);
-		if (i != cmd_index)
-			close(pipes[i][WRITE_END]);
-		i++;
-	}
-}
-
-static int	initialize_pipeline(t_cmd *cmd, int ***pipes, int **pids)
-{
 	int	cmd_count;
 
-	cmd_count = count_pipes(cmd);
-	*pipes = create_pipe_array(cmd_count);
-	if (!*pipes)
-		return (-1);
-	*pids = malloc(sizeof(int) * cmd_count);
-	if (!*pids)
-	{
-		free_pipes(*pipes, cmd_count);
-		return (-1);
-	}
-	return (cmd_count);
-}
-
-static int	spawn_processes(t_cmd *cmd, int **pipes, int *pids, int cmd_count,
-		char ***envp)
-{
-	int		i;
-	t_cmd	*current;
-
 	i = 0;
-	current = cmd;
-	while (current)
+	cmd_count = count_pipes(cmd);
+	while (cmd)
 	{
 		pids[i] = fork();
 		if (pids[i] == -1)
@@ -89,74 +103,15 @@ static int	spawn_processes(t_cmd *cmd, int **pipes, int *pids, int cmd_count,
 		if (pids[i] == 0)
 		{
 			setup_child_signals();
-			handle_redirection_execution(*current);
-			setup_pipe_fds(current, pipes, i, cmd_count);
-			execute_program(*current, envp);
+			handle_redirection_execution(*cmd);
+			setup_pipe_fds(cmd, pipes, i, cmd_count);
+			execute_program(*cmd, envp);
 			exit(1);
 		}
-		current = current->next;
+		cmd = cmd->next;
 		i++;
 	}
 	return (1);
-}
-
-static void	close_pipes(int **pipes, int cmd_count)
-{
-	int	i;
-
-	i = 0;
-	while (i < cmd_count - 1)
-	{
-		close(pipes[i][READ_END]);
-		close(pipes[i][WRITE_END]);
-		i++;
-	}
-}
-
-static int	wait_for_children(int *pids, int cmd_count)
-{
-	int	i;
-	int	status;
-	int	last_status;
-	int	all_signaled;
-	int	last_signal;
-	int	first;
-	int	termsig;
-
-	i = 0;
-	last_status = 0;
-	all_signaled = 1;
-	last_signal = 0;
-	first = 1;
-	while (i < cmd_count)
-	{
-		waitpid(pids[i], &status, 0);
-		if (WIFEXITED(status))
-		{
-			all_signaled = 0;
-			last_status = WEXITSTATUS(status);
-		}
-		else if (WIFSIGNALED(status))
-		{
-			termsig = WTERMSIG(status);
-			last_status = 128 + termsig;
-			if (first)
-			{
-				last_signal = termsig;
-				first = 0;
-			}
-			else if (termsig != last_signal)
-			{
-				all_signaled = 0;
-			}
-		}
-		i++;
-	}
-	if (all_signaled && last_signal == SIGQUIT)
-	{
-		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-	}
-	return (last_status);
 }
 
 int	execute_pipeline(t_cmd *cmd, char ***envp)
@@ -174,17 +129,15 @@ int	execute_pipeline(t_cmd *cmd, char ***envp)
 	if (cmd_count == -1)
 		return (1);
 	g_child_running = 1;
-	if (!spawn_processes(cmd, pipes, pids, cmd_count, envp))
+	if (!spawn_processes(cmd, pipes, pids, envp))
 	{
-		free_pipes(pipes, cmd_count);
-		free(pids);
+		free_executor(pipes, cmd_count, pids);
 		return (1);
 	}
 	close_pipes(pipes, cmd_count);
 	last_status = wait_for_children(pids, cmd_count);
 	g_child_running = 0;
 	setup_parent_signals();
-	free_pipes(pipes, cmd_count);
-	free(pids);
+	free_executor(pipes, cmd_count, pids);
 	return (last_status);
 }

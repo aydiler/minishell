@@ -1,0 +1,18 @@
+tester:
+
+signal handling:
+ctr + c
+ctr + d
+ctr + /
+
+for
+
+text in input
+no text in input
+cat
+cat | cat
+ls | cat
+cat | ls
+cat | cat
+cat | ls | cat
+cat | cat | ls

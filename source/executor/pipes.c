@@ -3,59 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:08:36 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/07 21:42:14 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/08 21:59:45 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	count_pipes(t_cmd *cmd)
-{
-	int	count;
-
-	count = 0;
-	while (cmd)
-	{
-		count++;
-		cmd = cmd->next;
-	}
-	return (count);
-}
-
-void	free_pipes(int **pipes, int cmd_count)
+void	setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index,
+		int cmd_count)
 {
 	int	i;
 
 	i = 0;
+	if (cmd_index > 0 && !cmd->input_file)
+	{
+		if (dup2(pipes[cmd_index - 1][READ_END], STDIN_FILENO) == -1)
+			exit(1);
+	}
+	if (cmd_index < cmd_count - 1 && !cmd->output_file)
+	{
+		if (dup2(pipes[cmd_index][WRITE_END], STDOUT_FILENO) == -1)
+			exit(1);
+	}
 	while (i < cmd_count - 1)
 	{
-		free(pipes[i]);
+		if (i != cmd_index - 1)
+			close(pipes[i][READ_END]);
+		if (i != cmd_index)
+			close(pipes[i][WRITE_END]);
 		i++;
 	}
-	free(pipes);
-}
-
-int	**create_pipe_array(int cmd_count)
-{
-	int	**pipes;
-
-	pipes = malloc(sizeof(int *) * (cmd_count - 1));
-	if (!pipes)
-	{
-		perror("malloc");
-		return (NULL);
-	}
-	if (create_pipes(pipes, cmd_count))
-		return (NULL);
-	return (pipes);
 }
 
 int	create_pipes(int **pipes, int cmd_count)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < cmd_count - 1)
@@ -76,4 +61,49 @@ int	create_pipes(int **pipes, int cmd_count)
 		i++;
 	}
 	return (0);
+}
+
+void	close_pipes(int **pipes, int cmd_count)
+{
+	int	i;
+
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		close(pipes[i][READ_END]);
+		close(pipes[i][WRITE_END]);
+		i++;
+	}
+}
+
+int	**create_pipe_array(int cmd_count)
+{
+	int	**pipes;
+
+	pipes = malloc(sizeof(int *) * (cmd_count - 1));
+	if (!pipes)
+	{
+		perror("malloc");
+		return (NULL);
+	}
+	if (create_pipes(pipes, cmd_count))
+		return (NULL);
+	return (pipes);
+}
+
+int	initialize_pipeline(t_cmd *cmd, int ***pipes, int **pids)
+{
+	int	cmd_count;
+
+	cmd_count = count_pipes(cmd);
+	*pipes = create_pipe_array(cmd_count);
+	if (!*pipes)
+		return (-1);
+	*pids = malloc(sizeof(int) * cmd_count);
+	if (!*pids)
+	{
+		free_pipes(*pipes, cmd_count);
+		return (-1);
+	}
+	return (cmd_count);
 }

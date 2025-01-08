@@ -72,9 +72,9 @@ void	handle_redirection_execution(t_cmd cmd);
 int		handle_var(t_cmd **cmd, int i);
 // Executer functions
 int		execute_pipeline(t_cmd *cmd, char ***envp);
-// Executer funktions
 int		print_envp(char **envp);
 char	*find_command_in_path(char *cmd);
+void	free_executor(int **pipes, int cmd_count, int *pids);
 // utils
 void	ft_error(t_cmd **cmd, int exit_status);
 void	free_all(t_cmd **cmd);
@@ -114,6 +114,10 @@ int		count_pipes(t_cmd *cmd);
 void	free_pipes(int **pipes, int cmd_count);
 int		**create_pipe_array(int cmd_count);
 int		create_pipes(int **pipes, int cmd_count);
+void	close_pipes(int **pipes, int cmd_count);
+int		initialize_pipeline(t_cmd *cmd, int ***pipes, int **pids);
+void	setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count);
+
 // builtins
 int		is_child_builtin(char **args);
 int		is_parent_builtin(char **args);
