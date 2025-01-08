@@ -20,7 +20,7 @@ MINISHELL_DIR = os.path.join(os.path.dirname(os.getcwd()), './')
 
 PASS = 0
 FAIL = 0
-DEBUG = False
+DEBUG = True
 
 from test_history import test_history
 from test_signals import test_signals
@@ -54,124 +54,206 @@ signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
 def normalize_error_message(line):
-	# Remove shell-specific prefixes with more comprehensive patterns
-	line = re.sub(r'^(shell|bash|bash-[0-9.]+|minishell|\$|>|\+):\s*', '', line)
-	
-	# Remove trailing shell prompts
-	line = re.sub(r'(bash-[0-9.]+\$|minishell\$)\s*$', '', line)
-	
-	return line.strip()
+    # Remove shell-specific prefixes with more comprehensive patterns
+    line = re.sub(r'^(shell|bash|bash-[0-9.]+|minishell|\$|>|\+):\s*', '', line)
+    
+    # Remove trailing shell prompts like `bash-5.1$` or `minishell$`
+    line = re.sub(r'(bash-[0-9.]+\$|minishell\$)\s*$', '', line)
+    
+    # Remove bash -c prefix if present
+    line = re.sub(r'^bash -c\s+', '', line)
+    
+    return line.strip()
 
 def clean_shell_output(command, output, shell_type='bash'):
-	# Remove ANSI escape sequences
-	output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
-	
-	# Standardize line endings
-	output = re.sub(r'\r\n', '\n', output)
-	
-	# Remove control characters while preserving intentional whitespace
-	output = re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', output)
-	
-	lines = []
-	for line in output.splitlines():
-		# Skip empty lines after stripping
-		if not line.strip():
-			continue
-			
-		# First remove prompts
-		for prompt in ['minishell$ ', 'minishell$', 'bash-5.1$ ', 'bash-5.1$', '$ ', '$']:
-			line = line.replace(prompt, '')
-		line = line.strip()
-		
-		# Then normalize error messages
-		line = normalize_error_message(line)
-		
-		# Skip exit commands
-		if line == 'exit':
-			continue
-			
-		# Skip lines that start with the command (ignoring whitespace differences)
-		cmd_parts = command.strip().split()
-		line_parts = line.strip().split()
-		if cmd_parts and line_parts and all(c in line_parts for c in cmd_parts):
-			continue
-		
-		# Only append non-empty lines after all processing
-		if line.strip():
-			lines.append(line)
-	
-	return lines
+    """
+    Process 'output' to remove prompts, control characters, empty lines, etc.
+    so that both minishell and bash outputs can be compared fairly.
+    """
+    # Remove ANSI escape sequences
+    output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
+
+    # Standardize line endings
+    output = re.sub(r'\r\n', '\n', output)
+
+    # Remove control characters while preserving normal whitespace
+    output = re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', output)
+
+    lines = []
+    for line in output.splitlines():
+        # Skip completely empty lines
+        if not line.strip():
+            continue
+        
+        # Skip lines that are *only* the prompt
+        # (like "minishell$" or "bash-5.1$")
+        if re.match(r'^(minishell|bash-[0-9.]+)\$\s*$', line.strip()):
+            continue
+
+        # Remove any leading prompt text ("minishell$ ", "bash-5.1$ ")
+        line = re.sub(r'^(minishell|bash-[0-9.]+)\$\s*', '', line)
+
+        # Normalize error messages (remove "bash: " prefix, etc.)
+        line = normalize_error_message(line)
+
+        # Skip lines that exactly match certain known commands
+        # (e.g. "exit", "echo $?", or the original `command`)
+        if any(line.strip() == x for x in ['exit', 'echo $?', command.strip()]):
+            continue
+
+        # ---------------------------------------------------------------------
+        # -- IMPORTANT CHANGE: We do *not* skip digit-only lines anymore. ------
+        # ---------------------------------------------------------------------
+        #
+        # In your original code, you had something like:
+        #   if line.strip().isdigit():
+        #       continue
+        #
+        # That removed the line if it was e.g. "0". We remove that logic now,
+        # so lines containing just '0' will be kept in the output.
+        # ---------------------------------------------------------------------
+
+        # Only add non-empty lines
+        if line.strip():
+            lines.append(line.strip())
+
+    return lines
 
 def run_shell_command(command, shell_type='bash'):
-	"""Runs a command in specified shell and returns output and exit code"""
-	debug_print(f"Starting {shell_type} command execution")
+    """Runs a command in specified shell and returns output and exit code"""
+    debug_print(f"Starting {shell_type} command execution")
 
-	env = os.environ.copy()
-	env['TERM'] = 'dumb'
+    env = os.environ.copy()
+    env['TERM'] = 'dumb'
 
-	# Set inputrc for minishell to disable tab completion
-	if shell_type == 'minishell':
-		inputrc_content = "set disable-completion on\n"
-		with open('minishell_inputrc', 'w') as f:
-			f.write(inputrc_content)
-		env['INPUTRC'] = os.path.abspath('minishell_inputrc')
+    # Set inputrc for minishell to disable tab completion
+    if shell_type == 'minishell':
+        inputrc_content = "set disable-completion on\n"
+        with open('minishell_inputrc', 'w') as f:
+            f.write(inputrc_content)
+        env['INPUTRC'] = os.path.abspath('minishell_inputrc')
 
-	shell_cmd = None
-	if shell_type == 'bash':
-		shell_cmd = ['bash', '--norc', '--noediting', '--posix']
-	else:
-		shell_cmd = [os.path.join(os.path.dirname(os.getcwd()), 'minishell')]
+    shell_cmd = None
+    if shell_type == 'bash':
+        shell_cmd = ['bash', '--norc', '--noediting', '--posix']
+    else:
+        shell_cmd = [os.path.join(os.path.dirname(os.getcwd()), 'minishell')]
 
-	master, slave = pty.openpty()
-	try:
-		debug_print(f"Launching {shell_type} process")
-		subprocess.run(['stty', '-echo'], stdin=master)
-		proc = subprocess.Popen(
-			shell_cmd,
-			stdin=slave,
-			stdout=slave,
-			stderr=slave,
-			env=env,
-			preexec_fn=os.setsid
-		)
+    master, slave = pty.openpty()
+    proc = None
+    try:
+        debug_print(f"Launching {shell_type} process")
+        subprocess.run(['stty', '-echo'], stdin=master)
+        proc = subprocess.Popen(
+            shell_cmd,
+            stdin=slave,
+            stdout=slave,
+            stderr=slave,
+            env=env,
+            start_new_session=True
+        )
 
-		# Wait for initial prompt
-		time.sleep(0.01)
+        # Function to read until a specific pattern or timeout
+        def read_until_pattern(pattern, timeout=1.0, extra_wait=0.1):
+            result = b""
+            end_time = time.time() + timeout
+            
+            while time.time() < end_time:
+                try:
+                    ready, _, _ = select.select([master], [], [], 0.1)
+                    if ready:
+                        chunk = os.read(master, 4096)
+                        if not chunk:
+                            break
+                        result += chunk
+                        if pattern in chunk:
+                            time.sleep(extra_wait)  # Wait for any trailing output
+                            # Try one more read
+                            try:
+                                ready, _, _ = select.select([master], [], [], 0.1)
+                                if ready:
+                                    extra = os.read(master, 4096)
+                                    if extra:
+                                        result += extra
+                            except:
+                                pass
+                            break
+                except (OSError, select.error):
+                    break
+            
+            return result
 
-		# Send command
-		debug_print(f"Sending command: {repr(command)}")
-		os.write(master, command.encode() + b'\n')
+        # Wait for initial prompt
+        shell_prompt = b'minishell$ ' if shell_type == 'minishell' else b'bash-5.1$ '
+        read_until_pattern(shell_prompt)
 
-		# Allow time for command execution and collect output
-		output = b""
-		while True:
-			try:
-				ready, _, _ = select.select([master], [], [], 0.03)
-				if not ready:
-					break
+        # Send command and get output
+        debug_print(f"Sending command: {repr(command)}")
+        
+        # Create a status pipe
+        status_pipe = '/tmp/cmdstatus'
+        try:
+            os.mkfifo(status_pipe)
+        except OSError:
+            pass
 
-				chunk = os.read(master, 4096)
-				if not chunk:
-					break
-				output += chunk
-				debug_print(f"Received chunk: {repr(chunk)}")
-			except (OSError, IOError) as e:
-				debug_print(f"Error reading output: {e}")
-				break
+        # Send command
+        full_command = f"{command}\n"
+        os.write(master, full_command.encode())
+        
+        # Read command output
+        command_output = read_until_pattern(shell_prompt, timeout=2.0)
+        
+        # Now get the exit status
+        os.write(master, f"echo $? > {status_pipe}\n".encode())
+        read_until_pattern(shell_prompt, 0.5)  # Wait for the echo command to complete
 
-		# Send exit command
-		os.write(master, b"exit\n")
-		proc.wait()
+        # Read status from pipe
+        exit_code = 0
+        try:
+            fd = os.open(status_pipe, os.O_RDONLY | os.O_NONBLOCK)
+            ready, _, _ = select.select([fd], [], [], 0.5)
+            if ready:
+                status_str = os.read(fd, 10).decode('utf-8').strip()
+                if status_str.isdigit():
+                    exit_code = int(status_str)
+            os.close(fd)
+        except Exception as e:
+            debug_print(f"Error reading status pipe: {e}")
+        finally:
+            try:
+                os.unlink(status_pipe)
+            except:
+                pass
 
-		# Normalize and decode final output
-		final_output = output.replace(b'\r\n', b'\n').decode('utf-8', errors='replace')
-		debug_print(f"Final output: {repr(final_output)}")
+        # Clean exit
+        os.write(master, b"exit\n")
+        
+        # Process output
+        command_text = command_output.decode('utf-8', errors='replace')
+        debug_print(f"Raw command output: {repr(command_text)}")
+        debug_print(f"Exit code: {exit_code}")
 
-		return final_output, proc.returncode
+        return command_text, exit_code
 
-	finally:
-		os.close(master)
-		os.close(slave)
+    finally:
+        if proc:
+            try:
+                os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+            except (ProcessLookupError, OSError):
+                pass
+        try:
+            os.close(master)
+        except OSError:
+            pass
+        try:
+            os.close(slave)
+        except OSError:
+            pass
+        try:
+            os.unlink('/tmp/cmdstatus')
+        except:
+            pass
 
 
 def run_test(test_name, command):
