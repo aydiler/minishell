@@ -29,7 +29,7 @@
 # define ERR_NOMEM		12		// Memory allocation error
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
-# define ERR_ENV_VAR	5000	// empty line
+# define NOT_ENV_VAR	5000	// empty line
 # define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
