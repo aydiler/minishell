@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/08 21:57:50 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/08 22:53:27 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static int	process_child_status(int status, int *all_signaled,
 	{
 		*all_signaled = 0;
 		last_status = WEXITSTATUS(status);
+		//printf("exit status in wait for children: %d\n", last_status);
 	}
 	else if (WIFSIGNALED(status))
 	{
@@ -44,14 +45,16 @@ static int	wait_for_children(int *pids, int cmd_count)
 	int	status;
 	int	all_signaled;
 	int	last_signal;
+	int	first;
 
 	all_signaled = 1;
 	last_signal = 0;
+	first = 1;
 	while (cmd_count--)
 	{
 		waitpid(pids[cmd_count], &status, 0);
 		status = process_child_status(status, &all_signaled, &last_signal,
-				&(int){1});
+				&first);
 	}
 	if (all_signaled && last_signal == SIGQUIT)
 		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
@@ -62,8 +65,6 @@ void	execute_program(t_cmd cmd, char ***envp)
 {
 	char	*cmd_path;
 
-	if (!cmd.args || !cmd.args[0])
-		exit(0);
 	if (is_child_builtin(cmd.args))
 		execute_child_builtin(cmd.args, envp);
 	cmd_path = find_command_in_path(cmd.args[0]);
