@@ -29,7 +29,7 @@
 # define ERR_NOMEM		12		// Memory allocation error
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
-# define NOT_ENV_VAR	5000	// empty line
+# define NOT_ENV_VAR	-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
@@ -64,6 +64,7 @@ int		is_tilde(char *line, int i);
 int		exchange_tilde(char **line, int i);
 int		skip_quote(char *line, int *i);
 char	*getenv_range(char *start, size_t *len_var, char **envp);
+int		remove_false_var(char **line);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
@@ -79,7 +80,7 @@ char	*find_command_in_path(char *cmd);
 void	ft_error(t_cmd **cmd, int exit_status);
 void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
-char 	**ft_2Ddup(char **arr);
+char	**ft_2Ddup(char **arr);
 char	*ft_getenv(char *name, char **envp);
 // signals
 void	signal_handler(int signo);
