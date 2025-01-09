@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built-ins_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/07 17:53:50 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/09 20:18:34 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,13 @@ int	ft_free_arr(char ***arr)
 	(*arr) = NULL;
 	//printf("after\n");
 	return (ERR_NOMEM);
+}
+
+int	is_valid_number(char *str, int sign)
+{
+	if (sign == 1 && ft_strcmp(str, "9223372036854775807") > 0)
+		return (0);
+	if (sign == -1 && ft_strcmp(str, "9223372036854775808") > 0)
+		return (0);
+	return (1);
 }

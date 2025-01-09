@@ -82,6 +82,7 @@ void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
 char	**ft_2Ddup(char **arr);
 char	*ft_getenv(char *name, char **envp);
+int		is_valid_number(char *str, int sign);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);

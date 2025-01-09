@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/09 17:08:22 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/09 18:35:48 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static int	wait_for_children(int *pids, int cmd_count)
 		waitpid(pids[i], &status, 0);
 		status = process_child_status(status, &all_signaled, &last_signal,
 				&first);
+		//printf("status: %d\n", status);
 		i++;
 	}
 	if (all_signaled && last_signal == SIGQUIT)
