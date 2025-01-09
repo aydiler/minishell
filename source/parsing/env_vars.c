@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/08 16:20:12 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/09 17:58:49 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,44 +78,51 @@ int	proces_env_var(char **line, char **envp)
 	return (error_check);
 }
 
-int	check_env_vars(char *line, char **envp)
+int	check_env_vars(char **line, char **envp, int exit_status)
 {
 	int		start;
 	int		end;
 	char	*tmp;
 	char	*tmp2;
+	int		error_check;
 
-	if (ft_strchr(line, '$') && *(ft_strchr(line, '$') + 1) && 
-		*(ft_strchr(line, '$') + 1) != ' ' && !(*(ft_strchr(line, '$') + 1) 
-			>= 9 && *(ft_strchr(line, '$') + 1) <= 13))
+	error_check = 0;
+	if (ft_strchr((*line), '$') && *(ft_strchr((*line), '$') + 1) && 
+		*(ft_strchr((*line), '$') + 1) != ' ' && !(*(ft_strchr(*line, '$') + 1) 
+			>= 9 && *(ft_strchr((*line), '$') + 1) <= 13))
 	{
+		if (*(ft_strchr((*line), '$') + 1) == '?')
+			error_check = fill_in_exit_status(line, exit_status);
+		if (error_check)
+			return (error_check);
 		start = 0;
-		while (line[start] && line[start] != '$')
+		while ((*line)[start] && (*line)[start] != '$')
 		{
-			if (line[start] == '\'')
-				start = jump_s_quote(line, start);
+			if ((*line)[start] == '\'')
+				start = jump_s_quote(*line, start);
 			else
 				start++;
 		}
-		if (!line[start])
+		if (!(*line)[start])
 			return (1);
 		start++;
 		end = start;
-		while (is_env_var(line[end]))
+		while (is_env_var((*line)[end]))
 			end++;
-		tmp = ft_strndup(&(line[start]), end - start);
+		tmp = ft_strndup(&((*line)[start]), end - start);
 		if (!tmp)
 			return (ERR_NOMEM);
 		tmp2 = ft_getenv(tmp, envp);
 		if (tmp2)
 			return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2)), 0);
 		else
-			return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2)), NOT_ENV_VAR);
+			return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2))
+				, NOT_ENV_VAR);
 	}
 	return (1);
 }
 
-int	handle_env_vars(char **line, char **envp)
+int	handle_env_vars(char **line, char **envp, int exit_status)
 {
 	int		error_check;
 	int		var_check;
@@ -130,7 +137,7 @@ int	handle_env_vars(char **line, char **envp)
 	var_check = 0;
 	while (!var_check && !error_check && line && *line)
 	{
-		var_check = check_env_vars(*line, envp);
+		var_check = check_env_vars(line, envp, exit_status);
 		if (var_check > 0)
 			break ;
 		if (!var_check)
