@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/07 17:53:50 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/09 19:30:38 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,11 @@ int	ft_free_arr(char ***arr)
 		return (ERR_NOMEM);
 	while ((*arr)[i])
 	{
-		//printf("i in free arr: %d\n", i);
 		free((*arr)[i]);
 		(*arr)[i] = NULL;
 		i++;
 	}
-	//printf("after: i:%d\n", i);
 	free(*arr);
 	(*arr) = NULL;
-	//printf("after\n");
 	return (ERR_NOMEM);
 }

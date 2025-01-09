@@ -81,17 +81,17 @@ void	free_executor(int **pipes, int cmd_count, int *pids);
 void	ft_error(t_cmd **cmd, int exit_status);
 void	free_all(t_cmd **cmd);
 void	ft_free_split(char **str);
-char	**ft_2Ddup(char **arr);
+char	**ft_arrdup(char **arr);
 char	*ft_getenv(char *name, char **envp);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);
 void	setup_signal(int signo, void (*handler)(int));
 void	handle_signal_std(int signo);
-void handle_signal_std(int signo);
-void setup_signal(int signo, void (*handler)(int));
-void setup_parent_signals(void);
-void setup_child_signals(void);
+void	handle_signal_std(int signo);
+void	setup_signal(int signo, void (*handler)(int));
+void	setup_parent_signals(void);
+void	setup_child_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
