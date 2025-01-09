@@ -35,7 +35,7 @@ int main(int argc, char **argv, char **envp)
 		if (input[0])
 			error_check = parser(&input, &cmd, dup_envp);
 		ft_memdel((void **)&(input));
-		if (error_check != NOT_ENV_VAR && (error_check || !cmd))
+		if (error_check || !cmd)
 		{
 			ft_error(&cmd, error_check);
 			continue ;
