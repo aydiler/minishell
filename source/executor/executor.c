@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/08 22:53:27 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/09 17:08:22 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,18 @@ static int	wait_for_children(int *pids, int cmd_count)
 	int	all_signaled;
 	int	last_signal;
 	int	first;
+	int	i;
 
 	all_signaled = 1;
 	last_signal = 0;
 	first = 1;
-	while (cmd_count--)
+	i = 0;
+	while (i < cmd_count)
 	{
-		waitpid(pids[cmd_count], &status, 0);
+		waitpid(pids[i], &status, 0);
 		status = process_child_status(status, &all_signaled, &last_signal,
 				&first);
+		i++;
 	}
 	if (all_signaled && last_signal == SIGQUIT)
 		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
