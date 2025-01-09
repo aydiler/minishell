@@ -33,7 +33,7 @@ int main(int argc, char **argv, char **envp)
 			save_history(input);
 		}
 		if (input[0])
-			error_check = parser(&input, &cmd, dup_envp);
+			error_check = parser(&input, &cmd, dup_envp, exit_status);
 		ft_memdel((void **)&(input));
 		if (error_check || !cmd)
 		{
@@ -45,7 +45,6 @@ int main(int argc, char **argv, char **envp)
 			exit_status = execute_pipeline(cmd, &dup_envp);
 		free_all(&cmd);
 	}
-	//printf("len of dup envp: %d\n", ft_arrlen(dup_envp));
 	if (dup_envp)
 		ft_free_arr(&dup_envp);
 	rl_clear_history();

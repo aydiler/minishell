@@ -46,9 +46,9 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 // Parser funktions:
-int		parser(char **line, t_cmd **cmd, char **envp);
+int		parser(char **line, t_cmd **cmd, char **envp, int exit_status);
 char	**tokenizer(char *line);
-int		handle_env_vars(char **line, char **envp);
+int		handle_env_vars(char **line, char **envp, int exit_status);
 int		handle_unclosed_quotes(char **line);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
@@ -64,6 +64,7 @@ int		is_tilde(char *line, int i);
 int		exchange_tilde(char **line, int i);
 int		skip_quote(char *line, int *i);
 char	*getenv_range(char *start, size_t *len_var, char **envp);
+int		fill_in_exit_status(char **line, int exit_status);
 int		remove_false_var(char **line);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
