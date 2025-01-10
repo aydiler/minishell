@@ -36,7 +36,7 @@ Built-in Commands
 	echo (with -n option) a X
 	cd (relative/absolute paths) a X
 	pwd (no options) m X
-	export (no options) m
+	export (no options) m X
 	unset (no options) m
 	env (no options/arguments) m X
 	exit (no options) X
@@ -59,7 +59,5 @@ minishell$ echo $'line1 line2 line3' > testfile.txt
 minishell$ cat testfile.txt 
 $line1 line2 line3
 
-export var -> segfault
-export not creating env vars
 
 env var funktionen uebersichtlich und norminette proof
