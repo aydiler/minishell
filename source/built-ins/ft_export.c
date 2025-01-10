@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/09 20:22:47 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/10 19:52:29 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,14 @@ int	print_env(char **envp)
 	char	*equal;
 	char	*name;
 
-	printf("hads\n");
 	tmp = ft_sort_envp(envp);
 	i = -1;
 	while (tmp[++i])
 	{
-		printf("sasdasdsadhads\n");
-		equal = ft_strchr(tmp[i], '=');
-		if (!equal)
-			continue ;
-		equal = ft_strdup(equal);
+		equal = ft_strdup(ft_strchr(tmp[i], '='));
 		if (!equal)
 			return (ft_free_arr(&tmp), ERR_NOMEM);
-		name = ft_strndup(tmp[i], equal - tmp[i]);
+		name = ft_strndup(tmp[i], ft_strlen(tmp[i]) - ft_strlen(equal));
 		if (!name)
 			return (ft_free_arr(&tmp), free(equal), ERR_NOMEM);
 		printf("declare -x %s=\"%s\"\n", name, equal + 1);

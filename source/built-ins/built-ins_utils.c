@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/09 19:30:38 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/10 19:56:58 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,27 @@
 
 char	**ft_sort_envp(char **envp)
 {
-	int	i;
-	char *temp;
+	int		i;
+	char	*temp;
+	char	**sorted_envp;
 
+	sorted_envp = ft_arrdup(envp);
+	if (!sorted_envp)
+		return (NULL);
 	i = 0;
-	while ((envp)[i] && (envp)[i + 1])
+	while ((sorted_envp)[i] && (sorted_envp)[i + 1])
 	{
-		if (ft_strcmp(envp[i], (envp)[i + 1]) > 0)
+		if (ft_strcmp(sorted_envp[i], (sorted_envp)[i + 1]) > 0)
 		{
-			temp = (envp)[i];
-			(envp)[i] = (envp)[i + 1];
-			(envp)[i + 1] = temp;
+			temp = (sorted_envp)[i];
+			(sorted_envp)[i] = (sorted_envp)[i + 1];
+			(sorted_envp)[i + 1] = temp;
 			i = 0;
 		}
 		else
 			i++;
 	}
-	return (envp);
+	return (sorted_envp);
 }
 
 int	ft_free_arr(char ***arr)
