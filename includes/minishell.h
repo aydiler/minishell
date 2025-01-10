@@ -15,7 +15,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <limits.h>
-#include <sys/ioctl.h>
+# include <sys/ioctl.h>
 
 # define ERR_NOT_FOUND	1
 # define ERR_PERMISSION	2
