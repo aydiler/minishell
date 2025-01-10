@@ -12,7 +12,7 @@ int main(int argc, char **argv, char **envp)
 
 	g_child_running = 0;
 	error_check = 0;
-	dup_envp = ft_2Ddup(envp);
+	dup_envp = ft_arrdup(envp);
 	cmd = NULL;
 	exit_status = 0;
 	(void)argc;

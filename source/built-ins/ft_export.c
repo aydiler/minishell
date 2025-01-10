@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/07 21:48:33 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/10 19:52:29 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,26 @@
 
 int	print_env(char **envp)
 {
-	char	**temp;
+	char	**tmp;
 	int		i;
 	char	*equal;
 	char	*name;
 
-	temp = ft_2Ddup(envp);
-	if (!temp)
-		return (ERR_NOMEM);
-	temp = ft_sort_envp(envp);
+	tmp = ft_sort_envp(envp);
 	i = -1;
-	while (temp[++i])
+	while (tmp[++i])
 	{
-		equal = ft_strdup(ft_strchr(envp[i], '='));
+		equal = ft_strdup(ft_strchr(tmp[i], '='));
 		if (!equal)
-			return (ERR_NOMEM);
-		name = ft_strndup(temp[i], (int)(ft_strlen(temp[i]) - ft_strlen(equal)));
+			return (ft_free_arr(&tmp), ERR_NOMEM);
+		name = ft_strndup(tmp[i], ft_strlen(tmp[i]) - ft_strlen(equal));
 		if (!name)
-			return (ERR_NOMEM);
+			return (ft_free_arr(&tmp), free(equal), ERR_NOMEM);
 		printf("declare -x %s=\"%s\"\n", name, equal + 1);
 		free(equal);
 		free(name);
 	}
-	ft_free_arr(&temp);
+	ft_free_arr(&tmp);
 	return (0);
 }
 
@@ -82,7 +79,7 @@ int	add_env(char ***envp, char *new_env_var)
 		return (ft_free_arr(&new_envp));
 	new_envp[i + 1] = NULL;
 	ft_free_arr(envp);
-	*envp = ft_2Ddup(new_envp);
+	*envp = ft_arrdup(new_envp);
 	ft_free_arr(&new_envp);
 	return (0);
 }
@@ -92,7 +89,7 @@ int	add_replace_env(char ***envp, char **args)
 	int		error_check;
 	char	*equal;
 	char	*name;
-	char	*temp;
+	char	*tmp;
 
 	error_check = 0;
 	equal = ft_strdup(ft_strchr(args[1], '='));
@@ -101,11 +98,11 @@ int	add_replace_env(char ***envp, char **args)
 	name = ft_strndup(args[1], (ft_strlen(args[1]) - ft_strlen(equal)));
 	if (!name)
 		return (ERR_NOMEM);
-	temp = ft_getenv(name, *envp);
-	if (temp)
+	tmp = ft_getenv(name, *envp);
+	if (tmp)
 	{
 		replace_env(envp, args[1], name);
-		free(temp);
+		free(tmp);
 	}
 	else
 		error_check = add_env(envp, args[1]);
