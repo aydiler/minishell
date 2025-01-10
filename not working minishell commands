@@ -1,2 +1,0 @@
-echo hello a > b > c
-nur a wird erstellt. und a wird hello (falsch)
