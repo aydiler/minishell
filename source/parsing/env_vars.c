@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/09 17:58:49 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/10 20:52:09 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,39 +87,23 @@ int	check_env_vars(char **line, char **envp, int exit_status)
 	int		error_check;
 
 	error_check = 0;
-	if (ft_strchr((*line), '$') && *(ft_strchr((*line), '$') + 1) && 
-		*(ft_strchr((*line), '$') + 1) != ' ' && !(*(ft_strchr(*line, '$') + 1) 
-			>= 9 && *(ft_strchr((*line), '$') + 1) <= 13))
-	{
-		if (*(ft_strchr((*line), '$') + 1) == '?')
-			error_check = fill_in_exit_status(line, exit_status);
-		if (error_check)
-			return (error_check);
-		start = 0;
-		while ((*line)[start] && (*line)[start] != '$')
-		{
-			if ((*line)[start] == '\'')
-				start = jump_s_quote(*line, start);
-			else
-				start++;
-		}
-		if (!(*line)[start])
-			return (1);
-		start++;
-		end = start;
-		while (is_env_var((*line)[end]))
-			end++;
-		tmp = ft_strndup(&((*line)[start]), end - start);
-		if (!tmp)
-			return (ERR_NOMEM);
-		tmp2 = ft_getenv(tmp, envp);
-		if (tmp2)
-			return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2)), 0);
-		else
-			return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2))
-				, NOT_ENV_VAR);
-	}
-	return (1);
+	if (!has_env_var(*line))
+		return (1);
+	if (is_exit_status_var(*line))
+		error_check = fill_in_exit_status(line, exit_status);
+	if (error_check)
+		return (error_check);
+	start = find_var_start(*line);
+	if (!start)
+		return (1);
+	end = start;
+	while (is_env_var((*line)[end]))
+		end++;
+	tmp = ft_strndup(&((*line)[start]), end - start);
+	tmp2 = ft_getenv(tmp, envp);
+	if (tmp2)
+		return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2)), 0);
+	return (ft_memdel((void **)&(tmp)), ft_memdel((void **)&(tmp2)), NOVAR);
 }
 
 int	handle_env_vars(char **line, char **envp, int exit_status)

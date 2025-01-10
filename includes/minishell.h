@@ -29,7 +29,7 @@
 # define ERR_NOMEM		12		// Memory allocation error
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
-# define NOT_ENV_VAR	-1		// empty line
+# define NOVAR			-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
@@ -60,12 +60,15 @@ int		jump_s_quote(char *line, int start);
 void	quote_handling(char *line, int *i, int *j, char c);
 	// env_vars utils
 int		is_env_var(char c);
+int		has_env_var(char *line);
+int		is_exit_status_var(char *line);
 int		is_tilde(char *line, int i);
 int		exchange_tilde(char **line, int i);
 int		skip_quote(char *line, int *i);
 char	*getenv_range(char *start, size_t *len_var, char **envp);
 int		fill_in_exit_status(char **line, int exit_status);
 int		remove_false_var(char **line);
+int		find_var_start(char *line);
 	// handle redirections
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
