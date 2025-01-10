@@ -16,8 +16,8 @@ Command Parsing
 
 	Handle single quotes (') X
 	Handle double quotes (") X
-	Handle environment variables ($VAR) 
-	Handle exit status ($?)
+	Handle environment variables ($VAR) X
+	Handle exit status ($?) X
 	Skip interpretation of unclosed quotes X
 	Skip interpretation of \ and ; X
 
@@ -34,7 +34,7 @@ Redirections
 Built-in Commands
 
 	echo (with -n option) a X
-	cd (relative/absolute paths) a
+	cd (relative/absolute paths) a X
 	pwd (no options) m X
 	export (no options) m
 	unset (no options) m
@@ -51,14 +51,15 @@ Technical Requirements
 
 Todo
 
-Testing CD with undefined variable...
- Command: 'cd $NONEXISTENT; pwd'                                                                                         
- Expected pwd (bash): /home/ubuntu                                                                                       
- Got pwd (minishell): /home/ubuntu/42/minishell/tester
- -> pass env var to cd builin
-
-minishell$ echo $
-Memory allocation error 
+adiler@c3a1c6:~/minishell$ echo $'line1 line2 line3' > testfile.txt
+adiler@c3a1c6:~/minishell$ cat testfile.txt 
+line1 line2 line3
+adiler@c3a1c6:~/minishell$ ./minishell 
+minishell$ echo $'line1 line2 line3' > testfile.txt
+minishell$ cat testfile.txt 
+$line1 line2 line3
 
 export var -> segfault
 export not creating env vars
+
+env var funktionen uebersichtlich und norminette proof

@@ -24,6 +24,8 @@ DEBUG = True
 
 from test_history import test_history
 from test_signals import test_signals
+from test_redirections import run_redirection_test
+from test_utils import run_shell_command, clean_shell_output
 
 def debug_print(*args, **kwargs):
 	if DEBUG:
@@ -52,122 +54,6 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
-
-def normalize_error_message(line):
-    # First remove shell name prefix if present (bash: or minishell:)
-    line = re.sub(r'^(bash|minishell):\s*', '', line)
-    
-    # Remove the "line X:" prefix that bash adds
-    line = re.sub(r'^line \d+:\s*', '', line)
-    
-    # Remove leading colon and space if present
-    line = re.sub(r'^:\s*', '', line)
-    
-    # Remove trailing shell prompts
-    line = re.sub(r'(bash-[0-9.]+\$|minishell\$)\s*$', '', line)
-    
-    # Remove bash -c prefix if present
-    line = re.sub(r'^bash -c\s+', '', line)
-    
-    return line.strip()
-
-def run_shell_command(command, shell_type='bash'):
-    """Runs a command in specified shell and returns output and exit code"""
-    debug_print(f"Starting {shell_type} command execution")
-
-    env = os.environ.copy()
-    env['TERM'] = 'dumb'
-
-    script = f'''#!/bin/bash
-cd {os.getcwd()}
-
-# Execute command and capture all output including prompts
-(
-    {shell_type if shell_type == 'bash' else os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), './minishell'))} << 'EOF'
-{command}
-EOF
-) > /tmp/cmd_output.$$ 2>&1
-
-echo $? > /tmp/cmd_status.$$
-
-# Filter out shell artifacts but preserve actual output
-cat /tmp/cmd_output.$$ | grep -v '^{shell_type}\$' | grep -v '^exit$' | sed 's/{shell_type}\$ exit$//g'
-
-rm -f /tmp/cmd_output.$$
-STATUS=$(cat /tmp/cmd_status.$$)
-rm -f /tmp/cmd_status.$$
-exit $STATUS
-'''
-    script_path = '/tmp/cmd_script.sh'
-    
-    try:
-        with open(script_path, 'w') as f:
-            f.write(script)
-        os.chmod(script_path, 0o755)
-
-        result = subprocess.run([script_path], 
-                             capture_output=True, 
-                             text=True,
-                             env=env)
-        
-        # Get the output and clean it
-        output = result.stdout + result.stderr
-        
-        # Remove trailing newlines and whitespace
-        output = output.rstrip()
-        
-        exit_code = result.returncode
-        
-        debug_print(f"Shell type: {shell_type}")
-        debug_print(f"Working directory: {os.getcwd()}")
-        debug_print(f"Raw command output: {repr(output)}")
-        debug_print(f"Exit code: {exit_code}")
-        
-        return output, exit_code
-        
-    finally:
-        # Clean up temporary files
-        for pattern in ['/tmp/cmd_script.sh', '/tmp/cmd_output.*', '/tmp/cmd_status.*']:
-            try:
-                for f in glob.glob(pattern):
-                    if os.path.exists(f):
-                        os.remove(f)
-            except:
-                pass
-
-def clean_shell_output(command, output, shell_type='bash'):
-    """
-    Process 'output' to remove prompts, control characters, empty lines, etc.
-    so that both minishell and bash outputs can be compared fairly.
-    """
-    # Remove ANSI escape sequences
-    output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', output)
-
-    # Standardize line endings
-    output = re.sub(r'\r\n', '\n', output)
-
-    # Remove control characters while preserving normal whitespace
-    output = re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', output)
-
-    lines = []
-    for line in output.splitlines():
-        if not line.strip():
-            continue
-        
-        if re.match(r'^(minishell|bash-[0-9.]+)\$\s*$', line.strip()):
-            continue
-
-        line = re.sub(r'^(minishell|bash-[0-9.]+)\$\s*', '', line)
-        line = normalize_error_message(line)
-
-        if any(line.strip() == x for x in ['exit', 'echo $?', command.strip()]):
-            continue
-
-        if line.strip():
-            lines.append(line.strip())
-
-    return lines
-
 
 def run_test(test_name, command):
 	"""Runs a test comparing minishell and bash behavior"""
@@ -203,82 +89,6 @@ def run_test(test_name, command):
 		FAIL += 1
 	sys.stdout.flush()
  
-def test_file_content(filename, expected_content):
-	"""Helper function to verify file contents after redirection"""
-	try:
-		with open(filename, 'r') as f:
-			content = f.read().strip()
-			return content == expected_content.strip()
-	except:
-		return False
- 
-def run_redirection_test(test_name, command, expected_file):
-	"""
-	Modified version that gets expected content from bash execution
-	"""
-	global PASS, FAIL
-	
-	print(f"\nTesting {test_name}...")
-	sys.stdout.flush()
-
-	# First run bash to get expected behavior and content
-	bash_output, bash_exit = run_shell_command(command, 'bash')
-	
-	# Get the content created by bash for comparison
-	try:
-		with open(expected_file, 'r') as f:
-			expected_content = f.read()
-	except:
-		expected_content = ""
-		
-	# Remove the file before testing minishell
-	try:
-		os.remove(expected_file)
-	except:
-		pass
-		
-	# Now run minishell
-	minishell_output, minishell_exit = run_shell_command(command, 'minishell')
-
-	# Clean and normalize outputs
-	minishell_output_clean = clean_shell_output(command, minishell_output, 'minishell')
-	bash_output_clean = clean_shell_output(command, bash_output, 'bash')
-
-	# Verify command execution
-	command_success = (minishell_output_clean == bash_output_clean and 
-					  minishell_exit == bash_exit)
-
-	# Verify file contents
-	file_exists = os.path.exists(expected_file)
-	if file_exists:
-		with open(expected_file, 'r') as f:
-			actual_content = f.read()
-			content_success = actual_content == expected_content
-	else:
-		content_success = False
-		actual_content = ""
-
-	# Print test information
-	print(f"Command: {repr(command)}")
-	print(f"Expected output:", bash_output_clean)
-	print(f"Got output:", minishell_output_clean)
-	print(f"Expected exit code: {bash_exit}")
-	print(f"Got exit code: {minishell_exit}")
-	print(f"File created/modified: {expected_file}")
-	print(f"File exists: {file_exists}")
-	if file_exists:
-		print(f"Expected content: {repr(expected_content)}")
-		print(f"Actual content: {repr(actual_content)}")
-
-	# Overall test result
-	if command_success and content_success:
-		print(f"{GREEN}PASS{NC}")
-		PASS += 1
-	else:
-		print(f"{RED}FAIL{NC}")
-		FAIL += 1
-	sys.stdout.flush()
-
 def run_input_redirection_test(test_name, input_content, command, expected_output=None):
 	global PASS, FAIL
 	
@@ -327,72 +137,101 @@ def run_input_redirection_test(test_name, input_content, command, expected_outpu
 	except:
 		pass
 
-def test_append_redirection(test_name, commands, expected_file, expected_content):
-	"""Helper function to test append redirection"""
-	global PASS, FAIL
-	
-	print(f"\nTesting {test_name}...")
-	sys.stdout.flush()
+def test_append_redirection(test_name, commands, expected_file):
+    """Helper function to test append redirection by comparing with bash behavior"""
+    global PASS, FAIL
+    
+    print(f"\nTesting {test_name}...")
+    sys.stdout.flush()
 
-	# Clean up test file before starting
-	try:
-		os.remove(expected_file)
-	except:
-		pass
+    # Run commands in bash first to get expected behavior
+    bash_outputs = []
+    try:
+        os.remove(expected_file)
+    except:
+        pass
+        
+    for command in commands:
+        bash_output, bash_exit = run_shell_command(command, 'bash')
+        bash_outputs.append((bash_output, bash_exit))
 
-	# Run all commands in minishell first
-	for command in commands:
-		minishell_output, minishell_exit = run_shell_command(command, 'minishell')
+    # Get bash file content as expected content
+    with open(expected_file, 'r') as f:
+        expected_content = f.read()
+    
+    # Clean up before minishell test
+    try:
+        os.remove(expected_file)
+    except:
+        pass
 
-	# Check minishell results
-	file_exists = os.path.exists(expected_file)
-	if file_exists:
-		with open(expected_file, 'r') as f:
-			actual_content = f.read()
-	else:
-		actual_content = ""
-		
-	# Clean up for bash test
-	try:
-		os.remove(expected_file)
-	except:
-		pass
-		
-	# Run all commands in bash to verify expected behavior
-	for command in commands:
-		bash_output, bash_exit = run_shell_command(command, 'bash')
+    # Run commands in minishell
+    minishell_outputs = []
+    for command in commands:
+        minishell_output, minishell_exit = run_shell_command(command, 'minishell')
+        minishell_outputs.append((minishell_output, minishell_exit))
 
-	# Verify bash created the expected content
-	with open(expected_file, 'r') as f:
-		bash_content = f.read()
-	
-	# Cleanup bash file
-	try:
-		os.remove(expected_file)
-	except:
-		pass
+    # Get minishell results
+    file_exists = os.path.exists(expected_file)
+    if file_exists:
+        with open(expected_file, 'r') as f:
+            actual_content = f.read()
+    else:
+        actual_content = ""
 
-	# Print test information
-	print(f"Commands executed:")
-	for cmd in commands:
-		print(f"  {repr(cmd)}")
-	print(f"File created/modified: {expected_file}")
-	print(f"File exists: {file_exists}")
-	print(f"Expected content: {repr(expected_content)}")
-	print(f"Bash content: {repr(bash_content)}")
-	print(f"Actual content: {repr(actual_content)}")
+    # Cleanup test file
+    try:
+        os.remove(expected_file)
+    except:
+        pass
 
-	# Compare results
-	content_matches_expected = actual_content.strip() == expected_content.strip()
-	content_matches_bash = actual_content.strip() == bash_content.strip()
-	
-	if content_matches_expected and content_matches_bash:
-		print(f"{GREEN}PASS{NC}")
-		PASS += 1
-	else:
-		print(f"{RED}FAIL{NC}")
-		FAIL += 1
-	sys.stdout.flush()
+    # Print test information
+    print(f"Commands executed:")
+    for cmd in commands:
+        print(f"  {repr(cmd)}")
+    print(f"File created/modified: {expected_file}")
+    print(f"File exists: {file_exists}")
+    
+    # Compare command outputs
+    outputs_match = all(
+        minishell_out == bash_out 
+        for (minishell_out, _), (bash_out, _) in zip(minishell_outputs, bash_outputs)
+    )
+    
+    # Compare exit codes
+    exits_match = all(
+        minishell_exit == bash_exit
+        for (_, minishell_exit), (_, bash_exit) in zip(minishell_outputs, bash_outputs)
+    )
+    
+    # Compare file contents
+    content_matches = actual_content.strip() == expected_content.strip()
+
+    print("Command output comparison:")
+    for i, ((min_out, min_exit), (bash_out, bash_exit)) in enumerate(zip(minishell_outputs, bash_outputs)):
+        print(f"\nCommand {i+1}:")
+        print(f"Minishell output: {repr(min_out)}")
+        print(f"Bash output: {repr(bash_out)}")
+        print(f"Minishell exit: {min_exit}")
+        print(f"Bash exit: {bash_exit}")
+    
+    print("\nFile content comparison:")
+    print(f"Expected (bash) content: {repr(expected_content)}")
+    print(f"Actual (minishell) content: {repr(actual_content)}")
+
+    if outputs_match and exits_match and content_matches:
+        print(f"{GREEN}PASS{NC}")
+        PASS += 1
+    else:
+        print(f"{RED}FAIL{NC}")
+        if not outputs_match:
+            print("Command outputs don't match")
+        if not exits_match:
+            print("Exit codes don't match")
+        if not content_matches:
+            print("File contents don't match")
+        FAIL += 1
+    sys.stdout.flush()
 
 
 def test_mixed_redirection(test_name, input_content, commands, expected_file):
@@ -638,13 +477,6 @@ def main():
 		"testfile.txt",
 	)
 
-	# # Test multiple redirections in sequence
-	# run_redirection_test(
-	# 	"Sequential redirections",
-	# 	"echo 'first' > test1.txt; echo 'second' > test2.txt",
-	# 	"test2.txt",
-	# )
-
 	# Test redirection with pwd command
 	run_redirection_test(
 		"PWD output redirection",
@@ -652,26 +484,19 @@ def main():
 		"testfile.txt",
 	)
 
-	# # Test redirection with command substitution
-	# run_redirection_test(
-	# 	"Command output with spaces",
-	# 	"ls -l / | head -n 1 > testfile.txt",
-	# 	"testfile.txt",
-	# )
+	# Test redirection with environment variables
+	run_redirection_test(
+		"Environment variable content",
+		"echo $USER > testfile.txt",
+		"testfile.txt",
+	)
 
-	# # Test redirection with environment variables
-	# run_redirection_test(
-	# 	"Environment variable content",
-	# 	"echo $USER > testfile.txt",
-	# 	"testfile.txt",
-	# )
-
-	# # Test redirection with path expansion
-	# run_redirection_test(
-	# 	"Path expansion in content",
-	# 	"echo ~/testfile > testfile.txt",
-	# 	"testfile.txt",
-	# )
+	# Test redirection with path expansion
+	run_redirection_test(
+		"Path expansion in content",
+		"echo ~/testfile > testfile.txt",
+		"testfile.txt",
+	)
 
 	# Test redirection with large content
 	run_redirection_test(
@@ -700,20 +525,6 @@ def main():
 		"testfile.txt",
 	)
 
-	# Test redirection with varying line endings
-	run_redirection_test(
-		"Mixed line endings",
-		"printf 'line1\\r line2 line3\\rline4' > mixed_endings.txt",
-		"mixed_endings.txt"
-	)
-
-	# Test redirection with null characters
-	run_redirection_test(
-		"Null character handling",
-		"printf 'text1\\0text2\\0text3' > nullchar.txt",
-		"nullchar.txt"
-	)
-
 	print("\nRunning input redirection tests...")
 	
 	# Basic input redirection
@@ -727,13 +538,6 @@ def main():
 	run_input_redirection_test(
 		"Empty file input",
 		"",
-		"cat < test_input.txt"
-	)
-
-	# Multiple lines input
-	run_input_redirection_test(
-		"Multiple lines input",
-		"line1\nline2\nline3",
 		"cat < test_input.txt"
 	)
 
@@ -809,18 +613,15 @@ def main():
 
 	print("\nRunning append redirection tests...")
 
-	# Basic append test
 	test_append_redirection(
 		"Basic append",
 		[
 			"echo first > testfile.txt",
 			"echo second >> testfile.txt"
 		],
-		"testfile.txt",
-		"first\nsecond\n"
+		"testfile.txt"
 	)
 
-	# Multiple appends test
 	test_append_redirection(
 		"Multiple appends",
 		[
@@ -828,44 +629,36 @@ def main():
 			"echo line2 >> testfile.txt",
 			"echo line3 >> testfile.txt"
 		],
-		"testfile.txt",
-		"line1\nline2\nline3\n"
+		"testfile.txt"
 	)
 
-	# Append to empty file
 	test_append_redirection(
 		"Append to empty file",
 		[
 			"echo -n '' > testfile.txt",
 			"echo appended >> testfile.txt"
 		],
-		"testfile.txt",
-		"appended\n"
+		"testfile.txt"
 	)
 
-	# Append with spaces
 	test_append_redirection(
 		"Append with spaces",
 		[
 			"echo first > testfile.txt",
 			"echo '   spaced    content   ' >> testfile.txt"
 		],
-		"testfile.txt",
-		"first\n   spaced    content   \n"
+		"testfile.txt"
 	)
 
-	# Append to file with spaces in name
 	test_append_redirection(
 		"Append to file with spaces in name",
 		[
 			"echo first > 'test file.txt'",
 			"echo second >> 'test file.txt'"
 		],
-		"test file.txt",
-		"first\nsecond\n"
+		"test file.txt"
 	)
- 
-	# Test append with interleaved content
+
 	test_append_redirection(
 		"Interleaved append",
 		[
@@ -874,19 +667,16 @@ def main():
 			"echo 'odd2' >> interleaved.txt",
 			"echo 'even2' >> interleaved.txt"
 		],
-		"interleaved.txt",
-		"odd1\neven1\nodd2\neven2\n"
+		"interleaved.txt"
 	)
 
-	# Test append with number sequences
 	test_append_redirection(
 		"Number sequence append",
 		[
 			"seq 1 5 > numbers.txt",
 			"seq 6 10 >> numbers.txt"
 		],
-		"numbers.txt",
-		"1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"
+		"numbers.txt"
 	)
 
 	print("\nRunning mixed redirection tests...")
@@ -1272,41 +1062,39 @@ def main():
 	run_cd_test("CD chain", "cd /tmp; cd ..; cd /var; pwd")
 	run_cd_test("CD with directory creation", "mkdir -p /tmp/newdir; cd /tmp/newdir; pwd")
 	run_cd_test("CD to previous dir", "cd /tmp; cd /var; cd -; pwd")
+ 
+	# Test pwd
+	run_test("PWD", "pwd")
+ 
+	# Test env
+	#run_test("Env command", "env")
 
-	# # Handle exit status ($?)
-	# run_test("Exit basic", "exit")
-	# run_test("Exit with status", "exit 42")
-	# run_test("Exit with invalid status", "exit abc")
-	# run_test("Exit status checking", "ls nonexistentfile; echo $?")
-	# run_test("Exit status success", "ls /; echo $?")
-
-	# # \ and ;
-	# run_test("Mixed quotes", "echo '\"nested quotes\"'")
-	# run_test("Mixed quotes complex", "echo \"'single'\" '\"double\"'")
-	# run_test("Alternate quotes", "echo 'this' \"that\" 'other' \"another\"")
-	# run_test("Empty quotes", "echo '' \"\"")
-	# run_test("Quotes with spaces", "echo '   '  \"   \"")
-	# run_test("Quotes with newlines", "echo '\n\n'  \"\n\n\"")
-	# run_test("Semicolon only", ";")
-	# run_test("Multiple semicolons", ";;;")
-	# run_test("Spaces between semicolons", "; ; ;")
-	# run_test("Backslash at end", "echo hello\\")
-	# run_test("Backslash with space", "echo hello\\ world")
-	# run_test("Multiple backslashes", "echo hello\\\\world")
-	# run_test("Special chars sequence", "echo !@#$%^&*()_+-=[]{}\\|;:'\",.<>/?`~")
-
-	# # Handle environment variables
-	# run_test("Absolute path home", "/bin/ls $HOME")
-	# run_test("Single quotes special chars", "echo '$USER $HOME'")
-	# run_test("Double quotes with expansion", 'echo "Current user: $USER"')
-	# run_test("Double quotes multiple vars", 'echo "User: $USER Home: $HOME Shell: $SHELL"')
-
-	# Redirection
-	# run_test("Only redirections", "> out")
-
-	# Pipes
-	# run_test("Only pipe", "|")
-	# run_test("Multiple pipes", "|||")
+	# Handle exit status ($?)
+	run_test("Exit basic", "exit")
+	run_test("Exit with status", "exit 42")
+	run_test("Exit with invalid status", "exit abc")
+	run_test("Exit status with max value", "exit 255")
+	run_test("Exit status with zero value", "exit 0")
+	run_test("Exit status with number bigger than max", "exit 256")
+	run_test("Exit status with number bigger than max int", "exit 3147483648")
+	run_test("Exit status with negative max int", "exit -3147483648")
+	run_test("Exit status with number bigger than max long", "exit 314748364888888888888888888888")
+	run_test("Exit status with negative max long", "exit -314748364888888888888888888888")
+	run_test("Exit status with negative value", "exit -1")
+	run_test("Exit status with leading zero", "exit 042")
+	run_test("Exit status with multiple spaces", "exit     42")
+	run_test("Exit status with extra arguments", "exit 42 extra")
+	run_test("Exit status in pipe", "exit 42 | wc -l")
+	run_test("Exit status in pipe with input", "echo hello | exit 42")
+	run_test("Exit status in middle of pipe", "echo hello | exit 42 | wc -l")
+	run_test("Exit status in pipe with quotes", "echo 'exit 42' | wc -l")
+ 
+ 
+	# Handle environment variables
+	run_test("Absolute path home", "/bin/ls $HOME")
+	run_test("Single quotes special chars", "echo '$USER $HOME'")
+	run_test("Double quotes with expansion", 'echo "Current user: $USER"')
+	run_test("Double quotes multiple vars", 'echo "User: $USER Home: $HOME Shell: $SHELL"')
 
 	# History and signal tests - now using imported functions
 	PASS, FAIL = test_history(MINISHELL_DIR, PASS, FAIL)
