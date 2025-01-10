@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/19 17:31:25 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/10 20:13:26 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ int	handle_re_input(t_cmd **cmd, char **args, int i)
 {
 	if (!args[i + 1])
 		return (ERR_INVAL);
+	if ((*cmd)->input_file)
+		ft_memdel((void **)&((*cmd)->input_file));
 	(*cmd)->input_file = ft_strdup(args[i + 1]);
 	if (!(*cmd)->input_file)
 		return (ERR_NOMEM);
