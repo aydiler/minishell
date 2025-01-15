@@ -113,6 +113,7 @@ int		ft_free_arr(char ***arr);
 int		ft_pwd(void);
 int		ft_env(char **envp);
 int		ft_export(char ***envp, char **args);
+int		ft_unset(char ***envp, char **args);
 int		ft_echo(char **args);
 int		ft_cd(char **args);
 int		ft_exit(char **args);
