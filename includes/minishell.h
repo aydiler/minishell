@@ -50,6 +50,7 @@ int		parser(char **line, t_cmd **cmd, char **envp, int exit_status);
 char	**tokenizer(char *line);
 int		handle_env_vars(char **line, char **envp, int exit_status);
 int		handle_unclosed_quotes(char **line);
+int		handle_here_doc(t_cmd **cmd, char **args, int i);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);

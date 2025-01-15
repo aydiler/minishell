@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/10 20:13:26 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/15 18:23:38 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 		error_check = handle_re_input(cmd, args, i);
 	else if (!ft_strncmp(">>", token, ft_strlen(token)))
 		error_check = handle_ap_output(cmd, args, i);
+	else if (!ft_strncmp("<<", token, ft_strlen(token)))
+		error_check = handle_here_doc(cmd, args, i);
 	if (error_check)
 		return (error_check);
 	return (0);
@@ -41,6 +43,8 @@ int	check_redirections(char *token)
 	else if (!ft_strncmp("<", token, ft_strlen(token)))
 		return (1);
 	else if (!ft_strncmp(">>", token, ft_strlen(token)))
+		return (1);
+	else if (!ft_strncmp("<<", token, ft_strlen(token)))
 		return (1);
 	return (0);
 }
