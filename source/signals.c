@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 20:41:37 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/07 16:39:17 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/15 20:29:54 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@ void handle_signal_std(int signo)
         if (signo == SIGINT)
             write(1, "\n", 1);
     }
+}
+
+void handle_signal_heredoc(int signo)
+{
+	printf("signo = %d\n", signo);
+	if (signo == SIGINT)
+	{
+		
+	}
+	if (signo == SIGQUIT)
+	{
+		
+	}
+}
+
+void setup_here_doc_signals(void)
+{
+	signal(SIGINT, handle_signal_heredoc);
+	signal(SIGQUIT, handle_signal_heredoc);
 }
 
 void setup_parent_signals(void)

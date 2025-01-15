@@ -33,6 +33,7 @@
 # define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
+# define HEREDOC_FILE	"/tmp/.minishell_here_doc"
 
 extern volatile sig_atomic_t g_child_running; 
 
@@ -97,6 +98,7 @@ void	handle_signal_std(int signo);
 void	setup_signal(int signo, void (*handler)(int));
 void	setup_parent_signals(void);
 void	setup_child_signals(void);
+void	setup_here_doc_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
