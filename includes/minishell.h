@@ -35,7 +35,8 @@
 # define WRITE_END		1
 # define HEREDOC_FILE	"/tmp/.minishell_here_doc"
 
-extern volatile sig_atomic_t g_child_running; 
+extern volatile sig_atomic_t g_child_running;
+extern volatile sig_atomic_t g_heredoc_signal;
 
 typedef struct s_cmd 
 {
