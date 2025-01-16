@@ -1,48 +1,64 @@
 #include "../../includes/minishell.h"
 
-char *do_here_doc(char **args, int i)
+static int	process_line(char **input, char *extra_input, char *delimiter)
 {
-    char    buffer[1024];
-    char    *tmp;
-    char    *input;
-    ssize_t bytes_read;
+	char	*tmp;
 
-    input = ft_strdup("");
-    write(1, "> ", 2);
-    while (1)
-    {
-        bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer) - 1);
-        
-        if (g_heredoc_signal || bytes_read == -1)
-        {
-            free(input);
-            return (NULL);
-        }
-        if (bytes_read == 0)
-        {
-			write(1, "\n", 2);
-            ft_putstr_fd("minishell: warning: here-document delimited by end-of-file (wanted `", 2);
-            ft_putstr_fd(args[i + 1], 2);
-            ft_putstr_fd("')\n", 2);
-            break;
-        }
-        buffer[bytes_read] = '\0';
-        tmp = input;
-        input = ft_strjoin(tmp, buffer);
-        free(tmp);
-        if (ft_strnstr(buffer, args[i + 1], bytes_read) && 
-            buffer[ft_strlen(args[i + 1])] == '\n')
-            break;
-            
-        write(1, "> ", 2);
-    }
-    
-    return input;
+	add_history(extra_input);
+	tmp = *input;
+	*input = ft_strjoin(tmp, extra_input);
+	free(tmp);
+	if (!strcmp(extra_input, delimiter))
+	{
+		free(extra_input);
+		return (1);
+	}
+	tmp = *input;
+	*input = ft_strjoin(tmp, "\n");
+	free(tmp);
+	free(extra_input);
+	return (0);
+}
+
+void	handle_heredoc_signal(char *input, char *extra_input, int stdin_copy)
+{
+	free(input);
+	free(extra_input);
+	dup2(stdin_copy, STDIN_FILENO);
+	close(stdin_copy);
+}
+
+char	*do_here_doc(char **args, int i)
+{
+	char	*input;
+	char	*extra_input;
+	int		stdin_copy;
+
+	stdin_copy = dup(STDIN_FILENO);
+	input = ft_strdup("");
+	while (1)
+	{
+		extra_input = readline("> ");
+		if (g_heredoc_signal)
+		{
+			handle_heredoc_signal(input, extra_input, stdin_copy);
+			return (NULL);
+		}
+		if (!extra_input)
+		{
+			print_here_doc_error(args);
+			break ;
+		}
+		if (process_line(&input, extra_input, args[i + 1]))
+			break ;
+	}
+	close(stdin_copy);
+	return (input);
 }
 
 int	create_here_doc_file(char *input)
 {
-	int		fd;
+	int	fd;
 
 	fd = open(HEREDOC_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)

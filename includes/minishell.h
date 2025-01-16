@@ -111,6 +111,7 @@ int		handle_infile(t_cmd cmd);
 int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
+void	print_here_doc_error(char **args);
 // build-ins
 char	**ft_sort_envp(char **envp);
 int		ft_free_arr(char ***arr);

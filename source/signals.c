@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 20:41:37 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/15 22:30:48 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/16 23:53:13 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ void handle_signal_std(int signo)
 
 void handle_signal_heredoc(int signo)
 {
-	if (signo == SIGINT)
-	{
-		g_heredoc_signal = 1;
-		write(1, "\n", 1);
-	}
+    if (signo == SIGINT)
+    {
+        g_heredoc_signal = 1;
+        write(1, "\n", 1);
+        close(STDIN_FILENO);
+    }
 }
 
 void setup_here_doc_signals(void)
