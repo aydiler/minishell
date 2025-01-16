@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 16:20:36 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/10 20:47:48 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/15 22:36:22 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,15 @@ int	find_var_start(char *line)
 
 int	is_exit_status_var(char *line)
 {
-	char	*dollar;
+	int	i;
 
-	dollar = ft_strchr(line, '$');
-	return (dollar && *(dollar + 1) == '?');
+	i = find_var_start(line);
+	if (!i)
+		return (0);
+	i--;
+	if (line[i + 1] && line[i + 1] == '?')
+		return (1);
+	return (0);
 }
 
 int	has_env_var(char *line)
@@ -43,8 +48,14 @@ int	has_env_var(char *line)
 	char	*dollar;
 
 	dollar = ft_strchr(line, '$');
-	return (dollar && *(dollar + 1) && *(dollar + 1) != ' ' 
-		&& !(*(dollar + 1) >= 9 && *(dollar + 1) <= 13));
+	if (!dollar)
+		return (0);
+	if (!*(dollar + 1) || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
+		return (0);
+	if (*(dollar + 1) && *(dollar + 1) != ' ' && !(*(dollar + 1) >= 9 
+			&& *(dollar + 1) <= 13))
+		return (1);
+	return (0);
 }
 
 int	remove_false_var(char **line)

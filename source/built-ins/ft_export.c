@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/10 19:52:29 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/15 22:03:44 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,15 @@ int	print_env(char **envp)
 	i = -1;
 	while (tmp[++i])
 	{
+		if (!ft_strchr(tmp[i], '='))
+		{
+			printf("declare -x %s\n", tmp[i]);
+			continue ;
+		}
 		equal = ft_strdup(ft_strchr(tmp[i], '='));
 		if (!equal)
 			return (ft_free_arr(&tmp), ERR_NOMEM);
 		name = ft_strndup(tmp[i], ft_strlen(tmp[i]) - ft_strlen(equal));
-		if (!name)
-			return (ft_free_arr(&tmp), free(equal), ERR_NOMEM);
 		printf("declare -x %s=\"%s\"\n", name, equal + 1);
 		free(equal);
 		free(name);
@@ -92,12 +95,10 @@ int	add_replace_env(char ***envp, char **args)
 	char	*tmp;
 
 	error_check = 0;
+	if (!ft_strchr(args[1], '='))
+		return (add_env(envp, args[1]), 0);
 	equal = ft_strdup(ft_strchr(args[1], '='));
-	if (!equal)
-		return (0);
 	name = ft_strndup(args[1], (ft_strlen(args[1]) - ft_strlen(equal)));
-	if (!name)
-		return (ERR_NOMEM);
 	tmp = ft_getenv(name, *envp);
 	if (tmp)
 	{
@@ -113,14 +114,25 @@ int	add_replace_env(char ***envp, char **args)
 
 int	ft_export(char ***envp, char **args)
 {
-	int	error_check;
+	int		error_check;
+	char	**temp;
 
 	error_check = 0;
 	if (!envp || !*envp || !**envp)
 		return (1);
+	temp = args;
 	if (!args[1])
 		error_check = print_env(*envp);
 	else
-		error_check = add_replace_env(envp, args);
+	{
+		while (*args && *(args + 1))
+		{
+			if (!is_valid_env_name(*(args + 1)))
+				return (print_export_error(*(args + 1)));
+			error_check = add_replace_env(envp, args);
+			args++;
+		}
+	}
+	args = temp;
 	return (error_check);
 }
