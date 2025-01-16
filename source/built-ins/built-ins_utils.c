@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   built-ins_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 16:18:06 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/10 19:56:58 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/15 22:04:33 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+int	print_export_error(char *name)
+{
+	ft_putstr_fd("bash: export: `", 2);
+	write(2, name, ft_strlen(name));
+	ft_putstr_fd("': not a valid identifier\n", 2);
+	return (1);
+}
+
+int	is_valid_env_name(char *name)
+{
+	int	i;
+
+	i = 0;
+	if (!name[i] || !(name[i] == '_' || ft_isalpha(name[i])))
+		return (0);
+	i++;
+	while (name[i] && name[i] != '=')
+	{
+		if (!(ft_isdigit(name[i]) || ft_isalpha(name[i]) || name[i] == '_'))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 char	**ft_sort_envp(char **envp)
 {

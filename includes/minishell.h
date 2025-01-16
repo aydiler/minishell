@@ -72,6 +72,7 @@ int		fill_in_exit_status(char **line, int exit_status);
 int		remove_false_var(char **line);
 int		find_var_start(char *line);
 	// handle redirections
+int		prep_redirections(char **line);
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);
 void	handle_redirection_execution(t_cmd cmd);
@@ -110,6 +111,8 @@ int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
 // build-ins
+int		print_export_error(char *name);
+int		is_valid_env_name(char *name);
 char	**ft_sort_envp(char **envp);
 int		ft_free_arr(char ***arr);
 int		ft_pwd(void);
