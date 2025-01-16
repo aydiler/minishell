@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/09 17:17:26 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/16 22:34:14 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,14 @@ void	ft_error(t_cmd **cmd, int exit_status)
 		ft_putstr_fd("Memory allocation error\n", 2);
 	else if (exit_status == ERR_PIPE)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
+	else if (exit_status == ERR_SIGINT)
+		return ;
 	else if (exit_status == 0)
 		return ;
 	else
-		write(1, "some error apparently\n", 22);
+	{
+		printf("Error: %d\n", exit_status);
+	}
 }
 /*
 errors to handel:

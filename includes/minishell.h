@@ -29,6 +29,7 @@
 # define ERR_NOMEM		12		// Memory allocation error
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
+# define ERR_SIGINT		130		// Ctrl + C
 # define NOVAR			-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0

@@ -65,6 +65,7 @@ int	handle_here_doc(t_cmd **cmd, char **args, int i)
 	input = do_here_doc(args, i);
 	if (g_heredoc_signal)
 	{
+		g_heredoc_signal = 0;
 		setup_parent_signals();
 		return (130);
 	}
