@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:14:26 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/24 23:18:15 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/17 00:26:40 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ int ft_cd(char **args)
 	char *oldpwd;
 	char *pwd;
 
+	if (args[2])
+	{
+		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+		return (1);
+	}
 	if(set_path(&path, args))
 		return (1);
 	oldpwd = getcwd(NULL, 0);
