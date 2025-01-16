@@ -50,6 +50,5 @@ int main(int argc, char **argv, char **envp)
 	if (dup_envp)
 		ft_free_arr(&dup_envp);
 	rl_clear_history();
-	//printf("exit status: %d\n", exit_status);
 	exit(exit_status);
 }
