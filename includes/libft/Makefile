@@ -6,7 +6,7 @@
 #    By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/14 12:44:41 by adiler            #+#    #+#              #
-#    Updated: 2024/12/29 10:30:57 by maahoff          ###   ########.fr        #
+#    Updated: 2025/01/16 14:33:43 by maahoff          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,8 @@ SRCS = ft_isalpha.c \
        ft_strndup.c \
        ft_memdel.c \
        ft_strcmp.c \
-       ft_arrlen.c
+       ft_arrlen.c \
+       ft_strcat.c
 
 OBJS = $(SRCS:.c=.o)
 
