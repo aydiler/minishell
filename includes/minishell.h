@@ -35,6 +35,8 @@
 # define READ_END		0
 # define WRITE_END		1
 # define HEREDOC_FILE	"/tmp/.minishell_here_doc"
+# define OUT			1
+# define IN				2
 
 extern volatile sig_atomic_t g_child_running;
 extern volatile sig_atomic_t g_heredoc_signal;
@@ -44,6 +46,7 @@ typedef struct s_red
 	char			*file;
 	int				type; //OUT = 1, IN = 2
 	int				append;
+	int				real;
 	struct s_red	*next;
 }	t_red;
 
