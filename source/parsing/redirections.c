@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 21:10:46 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 21:38:31 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 	else if (!ft_strncmp(">>", token, ft_strlen(token)))
 		error_check = handle_re_output(cmd, args, i, 1);
 	else if (!ft_strncmp("<<", token, ft_strlen(token)))
+	{
 		error_check = handle_here_doc(cmd, args, i);
+		(*cmd)->infile = 1;
+	}
 	if (error_check)
 		return (error_check);
 	return (0);
@@ -65,6 +68,7 @@ int	handle_re_output(t_cmd **cmd, char **args, int i, int append)
 	(*cmd)->re->type = OUT;
 	if (append)
 		(*cmd)->re->append = 1;
+	(*cmd)->outfile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }
@@ -79,6 +83,7 @@ int	handle_re_input(t_cmd **cmd, char **args, int i)
 	if (!(*cmd)->re->file)
 		return (ERR_NOMEM);
 	(*cmd)->re->type = IN;
+	(*cmd)->infile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }
