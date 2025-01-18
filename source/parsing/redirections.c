@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/15 18:23:38 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 15:59:36 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int	handle_re_input(t_cmd **cmd, char **args, int i)
 {
 	if (!args[i + 1])
 		return (ERR_INVAL);
+	
 	if ((*cmd)->input_file)
 		ft_memdel((void **)&((*cmd)->input_file));
 	(*cmd)->input_file = ft_strdup(args[i + 1]);

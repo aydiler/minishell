@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirects.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:11:41 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/08 21:42:35 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/18 16:08:41 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,30 +34,36 @@ int	create_empty_files(t_cmd cmd)
 	return (0);
 }
 
-int	handle_infile(t_cmd cmd)
+int	handle_infiles(t_cmd cmd)
 {
+	int	i;
 	int	fd;
 
-	fd = open(cmd.input_file, O_RDONLY);
-	if (fd == -1)
+	i = 0;
+	while (cmd.input_files && cmd.input_files[i])
 	{
-		if (errno == ENOENT)
+		fd = open(cmd.input_files[i], O_RDONLY);
+		if (fd == -1)
 		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd.input_file, 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
+			if (errno == ENOENT)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(cmd.input_files[i], 2);
+				ft_putstr_fd(": No such file or directory\n", 2);
+			}
+			else
+				print_error_message(cmd.input_files[i], ERR_PERMISSION);
+			return (1);
 		}
-		else
-			print_error_message(cmd.input_file, ERR_PERMISSION);
-		return (1);
-	}
-	if (dup2(fd, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
+		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(fd);
+			return (1);
+		}
 		close(fd);
-		return (1);
+		i++;
 	}
-	close(fd);
 	return (0);
 }
 
