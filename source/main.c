@@ -40,8 +40,8 @@ int main(int argc, char **argv, char **envp)
 			ft_error(&cmd, error_check);
 			continue ;
 		}
-		//print_struct(cmd);
-		if (cmd)
+		print_struct(cmd);
+		if (0)
 			exit_status = execute_pipeline(cmd, &dup_envp);
 		free_all(&cmd);
 	}
