@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 15:59:36 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 16:12:17 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,20 @@ int	handle_re_output(t_cmd **cmd, char **args, int i)
 
 int	handle_re_input(t_cmd **cmd, char **args, int i)
 {
+	int	j;
+
+	j = 0;
 	if (!args[i + 1])
 		return (ERR_INVAL);
-	
-	if ((*cmd)->input_file)
-		ft_memdel((void **)&((*cmd)->input_file));
-	(*cmd)->input_file = ft_strdup(args[i + 1]);
+	while ((*cmd)->input_file && (*cmd)->input_file[j])
+		j++;
+	(*cmd)->input_file = ft_realloc((*cmd)->input_file, (j + 2));
 	if (!(*cmd)->input_file)
 		return (ERR_NOMEM);
+	(*cmd)->input_file[j] = ft_strdup(args[i + 1]);
+	if (!(*cmd)->input_file[j])
+		return (ERR_NOMEM);
+	(*cmd)->input_file[j + 1] = NULL;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
 }

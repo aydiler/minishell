@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:33:27 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/10 20:13:07 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 16:16:06 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,18 @@ void	free_files_to_create(t_cmd **cmd)
 
 void	free_other(t_cmd **cmd)
 {
+	int	i;
+
+	i = 0;
 	if (!cmd || !(*cmd) || (!(*cmd)->input_file && !(*cmd)->output_file))
 		return ;
 	if ((*cmd)->input_file)
 	{
+		while ((*cmd)->input_file[i])
+		{
+			ft_memdel((void **)&((*cmd)->input_file[i]));
+			i++;
+		}
 		ft_memdel((void **)&((*cmd)->input_file));
 	}
 	if ((*cmd)->output_file)

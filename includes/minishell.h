@@ -42,7 +42,7 @@ extern volatile sig_atomic_t g_heredoc_signal;
 typedef struct s_cmd 
 {
 	char			**args;
-	char			*input_file;
+	char			**input_file;
 	char			*output_file;
 	int				append_outfile;
 	char			**files_to_create;
