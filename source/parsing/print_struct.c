@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 17:04:06 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 20:43:47 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,33 +29,16 @@ void	print_struct(t_cmd *cmd)
 			i++;
 		}
 		printf("\n");
-		i = 0;
-		if (cmd->input_files && cmd->input_files[i])
+		printf("re: \n");
+		while (cmd->re)
 		{
-			printf("inputfiles:\n");
-			while (cmd->input_files[i])
-			{
-				printf("\"%s\" ", cmd->input_files[i]);
-				i++;
-			}
-			printf("\n");
-		}
-		if (cmd->input_file)
-			printf("input_file: \"%s\"\n", cmd->input_file);
-		if (cmd->output_file)
-			printf("output_file: \"%s\"\n", cmd->output_file);
-		if (cmd->append_outfile)
-			printf("append_outfile: \"%d\"\n", cmd->append_outfile);
-		i = 0;
-		if (cmd->files_to_create)
-		{
-			printf("files_to_create:\n");
-			while (cmd->files_to_create[i])
-			{
-				printf("\"%s\" ", cmd->files_to_create[i]);
-				i++;
-			}
-			printf("\n");
+			if (cmd->re->file)
+				printf("\"%s\", ", cmd->re->file);
+			if (cmd->re->type == OUT)
+				printf("OUT, append: %d\n", cmd->re->append);
+			else
+				printf("OUT, append: %d\n", cmd->re->append);
+			cmd->re = cmd->re->next;
 		}
 		if (!cmd->next)
 			break ;

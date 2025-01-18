@@ -87,12 +87,12 @@ int	handle_here_doc(t_cmd **cmd, char **args, int i)
 	}
 	error_check = create_here_doc_file(input);
 	free(input);
-	if ((*cmd)->input_file)
-		ft_memdel((void **)&((*cmd)->input_file));
-	(*cmd)->input_file = ft_strdup(HEREDOC_FILE);
-	if (!(*cmd)->input_file)
+	while ((*cmd)->re->next)
+		(*cmd)->re = (*cmd)->re->next;
+	(*cmd)->re->file = ft_strdup(args[i + 1]);
+	if (!(*cmd)->re->file)
 		return (ERR_NOMEM);
+	(*cmd)->re->type = IN;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
-	setup_parent_signals();
-	return (error_check);
+	return (setup_parent_signals(), error_check);
 }
