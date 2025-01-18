@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:55:38 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/08 21:58:10 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/18 21:24:58 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	count_pipes(t_cmd *cmd)
 	while (cmd)
 	{
 		count++;
+		//printf("count: %d\n", count);
 		cmd = cmd->next;
 	}
 	return (count);

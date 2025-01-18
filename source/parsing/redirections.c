@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 20:38:39 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 21:10:46 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,6 @@ int	check_redirections(char *token)
 
 int	handle_re_output(t_cmd **cmd, char **args, int i, int append)
 {
-	int	j;
-
-	j = 0;
 	if (!args[i + 1] || args[i + 1][0] == '|')
 		return (ERR_INVAL);
 	while ((*cmd)->re->next)
@@ -74,9 +71,6 @@ int	handle_re_output(t_cmd **cmd, char **args, int i, int append)
 
 int	handle_re_input(t_cmd **cmd, char **args, int i)
 {
-	int	j;
-
-	j = 0;
 	if (!args[i + 1] || args[i + 1][0] == '|')
 		return (ERR_INVAL);
 	while ((*cmd)->re->next)

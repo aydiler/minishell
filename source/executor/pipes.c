@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:08:36 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/08 21:59:45 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/18 21:30:36 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ void	setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index,
 	int	i;
 
 	i = 0;
-	if (cmd_index > 0 && !cmd->input_file)
+	if (cmd_index > 0 && !cmd->outfile)
 	{
 		if (dup2(pipes[cmd_index - 1][READ_END], STDIN_FILENO) == -1)
 			exit(1);
 	}
-	if (cmd_index < cmd_count - 1 && !cmd->output_file)
+	if (cmd_index < cmd_count - 1 && !cmd->infile)
 	{
 		if (dup2(pipes[cmd_index][WRITE_END], STDOUT_FILENO) == -1)
 			exit(1);
@@ -96,6 +96,7 @@ int	initialize_pipeline(t_cmd *cmd, int ***pipes, int **pids)
 	int	cmd_count;
 
 	cmd_count = count_pipes(cmd);
+	//printf("cmd_count: %d\n", cmd_count);
 	*pipes = create_pipe_array(cmd_count);
 	if (!*pipes)
 		return (-1);

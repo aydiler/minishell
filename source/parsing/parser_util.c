@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 17:06:37 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 21:31:17 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,9 @@ t_cmd	*new_pipe(char **args)
 	if (!pipe)
 		return (NULL);
 	pipe->args = args;
-	pipe->input_files = NULL;
-	pipe->input_file = NULL;
-	pipe->output_file = NULL;
-	pipe->append_outfile = 0;
-	pipe->files_to_create = NULL;
+	pipe->re = NULL;
 	pipe->next = NULL;
+	pipe->outfile = 0;
+	pipe->infile = 0;
 	return (pipe);
 }

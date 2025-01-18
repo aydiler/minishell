@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/09 18:35:48 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 21:26:56 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ static int	spawn_processes(t_cmd *cmd, int **pipes, int *pids, char ***envp)
 
 	i = 0;
 	cmd_count = count_pipes(cmd);
+	printf("cmd_count: %d\n", cmd_count);
 	while (cmd)
 	{
 		pids[i] = fork();

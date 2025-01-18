@@ -55,6 +55,8 @@ typedef struct s_cmd
 	char			**args;
 	struct s_red	*re;
 	struct s_cmd	*next;
+	int				outfile;
+	int				infile;
 }	t_cmd;
 // Parser funktions:
 int		parser(char **line, t_cmd **cmd, char **envp, int exit_status);

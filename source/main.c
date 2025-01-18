@@ -42,27 +42,7 @@ int main(int argc, char **argv, char **envp)
 			ft_error(&cmd, error_check);
 			continue ;
 		}
-		//print_struct(cmd);
-
-		// (void)error_check;
-		// t_red	*red;
-		// red = malloc(sizeof(t_red));
-		// red->file = ft_strdup("test.txt");
-		// red->type = 1;
-		// red->append = 0;
-		// red->real = 1;
-		// red->next = NULL;
-		
-		// cmd = malloc(sizeof(t_cmd));
-		// cmd->args = ft_split("echo test", ' ');
-		// cmd->input_files = NULL;
-		// cmd->input_file = NULL;
-		// cmd->output_file = NULL;
-		// cmd->append_outfile = 0;
-		// cmd->files_to_create = NULL;
-		// cmd->re = red;
-		// cmd->next = NULL;
-
+		print_struct(cmd);
 		if (cmd)
 			exit_status = execute_pipeline(cmd, &dup_envp);
 		free_all(&cmd);
