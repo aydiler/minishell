@@ -43,7 +43,7 @@ int main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		print_struct(cmd);
-		if (cmd)
+		if (0)
 			exit_status = execute_pipeline(cmd, &dup_envp);
 		free_all(&cmd);
 	}

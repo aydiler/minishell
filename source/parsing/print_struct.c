@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 20:43:47 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 22:18:25 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	print_struct(t_cmd *cmd)
 			if (cmd->re->type == OUT)
 				printf("OUT, append: %d\n", cmd->re->append);
 			else
-				printf("OUT, append: %d\n", cmd->re->append);
+				printf("IN\n",);
 			cmd->re = cmd->re->next;
 		}
 		if (!cmd->next)

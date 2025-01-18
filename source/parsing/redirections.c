@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 21:38:31 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 22:12:44 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,9 @@ int	handle_re_input(t_cmd **cmd, char **args, int i);
 
 int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 {
-	int	error_check;
+	int		error_check;
 
 	error_check = 0;
-	while ((*cmd)->re)
-		(*cmd)->re = (*cmd)->re->next;
-	(*cmd)->re = new_re();
 	if (!(*cmd)->re)
 		return (ERR_NOMEM);
 	if (!ft_strncmp(">", token, ft_strlen(token)))
@@ -36,9 +33,7 @@ int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 		error_check = handle_here_doc(cmd, args, i);
 		(*cmd)->infile = 1;
 	}
-	if (error_check)
-		return (error_check);
-	return (0);
+	return (error_check);
 }
 
 int	check_redirections(char *token)

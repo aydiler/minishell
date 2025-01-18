@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 20:32:08 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 22:11:48 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	handle_redirections(t_cmd **cmd)
 		{
 			if (check_redirections(temp->args[i]))
 			{
+				(*cmd)->re = new_re();
 				err = process_redirections(&temp, temp->args, temp->args[i], i);
 			}
 			else
