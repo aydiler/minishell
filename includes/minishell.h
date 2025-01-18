@@ -35,6 +35,8 @@
 # define READ_END		0
 # define WRITE_END		1
 # define HEREDOC_FILE	"/tmp/.minishell_here_doc"
+# define OUT			1
+# define IN				2
 
 extern volatile sig_atomic_t g_child_running;
 extern volatile sig_atomic_t g_heredoc_signal;
@@ -42,19 +44,15 @@ extern volatile sig_atomic_t g_heredoc_signal;
 typedef struct s_red
 {
 	char			*file;
-	int				type; //OUT = 1, IN = 2
+	int				type;
 	int				append;
+	int				real;
 	struct s_red	*next;
 }	t_red;
 
 typedef struct s_cmd 
 {
 	char			**args;
-	char			*input_file;
-	char			**input_files;
-	char			*output_file;
-	int				append_outfile;
-	char			**files_to_create;
 	struct s_red	*re;
 	struct s_cmd	*next;
 }	t_cmd;
@@ -84,6 +82,7 @@ int		fill_in_exit_status(char **line, int exit_status);
 int		remove_false_var(char **line);
 int		find_var_start(char *line);
 	// handle redirections
+t_red	*new_re(void);
 int		prep_redirections(char **line);
 int		process_redirections(t_cmd **cmd, char **args, char *token, int i);
 int		check_redirections(char *token);

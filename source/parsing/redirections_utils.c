@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 13:53:50 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 17:21:26 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 20:17:41 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,19 @@ int	prep_redirections(char **line)
 		i++;
 	}
 	return (error_check);
+}
+
+t_red	*new_re(void)
+{
+	t_red	*re;
+
+	re = malloc(sizeof(t_red));
+	if (!re)
+		return (NULL);
+	re->file = NULL;
+	re->type = 0;
+	re->append = 0;
+	re->real = 0;
+	re->next = NULL;
+	return (re);
 }

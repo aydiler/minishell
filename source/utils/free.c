@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:33:27 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 16:54:51 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/18 20:48:32 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,41 +27,17 @@ void	free_args(t_cmd **cmd)
 	ft_memdel((void **)&((*cmd)->args));
 }
 
-void	free_files_to_create(t_cmd **cmd)
+void	free_re(t_cmd **cmd)
 {
-	int	i;
+	t_red	*temp;
 
-	i = 0;
-	if (!cmd || !(*cmd) || !(*cmd)->files_to_create)
-		return ;
-	while ((*cmd)->files_to_create[i])
+	while ((*cmd)->re)
 	{
-		ft_memdel((void **)&((*cmd)->files_to_create[i]));
-		i++;
+		temp = (*cmd)->re->next;
+		ft_memdel((void **)&(*cmd)->re->file);
+		ft_memdel((void **)&((*cmd)->re));
+		(*cmd)->re = temp;
 	}
-	ft_memdel((void **)&((*cmd)->files_to_create));
-}
-
-void	free_other(t_cmd **cmd)
-{
-	int	i;
-
-	i = 0;
-	if (!cmd || !(*cmd) || (!(*cmd)->input_file && !(*cmd)->output_file))
-		return ;
-	if ((*cmd)->input_file)
-		ft_memdel((void **)&((*cmd)->input_file));
-	if ((*cmd)->input_files)
-	{
-		while ((*cmd)->input_files[i])
-		{
-			ft_memdel((void **)&((*cmd)->input_files[i]));
-			i++;
-		}
-		ft_memdel((void **)&((*cmd)->input_files));
-	}
-	if ((*cmd)->output_file)
-		ft_memdel((void **)&((*cmd)->output_file));
 }
 
 void	free_all(t_cmd **cmd)
@@ -72,8 +48,7 @@ void	free_all(t_cmd **cmd)
 	{
 		temp = (*cmd)->next;
 		free_args(cmd);
-		free_files_to_create(cmd);
-		free_other(cmd);
+		free_re(cmd);
 		ft_memdel((void **)&((*cmd)));
 		*cmd = temp;
 	}
