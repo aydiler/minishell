@@ -1,6 +1,7 @@
 #include "../includes/minishell.h"
 
 volatile sig_atomic_t g_child_running;
+volatile sig_atomic_t g_heredoc_signal;
 
 int main(int argc, char **argv, char **envp)
 {
@@ -11,6 +12,7 @@ int main(int argc, char **argv, char **envp)
 	char	**dup_envp;
 
 	g_child_running = 0;
+	g_heredoc_signal = 0;
 	error_check = 0;
 	dup_envp = ft_arrdup(envp);
 	cmd = NULL;
@@ -48,6 +50,5 @@ int main(int argc, char **argv, char **envp)
 	if (dup_envp)
 		ft_free_arr(&dup_envp);
 	rl_clear_history();
-	//printf("exit status: %d\n", exit_status);
 	exit(exit_status);
 }

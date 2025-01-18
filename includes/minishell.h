@@ -29,13 +29,15 @@
 # define ERR_NOMEM		12		// Memory allocation error
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
+# define ERR_SIGINT		130		// Ctrl + C
 # define NOVAR			-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0
 # define WRITE_END		1
 # define HEREDOC_FILE	"/tmp/.minishell_here_doc"
 
-extern volatile sig_atomic_t g_child_running; 
+extern volatile sig_atomic_t g_child_running;
+extern volatile sig_atomic_t g_heredoc_signal;
 
 typedef struct s_cmd 
 {
@@ -110,6 +112,7 @@ int		handle_infile(t_cmd cmd);
 int		handle_outfile(t_cmd cmd);
 // executor error handling
 void	print_error_message(char *cmd, int error_type);
+void	print_here_doc_error(char **args);
 // build-ins
 int		print_export_error(char *name);
 int		is_valid_env_name(char *name);

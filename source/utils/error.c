@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/16 14:46:48 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/17 16:57:13 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,22 @@ void	ft_error(t_cmd **cmd, int exit_status)
 		ft_putstr_fd("Memory allocation error\n", 2);
 	else if (exit_status == ERR_PIPE)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
+	else if (exit_status == ERR_SIGINT)
+		return ;
 	else if (exit_status == 0)
 		return ;
+	else
+	{
+		printf("Error: %d\n", exit_status);
+	}
+}
+
+void	print_here_doc_error(char **args)
+{
+	ft_putstr_fd("minishell: warning: here-document delimited by end-of-file (wanted `",
+		2);
+	ft_putstr_fd(args[2], 2);
+	ft_putstr_fd("')\n", 2);
 }
 /*
 errors to handel:
