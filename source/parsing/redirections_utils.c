@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 13:53:50 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/16 14:44:22 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 17:21:26 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ int	add_spaces(char **line, int *i, int end)
 	ft_strcat(*line, " ");
 	ft_strcat(*line, &temp[end]); 
 	free(temp);
+	*i += ft_strlen(add) + 1;
 	free(add);
-	*i += ft_strlen(add) + 2;
 	return (error_check);
 }
 

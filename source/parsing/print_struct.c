@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 16:13:58 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 17:04:06 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,18 @@ void	print_struct(t_cmd *cmd)
 		}
 		printf("\n");
 		i = 0;
-		if (cmd->input_file)
+		if (cmd->input_files && cmd->input_files[i])
 		{
 			printf("inputfiles:\n");
-			while (cmd->input_file[i])
+			while (cmd->input_files[i])
 			{
-				printf("\"%s\" ", cmd->input_file[i]);
+				printf("\"%s\" ", cmd->input_files[i]);
 				i++;
 			}
 			printf("\n");
 		}
+		if (cmd->input_file)
+			printf("input_file: \"%s\"\n", cmd->input_file);
 		if (cmd->output_file)
 			printf("output_file: \"%s\"\n", cmd->output_file);
 		if (cmd->append_outfile)

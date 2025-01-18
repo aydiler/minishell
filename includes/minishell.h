@@ -39,13 +39,23 @@
 extern volatile sig_atomic_t g_child_running;
 extern volatile sig_atomic_t g_heredoc_signal;
 
+typedef struct s_red
+{
+	char			*file;
+	int				type; //OUT = 1, IN = 2
+	int				append;
+	struct s_red	*next;
+}	t_red;
+
 typedef struct s_cmd 
 {
 	char			**args;
-	char			**input_file;
+	char			*input_file;
+	char			**input_files;
 	char			*output_file;
 	int				append_outfile;
 	char			**files_to_create;
+	struct s_red	*re;
 	struct s_cmd	*next;
 }	t_cmd;
 // Parser funktions:

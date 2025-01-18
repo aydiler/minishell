@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:33:27 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 16:16:06 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 16:54:51 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,15 @@ void	free_other(t_cmd **cmd)
 	if (!cmd || !(*cmd) || (!(*cmd)->input_file && !(*cmd)->output_file))
 		return ;
 	if ((*cmd)->input_file)
+		ft_memdel((void **)&((*cmd)->input_file));
+	if ((*cmd)->input_files)
 	{
-		while ((*cmd)->input_file[i])
+		while ((*cmd)->input_files[i])
 		{
-			ft_memdel((void **)&((*cmd)->input_file[i]));
+			ft_memdel((void **)&((*cmd)->input_files[i]));
 			i++;
 		}
-		ft_memdel((void **)&((*cmd)->input_file));
+		ft_memdel((void **)&((*cmd)->input_files));
 	}
 	if ((*cmd)->output_file)
 		ft_memdel((void **)&((*cmd)->output_file));

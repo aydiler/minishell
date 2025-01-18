@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_util.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:16:28 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/07 20:58:21 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/18 17:06:37 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ t_cmd	*new_pipe(char **args)
 	if (!pipe)
 		return (NULL);
 	pipe->args = args;
+	pipe->input_files = NULL;
 	pipe->input_file = NULL;
 	pipe->output_file = NULL;
 	pipe->append_outfile = 0;
