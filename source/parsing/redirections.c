@@ -3,28 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:35:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 21:38:31 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/19 22:04:21 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	handle_re_output(t_cmd **cmd, char **args, int i, int append);
-int	handle_re_input(t_cmd **cmd, char **args, int i);
+int		handle_re_output(t_cmd **cmd, char **args, int i, int append);
+int		handle_re_input(t_cmd **cmd, char **args, int i);
+
+void	re_add_back(t_red **re, t_red *new)
+{
+	t_red	*last;
+
+	if (re == NULL || new == NULL)
+		return ;
+	if (*re == NULL)
+		*re = new;
+	else
+	{
+		last = *re;
+		while (last->next)
+			last = last->next;
+		last->next = new;
+	}
+}
 
 int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 {
-	int	error_check;
+	int		error_check;
+	t_red	*new;
 
 	error_check = 0;
-	while ((*cmd)->re)
-		(*cmd)->re = (*cmd)->re->next;
-	(*cmd)->re = new_re();
-	if (!(*cmd)->re)
+	new = new_re();
+	if (!new)
 		return (ERR_NOMEM);
+	re_add_back(&(*cmd)->re, new);
 	if (!ft_strncmp(">", token, ft_strlen(token)))
 		error_check = handle_re_output(cmd, args, i, 0);
 	else if (!ft_strncmp("<", token, ft_strlen(token)))
@@ -36,9 +53,7 @@ int	process_redirections(t_cmd **cmd, char **args, char *token, int i)
 		error_check = handle_here_doc(cmd, args, i);
 		(*cmd)->infile = 1;
 	}
-	if (error_check)
-		return (error_check);
-	return (0);
+	return (error_check);
 }
 
 int	check_redirections(char *token)
@@ -58,16 +73,27 @@ int	check_redirections(char *token)
 
 int	handle_re_output(t_cmd **cmd, char **args, int i, int append)
 {
+	t_red	*temp;
+
 	if (!args[i + 1] || args[i + 1][0] == '|')
 		return (ERR_INVAL);
-	while ((*cmd)->re->next)
-		(*cmd)->re = (*cmd)->re->next;
-	(*cmd)->re->file = ft_strdup(args[i + 1]);
-	if (!(*cmd)->re->file)
+	temp = (*cmd)->re;
+	while (temp)
+	{
+		if (temp->type == OUT)
+			temp->real = 0;
+		temp = temp->next;
+	}
+	temp = (*cmd)->re;
+	while (temp->next)
+		temp = temp->next;
+	temp->file = ft_strdup(args[i + 1]);
+	if (!temp->file)
 		return (ERR_NOMEM);
-	(*cmd)->re->type = OUT;
+	temp->type = OUT;
+	temp->real = 1;
 	if (append)
-		(*cmd)->re->append = 1;
+		temp->append = 1;
 	(*cmd)->outfile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);
@@ -75,14 +101,17 @@ int	handle_re_output(t_cmd **cmd, char **args, int i, int append)
 
 int	handle_re_input(t_cmd **cmd, char **args, int i)
 {
+	t_red	*temp;
+
 	if (!args[i + 1] || args[i + 1][0] == '|')
 		return (ERR_INVAL);
-	while ((*cmd)->re->next)
-		(*cmd)->re = (*cmd)->re->next;
-	(*cmd)->re->file = ft_strdup(args[i + 1]);
-	if (!(*cmd)->re->file)
+	temp = (*cmd)->re;
+	while (temp->next)
+		temp = temp->next;
+	temp->file = ft_strdup(args[i + 1]);
+	if (!temp->file)
 		return (ERR_NOMEM);
-	(*cmd)->re->type = IN;
+	temp->type = IN;
 	(*cmd)->infile = 1;
 	(*cmd)->args = remove_n_token((*cmd)->args, i, 2);
 	return (0);

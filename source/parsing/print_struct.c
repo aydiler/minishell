@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 20:43:47 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/19 20:48:21 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,48 @@
 
 void	print_struct(t_cmd *cmd)
 {
-	int	i;
+	int		i;
+	t_red	*temp_re;
 
 	i = 0;
-	printf("\n-----------------------\n");
+	printf("\n=========================\n");
 	while (cmd)
 	{
+		// Print command arguments
 		i = 0;
 		if (cmd->args && cmd->args[i])
-			printf("args:\n");
+			printf("Command arguments:\n");
 		while (cmd->args && cmd->args[i])
 		{
 			printf("\"%s\" ", cmd->args[i]);
 			i++;
 		}
 		printf("\n");
-		printf("re: \n");
-		while (cmd->re)
+		// Print redirections
+		printf("\nRedirections:\n");
+		temp_re = cmd->re;
+		if (!temp_re)
+			printf("No redirections found\n");
+		while (temp_re)
 		{
-			if (cmd->re->file)
-				printf("\"%s\", ", cmd->re->file);
-			if (cmd->re->type == OUT)
-				printf("OUT, append: %d\n", cmd->re->append);
+			printf("File: ");
+			if (temp_re->file)
+				printf("\"%s\"", temp_re->file);
 			else
-				printf("OUT, append: %d\n", cmd->re->append);
-			cmd->re = cmd->re->next;
+				printf("(null)");
+			printf("\nType: %s", temp_re->type == OUT ? "OUTPUT" : "INPUT");
+			printf("\nAppend mode: %s", temp_re->append ? "YES" : "NO");
+			printf("\nReal: %d", temp_re->real);
+			if (temp_re->next)
+				printf("\n\n--- Next Redirection ---\n");
+			temp_re = temp_re->next;
 		}
 		if (!cmd->next)
 			break ;
-		printf("\nnext pipe:\n");
+		printf("\n\n========= NEXT PIPE =========\n");
 		cmd = cmd->next;
 	}
-	printf("-----------------------\n");
+	printf("\n=========================\n");
 }
 
 void	print_args(char **args)
@@ -53,7 +63,7 @@ void	print_args(char **args)
 	int	i;
 
 	i = 0;
-	printf("args:\n");
+	printf("Arguments:\n");
 	while (args && args[i])
 	{
 		printf("\"%s\" ", args[i]);
@@ -61,3 +71,4 @@ void	print_args(char **args)
 	}
 	printf("\n");
 }
+

@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirects.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:11:41 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/18 20:48:48 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/19 22:04:26 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-// int	create_empty_file(t_cmd cmd)
-// {
-// 	char *file;
-// 	int fd;
-	
-// 	file = cmd.re->file;
-// 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-// 	if (fd == -1)
-// 	{
-// 		print_error_message(file, ERR_PERMISSION);
-// 		return (1);
-// 	}
-// 	close(fd);
-// 	return (0);
-// }
 
 int	handle_infile(t_cmd cmd)
 {
@@ -86,7 +70,7 @@ int	handle_outfile(t_cmd cmd)
 void	handle_redirection_execution(t_cmd cmd)
 {
 	int	error_check;
-	
+
 	error_check = 0;
 	while (cmd.re)
 	{

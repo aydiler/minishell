@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/18 21:26:56 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/19 22:04:30 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	process_child_status(int status, int *all_signaled,
 	{
 		*all_signaled = 0;
 		last_status = WEXITSTATUS(status);
-		//printf("exit status in wait for children: %d\n", last_status);
+		// printf("exit status in wait for children: %d\n", last_status);
 	}
 	else if (WIFSIGNALED(status))
 	{
@@ -57,7 +57,7 @@ static int	wait_for_children(int *pids, int cmd_count)
 		waitpid(pids[i], &status, 0);
 		status = process_child_status(status, &all_signaled, &last_signal,
 				&first);
-		//printf("status: %d\n", status);
+		// printf("status: %d\n", status);
 		i++;
 	}
 	if (all_signaled && last_signal == SIGQUIT)
@@ -97,7 +97,6 @@ static int	spawn_processes(t_cmd *cmd, int **pipes, int *pids, char ***envp)
 
 	i = 0;
 	cmd_count = count_pipes(cmd);
-	printf("cmd_count: %d\n", cmd_count);
 	while (cmd)
 	{
 		pids[i] = fork();
@@ -109,8 +108,8 @@ static int	spawn_processes(t_cmd *cmd, int **pipes, int *pids, char ***envp)
 		if (pids[i] == 0)
 		{
 			setup_child_signals();
-			handle_redirection_execution(*cmd);
 			setup_pipe_fds(cmd, pipes, i, cmd_count);
+			handle_redirection_execution(*cmd);
 			execute_program(*cmd, envp);
 			exit(1);
 		}

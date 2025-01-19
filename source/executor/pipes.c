@@ -3,27 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:08:36 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/18 21:30:36 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/19 22:04:36 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index,
-		int cmd_count)
+void	setup_pipe_fds(t_cmd *cmd, int **pipes, int cmd_index, int cmd_count)
 {
 	int	i;
 
+	(void)cmd;
 	i = 0;
-	if (cmd_index > 0 && !cmd->outfile)
+	if (cmd_index > 0)
 	{
 		if (dup2(pipes[cmd_index - 1][READ_END], STDIN_FILENO) == -1)
 			exit(1);
 	}
-	if (cmd_index < cmd_count - 1 && !cmd->infile)
+	if (cmd_index < cmd_count - 1)
 	{
 		if (dup2(pipes[cmd_index][WRITE_END], STDOUT_FILENO) == -1)
 			exit(1);
@@ -96,7 +96,7 @@ int	initialize_pipeline(t_cmd *cmd, int ***pipes, int **pids)
 	int	cmd_count;
 
 	cmd_count = count_pipes(cmd);
-	//printf("cmd_count: %d\n", cmd_count);
+	// printf("cmd_count: %d\n", cmd_count);
 	*pipes = create_pipe_array(cmd_count);
 	if (!*pipes)
 		return (-1);
