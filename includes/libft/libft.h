@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 13:18:56 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/16 14:33:27 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/20 21:33:21 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,6 @@ void	ft_memdel(void **ptr);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_arrlen(char **arr);
 char	*ft_strcat(char *dest, const char *src);
+int		ft_isspace(int c);
 
 #endif

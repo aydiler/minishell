@@ -110,3 +110,22 @@ ubuntu@DESKTOP-GR97MCC:ubuntu$ export | grep TEST
 declare -x TEST="100100"
 ubuntu@DESKTOP-GR97MCC:ubuntu$
 
+
+| ls
+
+minishell$ cat << ls
+>
+minishell: warning: here-document delimited by end-of-file (wanted `ls')
+minishell: ls: No such file or directory
+minishell$
+
+minishell$ cat << EOF | ls |
+> 1
+> EOF
+minishell: EOF: No such file or directory
+1: command not found
+minishell$ cat << EOF
+> 1
+> EOF
+minishell: EOF: No such file or directory
+minishell$  

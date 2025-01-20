@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+         #
+#    By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/14 12:44:41 by adiler            #+#    #+#              #
-#    Updated: 2025/01/16 14:33:43 by maahoff          ###   ########.fr        #
+#    Updated: 2025/01/20 21:31:15 by ubuntu           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,8 @@ SRCS = ft_isalpha.c \
        ft_memdel.c \
        ft_strcmp.c \
        ft_arrlen.c \
-       ft_strcat.c
+       ft_strcat.c \
+       ft_isspace.c
 
 OBJS = $(SRCS:.c=.o)
 
