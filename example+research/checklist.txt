@@ -113,19 +113,38 @@ ubuntu@DESKTOP-GR97MCC:ubuntu$
 
 | ls
 
-minishell$ cat << ls
->
-minishell: warning: here-document delimited by end-of-file (wanted `ls')
-minishell: ls: No such file or directory
-minishell$
 
 minishell$ cat << EOF | ls |
 > 1
 > EOF
 minishell: EOF: No such file or directory
 1: command not found
-minishell$ cat << EOF
+
+
+minishell$ cat << EOF | ls |
 > 1
 > EOF
-minishell: EOF: No such file or directory
-minishell$  
+=========================
+Command arguments:
+"cat"
+Redirections:
+File: "/tmp/.minishell_here_doc"
+Type: INPUT
+Append mode: NO
+Real: 0
+========= NEXT PIPE =========
+Command arguments:
+"ls"
+Redirections:
+No redirections found
+========= NEXT PIPE =========
+Command arguments:
+"1"
+Redirections:
+No redirections found
+=========================
+1: command not found
+minishell$
+
+
+
