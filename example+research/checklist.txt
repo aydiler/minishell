@@ -60,7 +60,53 @@ minishell$ cat testfile.txt
 $line1 line2 line3
 
 
-env var funktionen uebersichtlich und norminette proof
+minishell$ echo "'$USER'"
+'$USER'
+ubuntu@DESKTOP-GR97MCC:minishell$ echo "'$USER'"
+'ubuntu'
 
-grep hi <./test_files/infile
--> wird nicht als redirect erkannt wegen kein space nach <
+
+variable expansion:
+
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $USER=
+ubuntu=
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $=USER
+$=USER
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $.USER
+$.USER
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $USER.
+ubuntu.
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $1USER
+USER
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $USER1
+ubuntu@DESKTOP-GR97MCC:minishell$   
+
+minishell$ echo $USER=
+minishell$ echo $=USER
+minishell$ echo $.USER
+minishell$ echo $USER.
+minishell$ echo $1USER
+minishell$ echo $USER1
+minishell$  
+
+minishell$ ls 2> test
+ls: cannot access '2': No such file or directory 
+
+minishell$ export | grep "SHLVL"
+declare -x SHLVL="2"
+minishell$ ./minishell
+minishell$ export | grep "SHLVL"
+declare -x SHLVL="2"
+minishell$
+
+minishell$ export | grep TEST
+minishell$ export TEST+=100
+bash: export: `TEST+=100': not a valid identifier
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export TEST+=100
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export | grep TEST
+declare -x TEST="100"
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export TEST+=100
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export | grep TEST
+declare -x TEST="100100"
+ubuntu@DESKTOP-GR97MCC:ubuntu$
+

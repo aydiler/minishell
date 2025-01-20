@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/17 16:57:13 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/20 19:59:52 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	ft_error(t_cmd **cmd, int exit_status)
 		ft_putstr_fd("Memory allocation error\n", 2);
 	else if (exit_status == ERR_PIPE)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
+	else if (exit_status == ERR_SYNTAX)
+		ft_putstr_fd("minishell: syntax error near unexpected token '|'\n", 2);
 	else if (exit_status == ERR_SIGINT)
 		return ;
 	else if (exit_status == 0)

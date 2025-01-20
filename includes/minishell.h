@@ -30,6 +30,7 @@
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
 # define ERR_SIGINT		130		// Ctrl + C
+# define ERR_SYNTAX		258		// Syntax error
 # define NOVAR			-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0

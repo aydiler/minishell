@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/18 20:32:08 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/20 20:13:29 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,19 @@ int	fill_everything(char *line, t_cmd **cmd)
 	return (0);
 }
 
+static int	check_for_empty_commands(t_cmd *cmd_list)
+{
+	t_cmd *tmp = cmd_list;
+
+	while (tmp)
+	{
+		if (!tmp->args || !tmp->args[0])
+			return (ERR_SYNTAX);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 {
 	int	error_check;
@@ -111,6 +124,9 @@ int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 		return (error_check);
 	error_check = fill_everything(*line, cmd);
 	if (error_check || !*cmd)
+		return (error_check);
+	error_check = check_for_empty_commands(*cmd);
+	if (error_check)
 		return (error_check);
 	error_check = handle_redirections(cmd);
 	if (error_check || !*cmd)
