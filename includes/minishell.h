@@ -63,6 +63,7 @@ typedef struct s_cmd
 // Parser funktions:
 int		parser(char **line, t_cmd **cmd, char **envp, int exit_status);
 char	**tokenizer(char *line);
+int		handle_empty_pipe(char *line);
 int		handle_env_vars(char **line, char **envp, int exit_status);
 int		handle_unclosed_quotes(char **line);
 int		handle_here_doc(t_cmd **cmd, char **args, int i);
