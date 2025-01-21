@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 18:08:36 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/19 22:04:36 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:15:29 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int	initialize_pipeline(t_cmd *cmd, int ***pipes, int **pids)
 	int	cmd_count;
 
 	cmd_count = count_pipes(cmd);
-	// printf("cmd_count: %d\n", cmd_count);
 	*pipes = create_pipe_array(cmd_count);
 	if (!*pipes)
 		return (-1);

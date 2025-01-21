@@ -119,6 +119,8 @@ void	setup_signal(int signo, void (*handler)(int));
 void	setup_parent_signals(void);
 void	setup_child_signals(void);
 void	setup_here_doc_signals(void);
+void	handle_pipe_delimiter_signal(int signo);
+void	setup_pipe_delim_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);

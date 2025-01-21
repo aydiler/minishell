@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/20 22:19:23 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:14:43 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
 // error messege !!!
 void	ft_error(t_cmd **cmd, int exit_status)
 {
@@ -38,8 +39,8 @@ void	ft_error(t_cmd **cmd, int exit_status)
 
 void	print_here_doc_error(char **args)
 {
-	ft_putstr_fd("minishell: warning: here-document delimited by end-of-file (wanted `",
-		2);
+	ft_putstr_fd("minishell: warning: here-document delimited by \
+		end-of-file (wanted `", 2);
 	ft_putstr_fd(args[2], 2);
 	ft_putstr_fd("')\n", 2);
 }

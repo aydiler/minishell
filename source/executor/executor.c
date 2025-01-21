@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/19 22:04:30 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:06:34 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static int	process_child_status(int status, int *all_signaled,
 	{
 		*all_signaled = 0;
 		last_status = WEXITSTATUS(status);
-		// printf("exit status in wait for children: %d\n", last_status);
 	}
 	else if (WIFSIGNALED(status))
 	{
@@ -57,7 +56,6 @@ static int	wait_for_children(int *pids, int cmd_count)
 		waitpid(pids[i], &status, 0);
 		status = process_child_status(status, &all_signaled, &last_signal,
 				&first);
-		// printf("status: %d\n", status);
 		i++;
 	}
 	if (all_signaled && last_signal == SIGQUIT)
