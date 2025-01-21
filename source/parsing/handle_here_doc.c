@@ -4,15 +4,15 @@ static int	process_line(char **input, char *extra_input, char *delimiter)
 {
 	char	*tmp;
 
-	add_history(extra_input);
-	tmp = *input;
-	*input = ft_strjoin(tmp, extra_input);
-	free(tmp);
 	if (!strcmp(extra_input, delimiter))
 	{
 		free(extra_input);
 		return (1);
 	}
+	add_history(extra_input);
+	tmp = *input;
+	*input = ft_strjoin(tmp, extra_input);
+	free(tmp);
 	tmp = *input;
 	*input = ft_strjoin(tmp, "\n");
 	free(tmp);
@@ -89,7 +89,7 @@ int	handle_here_doc(t_cmd **cmd, char **args, int i)
 	free(input);
 	while ((*cmd)->re->next)
 		(*cmd)->re = (*cmd)->re->next;
-	(*cmd)->re->file = ft_strdup(args[i + 1]);
+	(*cmd)->re->file = ft_strdup(HEREDOC_FILE);
 	if (!(*cmd)->re->file)
 		return (ERR_NOMEM);
 	(*cmd)->re->type = IN;

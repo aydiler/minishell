@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/24 19:50:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/20 22:16:45 by ubuntu           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 void	handle_ignore(char *str, const char *chars_to_remove)
@@ -110,7 +98,7 @@ int	fill_everything(char *line, t_cmd **cmd)
 // }
 
 // static int	is_empty_or_whitespace(const char *str)
-// { 
+// {
 // 	if (!str)
 // 		return (1);
 // 	while (*str)
@@ -128,13 +116,13 @@ int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 
 	handle_ignore(*line, ";\\");
 	// if (!*line || is_empty_or_whitespace(*line))
-	// 	return 0;
-    if (check_trailing_pipe(*line))
-    {
-        error_check = handle_trailing_pipe(line);
-        if (error_check)
-            return error_check;
-    }
+	// 	return (0);
+	if (check_trailing_pipe(*line))
+	{
+		error_check = handle_trailing_pipe(line);
+		if (error_check)
+			return (error_check);
+	}
 	error_check = handle_unclosed_quotes(line);
 	if (error_check)
 		return (error_check);
