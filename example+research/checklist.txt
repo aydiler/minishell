@@ -92,13 +92,6 @@ minishell$
 minishell$ ls 2> test
 ls: cannot access '2': No such file or directory 
 
-minishell$ export | grep "SHLVL"
-declare -x SHLVL="2"
-minishell$ ./minishell
-minishell$ export | grep "SHLVL"
-declare -x SHLVL="2"
-minishell$
-
 minishell$ export | grep TEST
 minishell$ export TEST+=100
 bash: export: `TEST+=100': not a valid identifier
