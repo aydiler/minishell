@@ -3,42 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 23:29:07 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/09 20:32:47 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/20 18:04:05 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	is_numeric(char *str)
+static int is_numeric(char *str)
 {
-	int		i;
-	int		len;
-	int		sign;
+    int     i;
+    int     len;
+    int     sign;
 
-	i = 0;
-	len = 0;
-	sign = 1;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		if (len > 19)
-			return (0);
-		if (len == 19 && !is_valid_number(str + i - len, sign))
-			return (0);
-		len++;
-		i++;
-	}
-	return (1);
+    i = 0;
+    len = 0;
+    sign = 1;
+    if (str[i] == '-' || str[i] == '+')
+    {
+        if (str[i] == '-')
+            sign = -1;
+        i++;
+    }
+    len = ft_strlen(str + i);
+    if (len > 19)
+        return (0);
+    if (len == 19 && !is_valid_number(str + i, sign))
+        return (0);
+    while (str[i])
+    {
+        if (str[i] < '0' || str[i] > '9')
+            return (0);
+        i++;
+    }
+    return (1);
 }
 
 static long	ft_atol(char *str)

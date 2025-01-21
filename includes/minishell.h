@@ -30,6 +30,8 @@
 # define ERR_PIPE		134		// Pipe or redirection error
 # define ERR_UNMATCHED	99		// Unmatched quotations
 # define ERR_SIGINT		130		// Ctrl + C
+# define ERR_SYNTAX		258		// Syntax error
+# define ERR_SYNTAX_EOF	259		// Syntax error
 # define NOVAR			-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0
@@ -64,6 +66,9 @@ char	**tokenizer(char *line);
 int		handle_env_vars(char **line, char **envp, int exit_status);
 int		handle_unclosed_quotes(char **line);
 int		handle_here_doc(t_cmd **cmd, char **args, int i);
+int		handle_trailing_pipe(char **line);
+int 	check_trailing_pipe(const char *line);
+
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);
@@ -103,6 +108,7 @@ void	ft_free_split(char **str);
 char	**ft_arrdup(char **arr);
 char	*ft_getenv(char *name, char **envp);
 int		is_valid_number(char *str, int sign);
+int		increase_shlvl(char ***dup_envp);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);

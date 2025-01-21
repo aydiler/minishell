@@ -1,15 +1,15 @@
 #include "../includes/minishell.h"
 
-volatile sig_atomic_t g_child_running;
-volatile sig_atomic_t g_heredoc_signal;
+volatile sig_atomic_t	g_child_running;
+volatile sig_atomic_t	g_heredoc_signal;
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	char	*input;
-	t_cmd	*cmd;
-	int		exit_status;
-	int		error_check;
-	char	**dup_envp;
+	char *input;
+	t_cmd *cmd;
+	int exit_status;
+	int error_check;
+	char **dup_envp;
 
 	g_child_running = 0;
 	g_heredoc_signal = 0;
@@ -17,9 +17,32 @@ int main(int argc, char **argv, char **envp)
 	dup_envp = ft_arrdup(envp);
 	cmd = NULL;
 	exit_status = 0;
-	(void)argc;
-	(void)argv;
 	setup_parent_signals();
+	increase_shlvl(&dup_envp);
+
+	// Check for -c flag
+	if (argc >= 3 && ft_strcmp(argv[1], "-c") == 0)
+	{
+		input = ft_strdup(argv[2]);
+		if (input[0])
+			error_check = parser(&input, &cmd, dup_envp, exit_status);
+		ft_memdel((void **)&(input));
+		if (error_check || !cmd)
+		{
+			ft_error(&cmd, error_check);
+			exit_status = 1;
+		}
+		else if (cmd)
+		{
+			exit_status = execute_pipeline(cmd, &dup_envp);
+			free_all(&cmd);
+		}
+		if (dup_envp)
+			ft_free_arr(&dup_envp);
+		exit(exit_status);
+	}
+
+	// Normal interactive mode
 	load_history();
 	while (1)
 	{
