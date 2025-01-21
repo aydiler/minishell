@@ -108,6 +108,7 @@ void	ft_free_split(char **str);
 char	**ft_arrdup(char **arr);
 char	*ft_getenv(char *name, char **envp);
 int		is_valid_number(char *str, int sign);
+int		increase_shlvl(char ***dup_envp);
 // signals
 void	signal_handler(int signo);
 void	setup_signals(void);

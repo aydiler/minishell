@@ -117,12 +117,9 @@ int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 	handle_ignore(*line, ";\\");
 	// if (!*line || is_empty_or_whitespace(*line))
 	// 	return (0);
-	if (check_trailing_pipe(*line))
-	{
-		error_check = handle_trailing_pipe(line);
-		if (error_check)
-			return (error_check);
-	}
+	error_check = handle_trailing_pipe(line);
+	if (error_check)
+		return (error_check);
 	error_check = handle_unclosed_quotes(line);
 	if (error_check)
 		return (error_check);

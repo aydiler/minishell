@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **envp)
 	cmd = NULL;
 	exit_status = 0;
 	setup_parent_signals();
+	increase_shlvl(&dup_envp);
 
 	// Check for -c flag
 	if (argc >= 3 && ft_strcmp(argv[1], "-c") == 0)

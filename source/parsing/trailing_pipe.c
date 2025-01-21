@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   trailing_pipe.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:04:34 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/21 01:13:16 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/21 17:29:45 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int is_heredoc_line(const char *line)
-{
-    return (strstr(line, "<<") != NULL);
-}
 
 int check_trailing_pipe(const char *line)
 {
@@ -24,7 +19,7 @@ int check_trailing_pipe(const char *line)
     while (i >= 0 && ft_isspace(line[i]))
         i--;
     
-    if (i >= 0 && line[i] == '|' && !is_heredoc_line(line))
+    if (i >= 0 && line[i] == '|' && !ft_strnstr(line, "<<", ft_strlen(line)))
         return 1;
     return 0;
 }
@@ -92,6 +87,8 @@ int handle_trailing_pipe(char **line)
     int stdin_copy;
     int status;
 
+	if (!check_trailing_pipe(*line))
+		return (0);
     setup_pipe_delim_signals();
     g_heredoc_signal = 0;
     stdin_copy = dup(STDIN_FILENO);
