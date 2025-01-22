@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:14:26 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/21 19:04:36 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:25:03 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ int	ft_cd(char **args)
 
 	if (args[2])
 	{
-		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+		if (args[1])
+			ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		return (1);
 	}
 	if (set_path(&path, args))
