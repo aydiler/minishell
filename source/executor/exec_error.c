@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:58:23 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/21 19:15:54 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:47:40 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,13 @@ void	print_error_message(char *cmd, int error_type)
 		print_path_error(cmd);
 		return ;
 	}
+	if (error_type == ERR_FILE)
+		ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
 	if (error_type == ERR_NOT_FOUND)
 		ft_putstr_fd(": command not found\n", 2);
 	else if (error_type == ERR_PERMISSION)
 		ft_putstr_fd(": Permission denied\n", 2);
+	else if (error_type == ERR_FILE)
+		ft_putstr_fd(": No such file or directory\n", 2);
 }

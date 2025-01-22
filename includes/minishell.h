@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 15:59:32 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/22 19:08:18 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:43:59 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # define ERR_SIGINT		130		// Ctrl + C
 # define ERR_SYNTAX		258		// Syntax error
 # define ERR_SYNTAX_EOF	259		// Syntax error
+# define ERR_FILE		127	// File not found
 # define NOVAR			-1		// empty line
 # define PWD_MAX		4096
 # define READ_END		0
@@ -114,7 +115,7 @@ int		handle_var(t_cmd **cmd, int i);
 // Executer functions
 int		execute_pipeline(t_cmd *cmd, char ***envp);
 int		print_envp(char **envp);
-char	*find_command_in_path(char *cmd);
+char	*find_command_in_path(char *cmd, char **envp);
 void	free_executor(int **pipes, int cmd_count, int *pids);
 // utils
 void	ft_error(t_cmd **cmd, int exit_status);

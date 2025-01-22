@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   command_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 21:41:26 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/07 21:40:47 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 20:36:13 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char	**get_paths(void)
+static char	**get_paths(char **envp)
 {
 	char	*path;
 	char	**paths;
 
-	path = getenv("PATH");
+	path = ft_getenv("PATH", envp);
+	if (!path)
+		return (NULL);
 	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
@@ -35,7 +37,7 @@ static char	*construct_path(char *path, char *cmd)
 	return (full_path);
 }
 
-char	*find_command_in_path(char *cmd)
+char	*find_command_in_path(char *cmd, char **envp)
 {
 	char	**paths;
 	char	*full_path;
@@ -44,7 +46,7 @@ char	*find_command_in_path(char *cmd)
 	i = 0;
 	if (cmd[0] && (cmd[0] == '/' || cmd[0] == '.'))
 		return (ft_strdup(cmd));
-	paths = get_paths();
+	paths = get_paths(envp);
 	if (!paths)
 		return (NULL);
 	while (paths[i])

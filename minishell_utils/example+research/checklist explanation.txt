@@ -1,0 +1,478 @@
+Core Shell Features
+
+1. Display Prompt for Commands
+
+Implementation:
+
+Use readline Function:
+The readline function reads a line from the terminal with editing capabilities.
+Syntax: char *line = readline(prompt);
+Example: char *line = readline("minishell$ ");
+Challenges:
+
+Dynamic Prompt:
+If you want to include dynamic information (e.g., current directory), you need to construct the prompt string accordingly.
+Signal Handling Integration:
+Ensuring the prompt displays correctly after signal interruptions (e.g., Ctrl-C).
+Dependencies:
+
+Signal Handling:
+The prompt needs to be redisplayed correctly when signals are received.
+Command History:
+readline integrates with command history, so adding history is essential for full functionality.
+2. Working Command History Using readline
+Implementation:
+
+Add Commands to History:
+After reading a line, use add_history(line); to add it to the history.
+Clear History on Exit:
+Use rl_clear_history(); before exiting the shell to free memory.
+Challenges:
+
+Avoid Duplicates and Empty Lines:
+Ensure empty lines or duplicates are not added unless desired.
+History File (Optional):
+Saving history to a file requires additional implementation.
+Dependencies:
+
+Readline Library:
+add_history and rl_clear_history are part of the readline library.
+3. Execute Commands Using PATH/Relative/Absolute Paths
+Implementation:
+
+Parsing the Command:
+
+Tokenize the input line into command and arguments using spaces as delimiters, considering quotes.
+Handle Absolute and Relative Paths:
+
+If the command contains a /, attempt to execute it directly.
+Search in PATH:
+
+If not, split the PATH environment variable using getenv("PATH") and strtok.
+For each directory, construct the full path and check if the executable exists using access(path, X_OK);.
+Execute the Command:
+
+Use fork() to create a child process.
+In the child process, use execve(full_path, args, envp);.
+In the parent process, use waitpid to wait for the child to finish.
+Challenges:
+
+Error Handling:
+Handle cases where the command is not found or not executable.
+Environment Variables:
+Correctly pass the environment to execve.
+Dependencies:
+
+Environment Variables:
+Requires handling the PATH variable and envp.
+Command Parsing:
+Accurate tokenization and parsing are critical.
+4. Signal Handling (Ctrl-C, Ctrl-D, Ctrl-)
+Global Variable for Signals Only
+Implementation:
+
+Use a Global Variable:
+Declare a global variable (e.g., volatile sig_atomic_t g_signal_flag;) to communicate between the signal handler and the main loop.
+Challenges:
+
+Race Conditions:
+Ensure the variable is accessed atomically to prevent race conditions.
+Dependencies:
+
+Signal Handlers:
+The global variable is modified in the signal handlers.
+Ctrl-C: New Prompt on New Line
+Implementation:
+
+Set Up SIGINT Handler:
+Use signal(SIGINT, sigint_handler); or sigaction.
+Signal Handler Function:
+In the handler, use:
+c
+Code kopieren
+void sigint_handler(int sig) {
+    (void)sig;
+    write(1, "\n", 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+}
+Challenges:
+
+Reentrant Functions:
+Only use async-signal-safe functions in the handler.
+Readline Interaction:
+Properly reset readline state to avoid corrupted input.
+Dependencies:
+
+Readline Functions:
+rl_on_new_line, rl_replace_line, and rl_redisplay are used to refresh the prompt.
+Ctrl-D: Exit Shell
+Implementation:
+
+Detect EOF:
+If readline returns NULL, the user pressed Ctrl-D.
+Exit the Shell:
+Call exit(status); to terminate the shell gracefully.
+Challenges:
+
+Resource Cleanup:
+Ensure all allocated resources are freed before exiting.
+Ambiguity with Empty Lines:
+Distinguish between an empty input and EOF.
+Dependencies:
+
+Readline Function:
+readline must be used to detect Ctrl-D correctly.
+Ctrl-\: No Action
+Implementation:
+
+Ignore SIGQUIT:
+Use signal(SIGQUIT, SIG_IGN); to ignore Ctrl-.
+Challenges:
+
+Consistency:
+Ensure that ignoring SIGQUIT doesn't affect child processes unless intended.
+Dependencies:
+
+Signal Handling:
+Must set up the signal handler early in the program.
+
+
+Command Parsing
+
+1. Handle Single Quotes (')
+Implementation:
+
+Lexer State Machine:
+Implement a lexer that changes state when it encounters a single quote.
+Literal Interpretation:
+Characters inside single quotes are taken literally.
+Challenges:
+
+Unclosed Quotes:
+Detect and handle unclosed single quotes appropriately.
+Dependencies:
+
+Command Parsing:
+Tokenization must respect quoted strings.
+2. Handle Double Quotes (")
+Implementation:
+
+Lexer State Machine:
+Modify the lexer to handle double-quoted strings.
+Variable Expansion:
+Allow variable expansion inside double quotes.
+Challenges:
+
+Escape Sequences:
+Handle escaped characters within double quotes.
+Dependencies:
+
+Environment Variables:
+Required for variable expansion.
+3. Handle Environment Variables ($VAR)
+Implementation:
+
+Variable Detection:
+When $ is encountered, parse the variable name.
+Get Variable Value:
+Use getenv(var_name); to retrieve the value.
+Replace in Input:
+Substitute the variable name with its value in the command.
+Challenges:
+
+Undefined Variables:
+Decide how to handle variables that are not set (usually replace with an empty string).
+Special Characters:
+Ensure that variable names are correctly identified.
+Dependencies:
+
+Command Parsing:
+Accurate parsing is necessary to identify variables.
+Environment Variables:
+Access to the environment variable list is required.
+4. Handle Exit Status ($?)
+Implementation:
+
+Track Last Exit Status:
+After each command execution, store the exit status.
+Replace $?:
+When $? is encountered, replace it with the stored exit status.
+Challenges:
+
+String Conversion:
+Convert the numeric exit status to a string for substitution.
+Dependencies:
+
+Command Execution:
+Must have a mechanism to capture and store exit statuses.
+5. Skip Interpretation of Unclosed Quotes
+Implementation:
+
+Error Handling:
+Detect unclosed quotes during parsing and output an error message.
+Skip Execution:
+Do not attempt to execute commands with syntax errors.
+Challenges:
+
+User Feedback:
+Provide clear messages to help the user correct the input.
+Dependencies:
+
+Command Parsing:
+The parser must validate the syntax.
+6. Skip Interpretation of \ and ;
+Implementation:
+
+Treat as Literals:
+Modify the lexer to treat backslashes and semicolons as regular characters.
+Challenges:
+
+Consistency:
+Ensure that this behavior is consistent throughout the shell.
+Dependencies:
+
+Command Parsing:
+Lexer adjustments are necessary.
+
+
+Redirections
+
+1. Input Redirection (<)
+Implementation:
+
+Parse Redirection:
+Identify < in the command line and get the input file name.
+Open Input File:
+Use open(input_file, O_RDONLY);.
+Redirect Standard Input:
+Use dup2(fd, STDIN_FILENO);.
+Close File Descriptor:
+Close the original file descriptor after redirection.
+Challenges:
+
+File Access Errors:
+Handle cases where the file does not exist or cannot be opened.
+Dependencies:
+
+Command Execution:
+Redirection must be set up before executing the command.
+2. Output Redirection (>)
+Implementation:
+
+Parse Redirection:
+Identify > in the command line and get the output file name.
+Open Output File:
+Use open(output_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);.
+Redirect Standard Output:
+Use dup2(fd, STDOUT_FILENO);.
+Close File Descriptor:
+Close the original file descriptor after redirection.
+Challenges:
+
+File Permissions:
+Ensure the shell has permissions to create or write to the file.
+Dependencies:
+
+Command Execution:
+Redirection must be applied in the child process before execve.
+3. Here Document (<<)
+Implementation:
+
+Parse Here Document:
+Identify << and get the delimiter.
+Read Input Until Delimiter:
+Continuously read lines from the user until the delimiter is matched.
+Store Input:
+Write the input to a temporary file or use a pipe.
+Redirect Standard Input:
+Use dup2 to redirect standard input from the temporary file or read end of the pipe.
+Challenges:
+
+Signal Handling:
+Ensure the shell can handle interrupts (e.g., Ctrl-C) during input.
+Temporary Files:
+Manage creation and deletion of temporary files securely.
+Dependencies:
+
+Input Redirection:
+Similar setup to input redirection after reading input.
+4. Append Output (>>)
+Implementation:
+
+Parse Redirection:
+Identify >> in the command line and get the output file name.
+Open Output File:
+Use open(output_file, O_CREAT | O_WRONLY | O_APPEND, 0644);.
+Redirect Standard Output:
+Use dup2(fd, STDOUT_FILENO);.
+Challenges:
+
+Concurrent Writes:
+Be cautious if multiple processes are appending to the same file.
+Dependencies:
+
+Command Execution:
+Redirection must be set up before command execution.
+5. Pipes (|)
+Implementation:
+
+Parse Pipe Operator:
+Split the command line into separate commands at each |.
+Create Pipes:
+For each pipe, use pipe(pipefd); to create a pair of file descriptors.
+Set Up Processes:
+For each command:
+Fork a Child Process:
+In the child, redirect input/output using dup2.
+Redirect Standard Input/Output:
+For the first command, standard input is unchanged.
+For middle commands, standard input comes from the previous pipe, and output goes to the next pipe.
+For the last command, standard output is unchanged.
+Close Unused File Descriptors:
+Ensure all unnecessary file descriptors are closed in both parent and child processes.
+Challenges:
+
+Process Synchronization:
+Parent must wait for all child processes to finish.
+File Descriptor Management:
+Properly handle file descriptors to prevent leaks and deadlocks.
+Dependencies:
+
+Command Execution:
+Execution of piped commands requires careful setup of multiple processes.
+
+
+Built-in Commands
+
+1. echo (with -n option)
+Implementation:
+
+Parse Options:
+Check for the -n option in the arguments.
+Print Arguments:
+Use a loop to print each argument separated by spaces.
+Suppress Newline:
+If -n is present, do not print the trailing newline.
+Challenges:
+
+Option Parsing:
+Handle multiple -n options and arguments starting with -.
+Dependencies:
+
+Command Parsing:
+Accurate argument parsing is necessary.
+2. cd (Relative/Absolute Paths)
+Implementation:
+
+Get Target Directory:
+If an argument is provided, use it as the path.
+If no argument, use the HOME environment variable.
+Change Directory:
+Use chdir(path); to change the working directory.
+Update Environment Variables:
+Update PWD and OLDPWD accordingly.
+Challenges:
+
+Error Handling:
+Handle non-existent directories or lack of permissions.
+Path Expansion:
+Implement expansion for ~ and other shell shortcuts if required.
+Dependencies:
+
+Environment Variables:
+Access and modify PWD and OLDPWD.
+3. pwd (No Options)
+Implementation:
+
+Get Current Directory:
+Use getcwd(buffer, size); to retrieve the current working directory.
+Print Directory:
+Output the directory to standard output.
+Challenges:
+
+Buffer Size:
+Ensure the buffer is large enough to hold the path.
+Dependencies:
+
+None Significant:
+Simple system call usage.
+4. export (No Options)
+Implementation:
+
+Set Environment Variables:
+
+For each argument in the form VAR=VALUE, add or update the environment variable.
+Use setenv(var, value, 1); or manipulate environ.
+Print Variables:
+
+If no arguments, print all environment variables.
+Challenges:
+
+Variable Name Validation:
+Ensure variable names are valid identifiers.
+Memory Management:
+When manipulating environ, ensure memory is managed correctly.
+Dependencies:
+
+Environment Variables:
+Central to the functionality.
+5. unset (No Options)
+Implementation:
+
+Remove Environment Variables:
+For each argument, remove the variable using unsetenv(var); or adjust environ.
+Challenges:
+
+Variable Existence:
+Handle cases where the variable does not exist.
+Dependencies:
+
+Environment Variables:
+Direct manipulation is required.
+6. env (No Options/Arguments)
+Implementation:
+
+Print Environment Variables:
+Iterate over environ and print each variable.
+Challenges:
+
+None Significant:
+Straightforward iteration and printing.
+Dependencies:
+
+Environment Variables:
+Access to environ is necessary.
+7. exit (No Options)
+Implementation:
+
+Exit the Shell:
+If an argument is provided, convert it to an integer and use it as the exit status.
+Use exit(status); to terminate the shell.
+Challenges:
+
+Argument Validation:
+Ensure the argument is a valid integer.
+Resource Cleanup:
+Free all allocated resources before exiting.
+Dependencies:
+
+Command Parsing:
+Argument parsing is necessary to get the exit status.
+Additional Considerations
+Command Parsing Dependencies:
+
+Most features depend on accurate command parsing, which must handle tokenization, quoting, and escaping correctly.
+Signal Handling and readline:
+
+Signal handlers must be carefully implemented to work correctly with readline, avoiding unsafe function calls.
+Environment Variable Management:
+
+Built-in commands and variable expansions rely on proper management of the environment variables.
+File Descriptor Management:
+
+Redirections and pipes require careful handling of file descriptors to prevent leaks and ensure correct data flow.
+Process Management:
+
+Forking and execution must be managed so that child processes inherit the correct environment and file descriptors.

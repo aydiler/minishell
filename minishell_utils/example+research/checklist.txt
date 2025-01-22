@@ -1,0 +1,136 @@
+Core Shell Features
+
+	Display prompt for commands X
+	Working command history using readline X
+	Execute commands using absolute paths X
+	Execute commands using relative paths X
+	Execute commands using PATH X
+	Global variable for signals only X
+	ctrl-C: New prompt on new line X
+	ctrl-D: Exit shell X
+	ctrl-/: nothing X
+	ctrl-: No action X
+
+
+Command Parsing
+
+	Handle single quotes (') X
+	Handle double quotes (") X
+	Handle environment variables ($VAR) X
+	Handle exit status ($?) X
+	Skip interpretation of unclosed quotes X
+	Skip interpretation of \ and ; X
+
+
+Redirections
+
+	Input redirection (<) X
+	Output redirection (>) X
+	Here document (<<)
+	Append output (>>) X
+	Pipes (|) X
+
+
+Built-in Commands
+
+	echo (with -n option) a X
+	cd (relative/absolute paths) a X
+	pwd (no options) m X
+	export (no options) m X
+	unset (no options) m
+	env (no options/arguments) m X
+	exit (no options) X
+
+
+Technical Requirements
+
+	Memory management (no leaks except readline)
+	Error handling
+	Makefile (all, clean, fclean, re)
+
+
+Todo
+
+adiler@c3a1c6:~/minishell$ echo $'line1 line2 line3' > testfile.txt
+adiler@c3a1c6:~/minishell$ cat testfile.txt 
+line1 line2 line3
+adiler@c3a1c6:~/minishell$ ./minishell 
+minishell$ echo $'line1 line2 line3' > testfile.txt
+minishell$ cat testfile.txt 
+$line1 line2 line3
+
+
+minishell$ echo "'$USER'"
+'$USER'
+ubuntu@DESKTOP-GR97MCC:minishell$ echo "'$USER'"
+'ubuntu'
+
+
+variable expansion:
+
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $USER=
+ubuntu=
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $=USER
+$=USER
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $.USER
+$.USER
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $USER.
+ubuntu.
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $1USER
+USER
+ubuntu@DESKTOP-GR97MCC:minishell$ echo $USER1
+ubuntu@DESKTOP-GR97MCC:minishell$   
+
+minishell$ echo $USER=
+minishell$ echo $=USER
+minishell$ echo $.USER
+minishell$ echo $USER.
+minishell$ echo $1USER
+minishell$ echo $USER1
+minishell$  
+
+minishell$ ls 2> test
+ls: cannot access '2': No such file or directory 
+
+minishell$ export | grep TEST
+minishell$ export TEST+=100
+bash: export: `TEST+=100': not a valid identifier
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export TEST+=100
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export | grep TEST
+declare -x TEST="100"
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export TEST+=100
+ubuntu@DESKTOP-GR97MCC:ubuntu$ export | grep TEST
+declare -x TEST="100100"
+ubuntu@DESKTOP-GR97MCC:ubuntu$
+
+
+| ls
+
+
+minishell$ cat << EOF | ls |
+> 1
+> EOF
+=========================
+Command arguments:
+"cat"
+Redirections:
+File: "/tmp/.minishell_here_doc"
+Type: INPUT
+Append mode: NO
+Real: 0
+========= NEXT PIPE =========
+Command arguments:
+"ls"
+Redirections:
+No redirections found
+========= NEXT PIPE =========
+Command arguments:
+"1"
+Redirections:
+No redirections found
+=========================
+1: command not found
+minishell$
+
+
+

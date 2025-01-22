@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 17:36:33 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/21 19:13:52 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:34:11 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_pwd(void)
 {
-	char	buf[PATH_MAX];
+	char	buf[PWD_MAX];
 
 	if (getcwd(buf, sizeof(buf)))
 	{

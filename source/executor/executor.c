@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:41:47 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/21 19:06:34 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:50:55 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,13 @@ void	execute_program(t_cmd cmd, char ***envp)
 
 	if (is_child_builtin(cmd.args))
 		execute_child_builtin(cmd.args, envp);
-	cmd_path = find_command_in_path(cmd.args[0]);
+	cmd_path = find_command_in_path(cmd.args[0], *envp);
 	if (!cmd_path)
 	{
-		print_error_message(cmd.args[0], ERR_NOT_FOUND);
+		if (!ft_getenv("PATH", *envp))
+			print_error_message(cmd.args[0], ERR_FILE);
+		else
+			print_error_message(cmd.args[0], ERR_NOT_FOUND);
 		exit(127);
 	}
 	if (execve(cmd_path, cmd.args, *envp) == -1)
