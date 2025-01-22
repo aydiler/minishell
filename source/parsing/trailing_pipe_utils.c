@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_utils.c                                       :+:      :+:    :+:   */
+/*   trailing_pipe_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/08 21:55:38 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/21 19:07:01 by adiler           ###   ########.fr       */
+/*   Created: 2025/01/21 19:16:27 by adiler            #+#    #+#             */
+/*   Updated: 2025/01/21 19:29:00 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	count_pipes(t_cmd *cmd)
+void	handle_pipe_delimiter_signal(int signo)
 {
-	int	count;
-
-	count = 0;
-	while (cmd)
+	if (signo == SIGINT)
 	{
-		count++;
-		cmd = cmd->next;
+		g_heredoc_signal = 1;
+		write(1, "\n", 1);
+		close(STDIN_FILENO);
 	}
-	return (count);
+}
+
+void	setup_pipe_delim_signals(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = handle_pipe_delimiter_signal;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
 }

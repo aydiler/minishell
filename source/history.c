@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:49:29 by adiler            #+#    #+#             */
-/*   Updated: 2024/12/10 16:09:32 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:12:58 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,13 @@ void	load_history(void)
 	int		fd;
 
 	fd = open(".command_history", O_RDONLY);
-	if(fd < 0)
-		return  ;
-	while ((str = get_next_line(fd)))
+	if (fd < 0)
+		return ;
+	while (1)
 	{
+		str = get_next_line(fd);
+		if (!str)
+			break ;
 		newline = ft_strchr(str, '\n');
 		if (newline)
 			*newline = '\0';
@@ -32,10 +35,10 @@ void	load_history(void)
 	close(fd);
 }
 
-void save_history(char *line)
+void	save_history(char *line)
 {
-	int fd;
-	static char history_location[PWD_MAX] = {0};
+	int			fd;
+	static char	history_location[PWD_MAX] = {0};
 
 	if (!history_location[0])
 	{

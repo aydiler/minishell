@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:14:26 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/17 00:26:40 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:04:36 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	cd_no_arg(char **path, char **args)
 {
-	if(!args[1])
+	if (!args[1])
 	{
 		*path = getenv("HOME");
 		if (!(*path))
@@ -26,9 +26,9 @@ int	cd_no_arg(char **path, char **args)
 	return (0);
 }
 
-int cd_old_pwd(char **path, char **args)
+int	cd_old_pwd(char **path, char **args)
 {
-	if(args[1][0] == '-' && !args[1][1])
+	if (args[1][0] == '-' && !args[1][1])
 	{
 		*path = getenv("OLDPWD");
 		if (!(*path))
@@ -42,7 +42,7 @@ int cd_old_pwd(char **path, char **args)
 	return (0);
 }
 
-void chdir_error(char *path)
+void	chdir_error(char *path)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd("cd: ", 2);
@@ -52,32 +52,32 @@ void chdir_error(char *path)
 	ft_putstr_fd("\n", 2);
 }
 
-int set_path(char **path, char **args)
+int	set_path(char **path, char **args)
 {
 	if (!args[1])
-		return cd_no_arg(path, args);
+		return (cd_no_arg(path, args));
 	else if (args[1][0] == '-' && !args[1][1])
-		return cd_old_pwd(path, args);
+		return (cd_old_pwd(path, args));
 	else if (args[1])
 	{
 		*path = args[1];
-		return 0;
+		return (0);
 	}
-	return 1;
+	return (1);
 }
 
-int ft_cd(char **args)
+int	ft_cd(char **args)
 {
-	char *path;
-	char *oldpwd;
-	char *pwd;
+	char	*path;
+	char	*oldpwd;
+	char	*pwd;
 
 	if (args[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		return (1);
 	}
-	if(set_path(&path, args))
+	if (set_path(&path, args))
 		return (1);
 	oldpwd = getcwd(NULL, 0);
 	if (chdir(path) == -1)

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/21 19:29:24 by adiler            #+#    #+#             */
+/*   Updated: 2025/01/21 22:36:46 by maahoff          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	handle_ignore(char *str, const char *chars_to_remove)
@@ -17,7 +29,7 @@ void	handle_ignore(char *str, const char *chars_to_remove)
 			in_dquote *= -1;
 		if (*read == '\'' && in_dquote == -1)
 			in_squote *= -1;
-		if (in_squote != -1 || in_dquote != -1 || !strchr(chars_to_remove,
+		if (in_squote != -1 || in_dquote != -1 || !ft_strchr(chars_to_remove,
 				*read))
 		{
 			*write = *read;
@@ -83,40 +95,14 @@ int	fill_everything(char *line, t_cmd **cmd)
 	return (0);
 }
 
-// static int	check_for_empty_commands(t_cmd *cmd_list)
-// {
-// 	t_cmd	*tmp;
-
-// 	tmp = cmd_list;
-// 	while (tmp)
-// 	{
-// 		if (!tmp->args || !tmp->args[0])
-// 			return (ERR_SYNTAX);
-// 		tmp = tmp->next;
-// 	}
-// 	return (0);
-// }
-
-// static int	is_empty_or_whitespace(const char *str)
-// {
-// 	if (!str)
-// 		return (1);
-// 	while (*str)
-// 	{
-// 		if (!ft_isspace((unsigned char)*str))
-// 			return (0);
-// 		str++;
-// 	}
-// 	return (1);
-// }
-
 int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 {
 	int	error_check;
 
 	handle_ignore(*line, ";\\");
-	// if (!*line || is_empty_or_whitespace(*line))
-	// 	return (0);
+	error_check = handle_empty_pipe(*line);
+	if (error_check)
+		return (error_check);
 	error_check = handle_trailing_pipe(line);
 	if (error_check)
 		return (error_check);
@@ -132,11 +118,5 @@ int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 	error_check = fill_everything(*line, cmd);
 	if (error_check || !*cmd)
 		return (error_check);
-	// error_check = check_for_empty_commands(*cmd);
-	// if (error_check)
-	// 	return (error_check);
-	error_check = handle_redirections(cmd);
-	if (error_check || !*cmd)
-		return (error_check);
-	return (error_check);
+	return (handle_redirections(cmd));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 17:38:47 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/12 18:29:39 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/21 19:04:23 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 int	ft_unsetenv(char ***envp, char *name)
 {
 	int	i;
-	
+
 	i = 0;
 	while ((*envp)[i])
 	{
-		if (!ft_strncmp((*envp)[i], name, ft_strlen(name)) && 
-			(*envp)[i][ft_strlen(name) == '='])
+		if (!ft_strncmp((*envp)[i], name, ft_strlen(name))
+			&& (*envp)[i][ft_strlen(name) == '='])
 		{
 			ft_memdel((void **)&((*envp)[i]));
 			while ((*envp)[i])
@@ -29,7 +29,7 @@ int	ft_unsetenv(char ***envp, char *name)
 				i++;
 			}
 			return (0);
-		}	
+		}
 		i++;
 	}
 	return (0);

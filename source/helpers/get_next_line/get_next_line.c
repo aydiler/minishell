@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 18:43:14 by adiler            #+#    #+#             */
-/*   Updated: 2024/11/27 20:26:02 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:03:43 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 t_list_str	*create_new_node(char *buffer, int start, int len)
 {
-	char	*line;
+	char		*line;
 	t_list_str	*new_node;
-	int		i;
+	int			i;
 
 	line = malloc(sizeof(char) * (len + 1));
 	if (!line)
@@ -41,10 +41,10 @@ t_list_str	*create_new_node(char *buffer, int start, int len)
 
 t_list_str	*split_and_store_line(t_list_str **head, char *buffer)
 {
-	size_t	i;
+	size_t		i;
 	t_list_str	*new_node;
-	size_t	start;
-	size_t	len;
+	size_t		start;
+	size_t		len;
 
 	i = 0;
 	while (buffer[i])
@@ -98,8 +98,8 @@ int	read_split_and_store_line(int fd, t_list_str **head)
 char	*pop_and_join(t_list_str **head, char *line)
 {
 	t_list_str	*first;
-	char	*temp_line;
-	char	*new_line;
+	char		*temp_line;
+	char		*new_line;
 
 	if (head == NULL || *head == NULL)
 		return (line);
@@ -118,8 +118,8 @@ char	*pop_and_join(t_list_str **head, char *line)
 char	*get_next_line(int fd)
 {
 	static t_list_str	*head;
-	char			*line;
-	int				read_result;
+	char				*line;
+	int					read_result;
 
 	line = NULL;
 	while (1)
@@ -141,7 +141,7 @@ char	*get_next_line(int fd)
 // void print(const char *str) {
 // 	if (str == NULL) {
 // 		printf("(null)\n");
-// 		return;
+// 		return ;
 // 	}
 // 	for (int i = 0; str[i] != '\0'; ++i) {
 // 		if (str[i] == '\n') {

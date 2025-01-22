@@ -3,42 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 23:29:07 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/20 18:04:05 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/21 19:15:07 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int is_numeric(char *str)
+static int	is_numeric(char *str)
 {
-    int     i;
-    int     len;
-    int     sign;
+	int	i;
+	int	len;
+	int	sign;
 
-    i = 0;
-    len = 0;
-    sign = 1;
-    if (str[i] == '-' || str[i] == '+')
-    {
-        if (str[i] == '-')
-            sign = -1;
-        i++;
-    }
-    len = ft_strlen(str + i);
-    if (len > 19)
-        return (0);
-    if (len == 19 && !is_valid_number(str + i, sign))
-        return (0);
-    while (str[i])
-    {
-        if (str[i] < '0' || str[i] > '9')
-            return (0);
-        i++;
-    }
-    return (1);
+	i = 0;
+	len = 0;
+	sign = 1;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	len = ft_strlen(str + i);
+	if (len > 19)
+		return (0);
+	if (len == 19 && !is_valid_number(str + i, sign))
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 static long	ft_atol(char *str)
@@ -93,7 +93,7 @@ int	validate_exit_args(char **args, long *exit_code)
 	return (0);
 }
 
-int ft_exit(char **args)
+int	ft_exit(char **args)
 {
 	long	exit_code;
 	int		is_piped;
