@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 15:59:32 by maahoff           #+#    #+#             */
+/*   Updated: 2025/01/22 15:59:33 by maahoff          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -40,8 +52,8 @@
 # define OUT			1
 # define IN				2
 
-extern volatile sig_atomic_t g_child_running;
-extern volatile sig_atomic_t g_heredoc_signal;
+extern volatile sig_atomic_t	g_child_running;
+extern volatile sig_atomic_t	g_heredoc_signal;
 
 typedef struct s_red
 {
@@ -68,8 +80,7 @@ int		handle_env_vars(char **line, char **envp, int exit_status);
 int		handle_unclosed_quotes(char **line);
 int		handle_here_doc(t_cmd **cmd, char **args, int i);
 int		handle_trailing_pipe(char **line);
-int 	check_trailing_pipe(const char *line);
-
+int		check_trailing_pipe(const char *line);
 	//parser utils
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);

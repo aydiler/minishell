@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 19:01:15 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/21 19:59:25 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 15:56:42 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	handle_input(char *input, char **dup_envp, int *exit_status)
 		ft_error(&cmd, error_check);
 		return ;
 	}
-	//print_struct(cmd);
 	if (cmd)
 		*exit_status = execute_pipeline(cmd, &dup_envp);
 	free_all(&cmd);

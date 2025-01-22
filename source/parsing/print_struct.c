@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
+/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 22:15:38 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/19 20:48:21 by ubuntu           ###   ########.fr       */
+/*   Updated: 2025/01/22 15:55:51 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	print_struct(t_cmd *cmd)
 	printf("\n=========================\n");
 	while (cmd)
 	{
-		// Print command arguments
 		i = 0;
 		if (cmd->args && cmd->args[i])
 			printf("Command arguments:\n");
@@ -31,7 +30,6 @@ void	print_struct(t_cmd *cmd)
 			i++;
 		}
 		printf("\n");
-		// Print redirections
 		printf("\nRedirections:\n");
 		temp_re = cmd->re;
 		if (!temp_re)
@@ -71,4 +69,3 @@ void	print_args(char **args)
 	}
 	printf("\n");
 }
-
