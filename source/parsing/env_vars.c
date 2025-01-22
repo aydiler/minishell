@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/22 18:22:18 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:03:34 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ int	proces_env_var(char **line, char **envp)
 	size_t	len_var;
 	int		error_check;
 
+	if (!ft_strchr(*line, '$') || is_exit_status_var(*line))
+		return (0);
 	error_check = 0;
 	i = 0;
 	len_var = 0;
@@ -84,15 +86,11 @@ int	check_env_vars(char **line, char **envp, int exit_status)
 	int		end;
 	char	*tmp;
 	char	*tmp2;
-	int		error_check;
 
-	error_check = 0;
 	if (has_env_var(*line))
 		return (has_env_var(*line));
 	if (is_exit_status_var(*line))
-		error_check = fill_in_exit_status(line, exit_status);
-	if (error_check)
-		return (error_check);
+		return (fill_in_exit_status(line, exit_status));
 	start = find_var_start(*line);
 	if (!start)
 		return (1);

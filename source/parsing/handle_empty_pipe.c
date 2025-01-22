@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 21:43:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/22 17:31:04 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 19:48:33 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	handle_empty_pipe(char *line)
 	int	last_was_pipe;
 
 	i = 0;
+	last_was_pipe = 0;
 	while (line[i])
 	{
 		if (line[i] == '\'' || line[i] == '\"')
@@ -46,7 +47,7 @@ int	handle_empty_pipe(char *line)
 				return (ERR_SYNTAX);
 			last_was_pipe = 1;
 		}
-		else if (line[i] != ' ' && line[i] != '\t')
+		else if (line[i] != ' ' && !(line[i] >= 9 && line[i] <= 13))
 			last_was_pipe = 0;
 		i++;
 	}

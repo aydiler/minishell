@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 14:56:08 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/22 18:58:51 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 19:45:34 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,5 @@ int	handle_unclosed_quotes(char **line)
 		free(extra_input);
 	}
 	free(extra_input);
-	return (ERR_SYNTAX);
+	return (0);
 }
