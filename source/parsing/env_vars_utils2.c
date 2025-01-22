@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 16:20:36 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/15 22:36:22 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/21 19:50:37 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,24 @@ int	has_env_var(char *line)
 {
 	char	*dollar;
 
+	if (!line)
+		return (1);
 	dollar = ft_strchr(line, '$');
 	if (!dollar)
-		return (0);
+		return (1);
 	if (!*(dollar + 1) || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
-		return (0);
+		return (1);
+	if (*(dollar + 1) && ft_isdigit(*(dollar + 1)))
+		return (-3);
+	if (*(dollar + 1) && !is_env_var(*(dollar + 1)))
+		return (1);
 	if (*(dollar + 1) && *(dollar + 1) != ' ' && !(*(dollar + 1) >= 9 
 			&& *(dollar + 1) <= 13))
-		return (1);
-	return (0);
+		return (0);
+	return (1);
 }
 
-int	remove_false_var(char **line)
+int	remove_false_var(char **line, int var_check)
 {
 	int		i;
 	int		j;
@@ -69,7 +75,9 @@ int	remove_false_var(char **line)
 	while ((*line)[i] && (*line)[i] != '$')
 		i++;
 	j = i + 1;
-	if ((*line)[i])
+	if (var_check == -3)
+		j += 1;
+	else if ((*line)[i])
 	{
 		while (is_env_var((*line)[j]))
 			j++;

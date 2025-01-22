@@ -86,7 +86,7 @@ int		exchange_tilde(char **line, int i);
 int		skip_quote(char *line, int *i);
 char	*getenv_range(char *start, size_t *len_var, char **envp);
 int		fill_in_exit_status(char **line, int exit_status);
-int		remove_false_var(char **line);
+int		remove_false_var(char **line, int var_check);
 int		find_var_start(char *line);
 	// handle redirections
 t_red	*new_re(void);

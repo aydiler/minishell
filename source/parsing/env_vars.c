@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/15 22:19:20 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/21 19:06:33 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,8 @@ int	check_env_vars(char **line, char **envp, int exit_status)
 	int		error_check;
 
 	error_check = 0;
-	if (!has_env_var(*line))
-		return (1);
+	if (has_env_var(*line))
+		return (has_env_var(*line));
 	if (is_exit_status_var(*line))
 		error_check = fill_in_exit_status(line, exit_status);
 	if (error_check)
@@ -127,7 +127,7 @@ int	handle_env_vars(char **line, char **envp, int exit_status)
 		if (!var_check)
 			error_check = proces_env_var(line, envp);
 		else
-			error_check = remove_false_var(line);
+			error_check = remove_false_var(line, var_check);
 		if (error_check)
 			return (error_check);
 	}
