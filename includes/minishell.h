@@ -63,7 +63,6 @@ typedef struct s_cmd
 // Parser funktions:
 int		parser(char **line, t_cmd **cmd, char **envp, int exit_status);
 char	**tokenizer(char *line);
-int		handle_empty_pipe(char *line);
 int		handle_env_vars(char **line, char **envp, int exit_status);
 int		handle_unclosed_quotes(char **line);
 int		handle_here_doc(t_cmd **cmd, char **args, int i);
@@ -120,8 +119,6 @@ void	setup_signal(int signo, void (*handler)(int));
 void	setup_parent_signals(void);
 void	setup_child_signals(void);
 void	setup_here_doc_signals(void);
-void	handle_pipe_delimiter_signal(int signo);
-void	setup_pipe_delim_signals(void);
 // tester
 void	print_struct(t_cmd *cmd);
 void	print_args(char **args);
