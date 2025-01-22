@@ -1,5 +1,0 @@
-*.o
-*.a
-minishell
-.vscode/settings.json
-.command_history

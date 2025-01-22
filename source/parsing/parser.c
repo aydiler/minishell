@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 19:29:24 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/21 22:36:46 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 18:56:07 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,14 @@ int	parser(char **line, t_cmd **cmd, char **envp, int exit_status)
 {
 	int	error_check;
 
+	error_check = handle_unclosed_quotes(line);
+	if (error_check)
+		return (error_check);
 	handle_ignore(*line, ";\\");
 	error_check = handle_empty_pipe(*line);
 	if (error_check)
 		return (error_check);
 	error_check = handle_trailing_pipe(line);
-	if (error_check)
-		return (error_check);
-	error_check = handle_unclosed_quotes(line);
 	if (error_check)
 		return (error_check);
 	error_check = prep_redirections(line);

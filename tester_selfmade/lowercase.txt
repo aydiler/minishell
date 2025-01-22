@@ -1,3 +1,0 @@
-mixed case text
-another line
-lower line

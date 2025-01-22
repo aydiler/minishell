@@ -1,3 +1,0 @@
-leading spaces
-trailing spaces
-mixed   spaces

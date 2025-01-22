@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:49:29 by adiler            #+#    #+#             */
-/*   Updated: 2025/01/21 19:12:58 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 19:10:15 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	load_history(void)
 	char	*newline;
 	int		fd;
 
-	fd = open(".command_history", O_RDONLY);
+	fd = open(CMD_HISTORY, O_RDONLY);
 	if (fd < 0)
 		return ;
 	while (1)
@@ -38,14 +38,8 @@ void	load_history(void)
 void	save_history(char *line)
 {
 	int			fd;
-	static char	history_location[PWD_MAX] = {0};
 
-	if (!history_location[0])
-	{
-		getcwd(history_location, PWD_MAX);
-		ft_strlcat(history_location, "/.command_history", PWD_MAX);
-	}
-	fd = open(history_location, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	fd = open(CMD_HISTORY, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd < 0)
 	{
 		printf("Error opening history file\n");

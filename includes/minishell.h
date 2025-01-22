@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 15:59:32 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/22 15:59:33 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 19:08:18 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 # define READ_END		0
 # define WRITE_END		1
 # define HEREDOC_FILE	"/tmp/.minishell_here_doc"
+# define CMD_HISTORY	"/tmp/.command_history"
 # define OUT			1
 # define IN				2
 
@@ -82,6 +83,7 @@ int		handle_here_doc(t_cmd **cmd, char **args, int i);
 int		handle_trailing_pipe(char **line);
 int		check_trailing_pipe(const char *line);
 	//parser utils
+int		jump_quote(const char *line, int index);
 char	*quote_2_token(char *line, int *l, char c);
 t_cmd	*new_pipe(char **args);
 int		next_pipe(char *line, int i);
@@ -90,6 +92,7 @@ char	**ft_realloc(char **arr, size_t new_size);
 int		jump_s_quote(char *line, int start);
 void	quote_handling(char *line, int *i, int *j, char c);
 	// env_vars utils
+int		check_in_double_quote(char *line, int i);
 int		is_env_var(char c);
 int		has_env_var(char *line);
 int		is_exit_status_var(char *line);

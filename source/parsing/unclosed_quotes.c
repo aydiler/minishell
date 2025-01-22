@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unclosed_quotes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 14:56:08 by maahoff           #+#    #+#             */
-/*   Updated: 2024/12/20 16:55:12 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 18:58:51 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	handle_unclosed_quotes(char **line)
 {
 	char	*extra_input;
 	char	id;
-	char	*tmp;
+	char	*tmp;	
 
 	id = check_quotes(*line);
 	if (!id)
@@ -81,5 +81,5 @@ int	handle_unclosed_quotes(char **line)
 		free(extra_input);
 	}
 	free(extra_input);
-	return (0);
+	return (ERR_SYNTAX);
 }

@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 17:22:34 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/21 19:14:43 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 18:27:01 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_error(t_cmd **cmd, int exit_status)
 	else if (exit_status == ERR_PIPE)
 		ft_putstr_fd("Pipe or redirection error\n", 2);
 	else if (exit_status == ERR_SYNTAX)
-		ft_putstr_fd("minishell: syntax error near unexpected token '|'\n", 2);
+		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
 	else if (exit_status == ERR_SYNTAX_EOF)
 		ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);
 	else if (exit_status == ERR_SIGINT)

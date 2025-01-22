@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_vars_utils2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 16:20:36 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/21 19:50:37 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 18:54:29 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	find_var_start(char *line)
 	start = 0;
 	while (line[start] && line[start] != '$')
 	{
-		if (line[start] == '\'')
+		if (line[start] == '\'' && check_in_double_quote(line, start))
 			start = jump_s_quote(line, start);
 		else
 			start++;
@@ -49,9 +49,13 @@ int	has_env_var(char *line)
 
 	if (!line)
 		return (1);
+	if (find_var_start(line) == 0)
+		return (1);
 	dollar = ft_strchr(line, '$');
 	if (!dollar)
 		return (1);
+	if (*(dollar + 1) && *(dollar + 1) == '?')
+		return (0);
 	if (!*(dollar + 1) || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
 		return (1);
 	if (*(dollar + 1) && ft_isdigit(*(dollar + 1)))

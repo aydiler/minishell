@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_vars.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 16:44:46 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/21 19:06:33 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 18:22:18 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,8 @@ int	handle_env_vars(char **line, char **envp, int exit_status)
 	if (error_check)
 		return (error_check);
 	var_check = 0;
-	while (!var_check && !error_check && line && *line)
+	while ((!var_check || var_check == -1 || var_check == -3) && !error_check 
+		&& line && *line)
 	{
 		var_check = check_env_vars(line, envp, exit_status);
 		if (var_check > 0)

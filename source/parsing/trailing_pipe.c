@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:04:34 by ubuntu            #+#    #+#             */
-/*   Updated: 2025/01/21 19:23:06 by adiler           ###   ########.fr       */
+/*   Updated: 2025/01/22 19:13:21 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,14 @@ int	check_trailing_pipe(const char *line)
 	return (0);
 }
 
-static void	cleanup_and_restore(char *extra_input, int stdin_copy)
-{
-	free(extra_input);
-	dup2(stdin_copy, STDIN_FILENO);
-	close(stdin_copy);
-	setup_parent_signals();
-}
-
 static int	handle_signal_or_eof(char *extra_input, int stdin_copy)
 {
 	if (g_heredoc_signal)
 	{
-		cleanup_and_restore(extra_input, stdin_copy);
+		free(extra_input);
+		dup2(stdin_copy, STDIN_FILENO);
+		close(stdin_copy);
+		setup_parent_signals();
 		return (130);
 	}
 	if (!extra_input)

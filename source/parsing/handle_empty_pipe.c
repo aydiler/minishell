@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_empty_pipe.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 21:43:37 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/21 22:36:14 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/22 17:31:04 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	jump_quote(const char *line, int index)
 	while (line[index])
 	{
 		if (line[index] == quote)
-			return (index + 1);
+			return (index);
 		index++;
 	}
 	return (-1);
@@ -36,7 +36,10 @@ int	handle_empty_pipe(char *line)
 	while (line[i])
 	{
 		if (line[i] == '\'' || line[i] == '\"')
+		{
+			last_was_pipe = 0;
 			i = jump_quote(line, i);
+		}
 		else if (line[i] == '|')
 		{
 			if (last_was_pipe)
