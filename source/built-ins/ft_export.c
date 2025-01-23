@@ -6,7 +6,7 @@
 /*   By: maahoff <maahoff@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:15:24 by maahoff           #+#    #+#             */
-/*   Updated: 2025/01/15 22:03:44 by maahoff          ###   ########.fr       */
+/*   Updated: 2025/01/23 14:53:21 by maahoff          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,7 @@ int	add_env(char ***envp, char *new_env_var)
 		return (ft_free_arr(&new_envp));
 	new_envp[i + 1] = NULL;
 	ft_free_arr(envp);
-	*envp = ft_arrdup(new_envp);
-	ft_free_arr(&new_envp);
+	*envp = new_envp;
 	return (0);
 }
 
